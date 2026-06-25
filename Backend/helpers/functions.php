@@ -46,6 +46,45 @@ function setSecurityHeaders(): void
     header("Content-Type: application/json; charset=UTF-8");
 }
 
+function googleApiRequest(string $url): ?array
+{
+    $ch = curl_init();
+ 
+    curl_setopt_array($ch, [
+        CURLOPT_URL            => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => true,  // Verificación SSL HABILITADA
+        CURLOPT_SSL_VERIFYHOST => 2,     // Verificación SSL HABILITADA
+        CURLOPT_CONNECTTIMEOUT => 5,     // Evita que la petición se quede colgada
+        CURLOPT_TIMEOUT        => 8,
+        CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+    ]);
+ 
+    $response  = curl_exec($ch);
+    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+ 
+    if ($response === false || $curlError) {
+        error_log('googleApiRequest cURL error: ' . $curlError);
+        return null;
+    }
+ 
+    if ($httpCode !== 200) {
+        error_log('googleApiRequest HTTP ' . $httpCode . ': ' . $response);
+        return null;
+    }
+ 
+    $data = json_decode($response, true);
+ 
+    if (!is_array($data)) {
+        error_log('googleApiRequest: respuesta no es JSON válido: ' . $response);
+        return null;
+    }
+ 
+    return $data;
+}
+
 function respond(bool $success, $data = null, string $message = '', int $code = 200): void
 {
     http_response_code($code);
