@@ -1,0 +1,28 @@
+info:
+  name: Registro Candidato
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/?action=register"
+  params:
+    - name: action
+      value: register
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "nombre_completo": "Carlos Perez",
+        "correo": "carlos.prueba@gmail.com",
+        "password": "Password123*",
+        "telefono": "987654321"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
