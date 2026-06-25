@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
+import Buscador from './pages/Buscador';
 
 function App() {
   return (
@@ -10,6 +11,9 @@ function App() {
         
         {/* Esta es tu página de Login */}
         <Route path="/login" element={<Login />} />
+
+        {/* Buscador interactivo split-plane */}
+        <Route path="/vacantes" element={<Buscador />} />
       </Routes>
     </Router>
   );
