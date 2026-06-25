@@ -8,11 +8,18 @@ export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#A3A3A3] flex items-center justify-center p-0 md:p-8">
-      <div 
-        key={isRegister ? 'registro' : 'login'}
-        className="animate-fade-slide flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-none md:rounded-[2.5rem] shadow-none md:shadow-2xl overflow-hidden min-h-screen md:min-h-0">
-        
+    <div className="relative min-h-screen overflow-hidden bg-[#f4f6fb] flex items-center justify-center p-0 md:p-8">
+
+      {/* ===== FONDO BOKEH (círculos difuminados) ===== */}
+      <div className="pointer-events-none absolute -left-24 -top-32 h-[420px] w-[420px] rounded-full bg-[#f97316] opacity-45 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 -bottom-40 h-[460px] w-[460px] rounded-full bg-[#2563eb] opacity-40 blur-[130px]" />
+      <div className="pointer-events-none absolute right-40 -top-24 h-[300px] w-[300px] rounded-full bg-[#fbbf24] opacity-35 blur-[110px]" />
+
+      {/* ===== CARD (con z-10 para quedar sobre el fondo) ===== */}
+      <div
+        key={isRegister ? "registro" : "login"}
+        className="animate-fade-slide relative z-10 flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-none md:rounded-[2.5rem] shadow-none md:shadow-2xl overflow-hidden min-h-screen md:min-h-0"
+      >
         {/* Lado Izquierdo (Arriba en móviles): Panel Informativo */}
         <InfoPanel isRegister={isRegister} />
 
@@ -28,7 +35,7 @@ export default function Login() {
               </p>
             </div>
 
-            {/* PESTAÑAS MOVIDAS AQUÍ */}
+            {/* PESTAÑAS */}
             <div className="flex bg-slate-50 rounded-full p-1.5 mb-8 w-max mx-auto border border-gray-100">
               <button
                 type="button"
@@ -46,7 +53,6 @@ export default function Login() {
               </button>
             </div>
 
-            {/* RENDERIZADO CONDICIONAL: Dependiendo del estado, muestra uno u otro */}
             {isRegister ? <RegisterForm /> : <LoginForm />}
           </div>
         </div>
