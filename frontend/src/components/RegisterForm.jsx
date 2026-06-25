@@ -161,15 +161,6 @@ export default function RegisterForm() {
         </div>
         {errors.telefono && <p className="text-red-500 text-xs mt-1">{errors.telefono}</p>}
       </div>
-      
-      {/* ARCHIVO CV */}
-      <div className="flex flex-col gap-1.5 mt-1">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cargar CV (PDF)</label>
-        <div className="relative flex items-center">
-          <input type="file" name="cv" accept=".pdf" className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-azul hover:file:bg-blue-100 focus:outline-none cursor-pointer border border-gray-200 rounded-xl" onChange={handleChange} />
-        </div>
-        {errors.cv && <p className="text-red-500 text-xs mt-1">{errors.cv}</p>}
-      </div>
 
       {/* BOTÓN NARANJA (Estilo igual al de Login) */}
       <button type="submit" className="w-full bg-naranja hover:bg-orange-600 text-white font-semibold py-3 rounded-lg mt-4 transition-colors">
