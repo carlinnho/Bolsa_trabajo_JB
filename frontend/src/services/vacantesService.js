@@ -1,15 +1,20 @@
 // ─────────────────────────────────────────────────────────────
 // vacantesService.js — Servicio de vacantes (API / mock)
 //
-// Este servicio abstrae las llamadas al backend para el módulo
-// de vacantes. Mientras no exista el backend real, devuelve
-// datos mock para poder desarrollar el frontend.
-//
 // API esperada (futura):
-//   GET  /vacantes/?cargo=&empresa=&fecha_desde=&fecha_hasta=
+//   GET  /vacantes/?cargo=&ubicacion=&fecha_rango=7d
 //   GET  /vacantes/?id=<uuid>
 //   POST /vacantes/?action=postular  (requiere Bearer token)
 // ─────────────────────────────────────────────────────────────
+
+// ─── Ayuda: calcula fecha límite según rango ─────────────
+function getFechaLimite(rango) {
+  const hoy = new Date('2026-06-25');
+  if (rango === '24h') return new Date(hoy.getTime() - 24 * 60 * 60 * 1000);
+  if (rango === '3d') return new Date(hoy.getTime() - 3 * 24 * 60 * 60 * 1000);
+  if (rango === '7d') return new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
+  return null;
+}
 
 // ─── Datos mock ────────────────────────────────────────────
 const VACANTES_MOCK = [
@@ -46,7 +51,7 @@ const VACANTES_MOCK = [
     cargo: 'Diseñador UI/UX Senior',
     empresa: 'Consultora JB',
     ubicacion: 'Remoto',
-    fecha_publicacion: '2026-06-15',
+    fecha_publicacion: '2026-06-25',
     descripcion_corta: 'Diseñador con experiencia en Figma, design systems y user research.',
     descripcion: 'Estamos buscando un Diseñador UI/UX Senior para liderar el diseño de nuestras plataformas digitales. Crearás experiencias de usuario intuitivas y atractivas, definiendo patrones de diseño y colaborando con desarrolladores.',
     requisitos: '• 4+ años en diseño UI/UX\n• Figma avanzado\n• Experiencia en design systems\n• Conocimiento de accesibilidad\n• Portfolio demostrable',
@@ -127,36 +132,36 @@ const VACANTES_MOCK = [
   },
 ];
 
-// ─── Simula demora de red ──────────────────────────────────
 const delay = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
 // ─── listar(filtros) ───────────────────────────────────────
-// Filtra las vacantes mock por cargo, empresa y/o fecha.
-// Devuelve solo campos resumidos (para la lista del panel izquierdo).
+// Filtra por: cargo, ubicacion, fecha_rango ('24h'|'3d'|'7d'|''), tipo_contrato
 export async function listar(filtros = {}) {
   await delay(400);
 
   let resultado = [...VACANTES_MOCK];
 
   if (filtros.cargo) {
-    const termino = filtros.cargo.toLowerCase();
-    resultado = resultado.filter((v) => v.cargo.toLowerCase().includes(termino));
+    const t = filtros.cargo.toLowerCase();
+    resultado = resultado.filter((v) => v.cargo.toLowerCase().includes(t));
   }
 
-  if (filtros.empresa) {
-    const termino = filtros.empresa.toLowerCase();
-    resultado = resultado.filter((v) => v.empresa.toLowerCase().includes(termino));
+  if (filtros.ubicacion) {
+    const t = filtros.ubicacion.toLowerCase();
+    resultado = resultado.filter((v) => v.ubicacion.toLowerCase().includes(t));
   }
 
-  if (filtros.fecha_desde) {
-    resultado = resultado.filter((v) => v.fecha_publicacion >= filtros.fecha_desde);
+  if (filtros.fecha_rango) {
+    const limite = getFechaLimite(filtros.fecha_rango);
+    if (limite) {
+      resultado = resultado.filter((v) => new Date(v.fecha_publicacion) >= limite);
+    }
   }
 
-  if (filtros.fecha_hasta) {
-    resultado = resultado.filter((v) => v.fecha_publicacion <= filtros.fecha_hasta);
+  if (filtros.tipo_contrato) {
+    resultado = resultado.filter((v) => v.tipo_contrato === filtros.tipo_contrato);
   }
 
-  // Devuelve solo campos para la tarjeta
   return resultado.map((v) => ({
     id: v.id,
     cargo: v.cargo,
@@ -169,29 +174,25 @@ export async function listar(filtros = {}) {
 }
 
 // ─── detalle(id) ───────────────────────────────────────────
-// Devuelve la información completa de una vacante.
 export async function detalle(id) {
   await delay(300);
-  const vacante = VACANTES_MOCK.find((v) => v.id === id);
-  if (!vacante) throw new Error('Vacante no encontrada');
-  return { ...vacante };
+  const v = VACANTES_MOCK.find((x) => x.id === id);
+  if (!v) throw new Error('Vacante no encontrada');
+  return { ...v };
 }
 
 // ─── postular(id) ──────────────────────────────────────────
-// Simula la postulación a una vacante.
-// Requiere autenticación (valida que exista un token).
 export async function postular(id) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Debes iniciar sesión para postularte');
 
   await delay(600);
 
-  const vacante = VACANTES_MOCK.find((v) => v.id === id);
-  if (!vacante) throw new Error('Vacante no encontrada');
+  const v = VACANTES_MOCK.find((x) => x.id === id);
+  if (!v) throw new Error('Vacante no encontrada');
 
-  // Simula respuesta exitosa
   return {
     success: true,
-    message: `Te has postulado exitosamente a "${vacante.cargo}" en ${vacante.empresa}.`,
+    message: `Te has postulado exitosamente a "${v.cargo}" en ${v.empresa}.`,
   };
 }
