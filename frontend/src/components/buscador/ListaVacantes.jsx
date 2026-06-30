@@ -26,14 +26,14 @@ function SkeletonCard() {
 
 export default function ListaVacantes({ vacantes, seleccionadaId, onSelect, loading, error, guardados, onGuardar }) {
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex flex-col">
       <div className="flex-shrink-0 px-4 py-2.5 border-b border-gray-100">
         <p className="text-sm text-gray-500 font-medium">
           {loading ? 'Buscando...' : `${vacantes.length} vacante${vacantes.length !== 1 ? 's' : ''}`}
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      <div className="p-4 space-y-3">
         {loading && (
           <div className="space-y-2">
             <SkeletonCard /><SkeletonCard /><SkeletonCard />

@@ -23,7 +23,7 @@ export default function DetalleVacante({ vacante }) {
       </div>
 
       {/* Metadatos */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 rounded-lg p-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#eef3f9] rounded-lg p-2.5">
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase">Ubicación</p>
           <p className="text-xs text-gray-700 mt-0.5">{vacante.ubicacion}</p>
@@ -39,6 +39,10 @@ export default function DetalleVacante({ vacante }) {
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase">Horario</p>
           <p className="text-xs text-gray-700 mt-0.5">{vacante.horario}</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-gray-400 uppercase">Modalidad</p>
+          <p className="text-xs text-gray-700 mt-0.5">{vacante.modalidad}</p>
         </div>
         {vacante.salario && (
           <div className="col-span-2 sm:col-span-4">

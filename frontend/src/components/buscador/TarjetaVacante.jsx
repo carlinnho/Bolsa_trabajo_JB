@@ -11,8 +11,16 @@
 
 const MAP_TIPO_ETIQUETA = {
   'Tiempo completo': { label: 'Jornada Completa', clase: 'bg-blue-50 text-blue-700' },
-  'Medio tiempo':    { label: 'Part Time',       clase: 'bg-orange-50 text-orange-700' },
-  'Prácticas':       { label: 'Prácticas',       clase: 'bg-teal-50 text-teal-700' },
+  'Medio tiempo':    { label: 'Medio tiempo',      clase: 'bg-orange-50 text-orange-700' },
+  'Prácticas':       { label: 'Prácticas',         clase: 'bg-teal-50 text-teal-700' },
+  'Temporal':        { label: 'Temporal',          clase: 'bg-purple-50 text-purple-700' },
+  'Permanente':      { label: 'Permanente',        clase: 'bg-green-50 text-green-700' },
+};
+
+const MAP_MODALIDAD_ETIQUETA = {
+  'Presencial': { label: 'Presencial', clase: 'bg-amber-50 text-amber-700' },
+  'Remoto':     { label: 'Remoto',     clase: 'bg-sky-50 text-sky-700' },
+  'Híbrida':    { label: 'Híbrida',    clase: 'bg-indigo-50 text-indigo-700' },
 };
 
 export default function TarjetaVacante({ vacante, seleccionada = false, onClick, esGuardada = false, onGuardar }) {
@@ -22,28 +30,29 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
   });
 
   const etiqueta = MAP_TIPO_ETIQUETA[vacante.tipo_contrato];
+  const modalidadEtiqueta = MAP_MODALIDAD_ETIQUETA[vacante.modalidad];
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer relative ${
+      className={`w-full text-left p-4 rounded-lg border transition-all cursor-pointer relative shadow-sm ${
         seleccionada
           ? 'border-naranja bg-orange-50'
-          : 'border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm'
+          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
       }`}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-montserrat font-semibold text-azul text-sm leading-tight mb-0.5 truncate">
+          <h3 className="font-montserrat font-semibold text-azul text-sm leading-tight mb-1 truncate">
             {vacante.cargo}
           </h3>
 
-          <p className="text-xs text-gray-600 mb-1.5">{vacante.empresa}</p>
+          <p className="text-sm text-gray-700 mb-2">{vacante.empresa}</p>
 
-          <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
+          <div className="flex items-center gap-1.5 text-xs text-gray-400">
             <span className="flex items-center gap-0.5">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -55,6 +64,11 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
         </div>
 
         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+          {modalidadEtiqueta && (
+            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none ${modalidadEtiqueta.clase}`}>
+              {modalidadEtiqueta.label}
+            </span>
+          )}
           {etiqueta && (
             <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none ${etiqueta.clase}`}>
               {etiqueta.label}

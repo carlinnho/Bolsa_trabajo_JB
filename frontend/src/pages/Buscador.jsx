@@ -6,11 +6,14 @@ import FiltrosVacantes from '../components/buscador/FiltrosVacantes';
 import ListaVacantes from '../components/buscador/ListaVacantes';
 import PanelDetalle from '../components/buscador/PanelDetalle';
 
+const ITEMS_POR_PAGINA = 15;
+
 const FILTROS_INICIALES = {
   cargo: '',
   ubicacion: '',
   fecha_rango: '',
   tipo_contrato: '',
+  modalidad: '',
 };
 
 export default function Buscador() {
@@ -26,6 +29,7 @@ export default function Buscador() {
   const [postulando, setPostulando] = useState(false);
   const [mensajePostulacion, setMensajePostulacion] = useState('');
   const [guardados, setGuardados] = useState(new Set());
+  const [pagina, setPagina] = useState(0);
 
   const cargarLista = useCallback(async (filtrosActuales) => {
     setListaLoading(true);
@@ -44,6 +48,14 @@ export default function Buscador() {
     cargarLista(FILTROS_INICIALES);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setPagina(0);
+  }, [vacantes.length]);
+
+  const totalPaginas = Math.ceil(vacantes.length / ITEMS_POR_PAGINA);
+  const inicio = pagina * ITEMS_POR_PAGINA;
+  const visibles = vacantes.slice(inicio, inicio + ITEMS_POR_PAGINA);
 
   const handleFilterChange = useCallback(async (nuevosFiltros) => {
     setFiltros(nuevosFiltros);
@@ -108,7 +120,7 @@ export default function Buscador() {
   }, [seleccionadaId, handleSelect]);
 
   return (
-    <div className="min-h-dvh bg-gray-100 flex flex-col">
+    <div className="min-h-dvh bg-[#eef3f9] flex flex-col">
       {mensajePostulacion && (
         <div className="fixed top-4 right-4 z-50 animate-fade-slide">
           <div className={`px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium ${
@@ -134,17 +146,17 @@ export default function Buscador() {
         <p className="text-sm text-gray-300 italic">Header — Navegación (en desarrollo)</p>
       </header>
 
-      <div className="flex-1 max-w-6xl mx-auto w-full p-4 flex flex-col min-h-0">
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-4 flex-shrink-0">
+      <div className="max-w-6xl mx-auto w-full p-4 flex flex-col">
+        <div className="bg-[#eef3f9] rounded-lg shadow-sm p-4 mb-4 flex-shrink-0">
           <FiltrosVacantes filtros={filtros} onFilterChange={handleFilterChange} />
         </div>
 
-        <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
-          <aside className={`w-full lg:w-[38%] bg-white rounded-lg shadow-sm overflow-hidden flex flex-col ${
+        <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
+          <aside className={`w-full lg:w-[38%] bg-[#eef3f9] rounded-lg shadow-sm flex flex-col ${
             seleccionadaId ? 'hidden lg:flex' : 'flex'
           }`}>
             <ListaVacantes
-              vacantes={vacantes}
+              vacantes={visibles}
               seleccionadaId={seleccionadaId}
               onSelect={handleSelect}
               loading={listaLoading}
@@ -152,9 +164,52 @@ export default function Buscador() {
               guardados={guardados}
               onGuardar={handleGuardar}
             />
+
+            {totalPaginas > 1 && (
+              <div className="flex items-center justify-center gap-2 border-t border-gray-100 px-4 py-3">
+                <button
+                  type="button"
+                  onClick={() => setPagina((p) => Math.max(0, p - 1))}
+                  disabled={pagina === 0}
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Anterior
+                </button>
+
+                {Array.from({ length: totalPaginas }, (_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setPagina(i)}
+                    className={`w-9 h-9 text-sm font-medium rounded-lg transition-all cursor-pointer ${
+                      pagina === i
+                        ? 'bg-naranja text-white shadow-sm'
+                        : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
+                  disabled={pagina >= totalPaginas - 1}
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
+                >
+                  Siguiente
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </aside>
 
-          <main className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm overflow-hidden flex flex-col ${
+          <main className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm flex flex-col lg:sticky lg:top-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto ${
             seleccionadaId ? 'flex' : 'hidden lg:flex'
           }`}>
             <PanelDetalle
