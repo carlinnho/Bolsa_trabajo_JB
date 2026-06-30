@@ -76,20 +76,14 @@ h6,
   animation: fadeInSlide 0.4s ease-out forwards;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+/* Primary button style using main colors */
+.btn-primary {
+  background: var(--color-azul); /* primary blue */
+  color: var(--color-blanco);
+  border: none;
+  font-weight: 600;
+  transition: background 0.3s ease;
 }
-
-.animate-slide-up {
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
+.btn-primary:hover {
+  background: var(--color-azul-brillante);
+}
