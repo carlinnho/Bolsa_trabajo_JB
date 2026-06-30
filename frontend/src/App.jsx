@@ -1,42 +1,16 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
-import Header from "./components/Header";
-import Login from "./pages/Login";
-
-function MainLayout() {
-  return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-slate-50">
-        <Outlet />{" "}
-      </main>
-    </>
-  );
-}
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route element={<MainLayout />}>
-          <Route
-            path="/"
-            element={<div className="p-10 text-center">Página Principal</div>}
-          />
-        </Route>
+        {/* Página principal de Bolsa de Trabajo JB */}
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/login"
-          element={
-            <main className="min-h-screen bg-slate-50">
-              <Login />
-            </main>
-          }
-        />
+        {/* Página de Login */}
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
