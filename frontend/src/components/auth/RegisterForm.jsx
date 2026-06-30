@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { authService } from "../services/authService";
+import { authService } from "../../services/authService";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -64,12 +64,6 @@ export default function RegisterForm() {
       newErrors.telefono = "Debe contener exactamente 9 dígitos.";
       isValid = false;
     }
-
-    // NOTA: Se comenta la validación del CV temporalmente porque no hay input de archivo en el HTML
-    // if (!formData.cv) {
-    //   newErrors.cv = "Debes subir tu CV en formato PDF.";
-    //   isValid = false;
-    // }
 
     setErrors(newErrors);
     return isValid;

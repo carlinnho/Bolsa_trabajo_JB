@@ -1,7 +1,4 @@
-import logo from "../assets/images/logo_blanco.webp";
-
-// Recuerda importar tu logo aquí arriba:
-// import logo from '../assets/tu-logo.png';
+import logo from "../../assets/images/logo_blanco.webp";
 
 export default function InfoPanel({ isRegister }) {
   return (

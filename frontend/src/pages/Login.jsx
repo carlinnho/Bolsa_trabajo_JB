@@ -1,8 +1,8 @@
 import { useState } from "react";
-import GoogleLoginButton from "../components/GoogleLoginButton";
-import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/RegisterForm";
-import InfoPanel from "../components/InfoPanel";
+import GoogleLoginButton from "../components/auth/GoogleLoginButton";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
+import InfoPanel from "../components/auth/InfoPanel";
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
