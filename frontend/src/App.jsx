@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Header from "./components/Header";
 import Login from "./pages/Login";
+import Buscador from "./pages/Buscador";
 
 function MainLayout() {
   return (
@@ -27,6 +28,7 @@ function App() {
             path="/"
             element={<div className="p-10 text-center">Página Principal</div>}
           />
+          <Route path="/buscar-empleo" element={<Buscador />} />
         </Route>
 
         <Route
