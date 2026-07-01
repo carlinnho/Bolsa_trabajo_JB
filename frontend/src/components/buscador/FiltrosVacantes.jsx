@@ -382,7 +382,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
               </button>
 
               {menuAbierto && (
-                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1">
+                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1">
                   {OPCIONES_FECHA.map((op) => (
                     <button
                       key={op.value}
@@ -420,7 +420,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
               </button>
 
               {menuTipoAbierto && (
-                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1">
+                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1">
                   {OPCIONES_TIPO.map((op) => (
                     <button
                       key={op.value}
@@ -458,7 +458,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
               </button>
 
               {menuModalidadAbierto && (
-                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1">
+                <div className="absolute top-full left-0 right-0 mt-1 min-w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1">
                   {OPCIONES_MODALIDAD.map((op) => (
                     <button
                       key={op.value}
