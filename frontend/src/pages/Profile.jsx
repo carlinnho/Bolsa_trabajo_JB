@@ -1,16 +1,17 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/profile/Sidebar";
+import { useInformationForm } from "../hooks/useInformationForm";
 
 const Profile = () => {
+  const informationForm = useInformationForm();
+
   return (
-    <div className="flex h-screen bg-[#f4f6fb] font-sans">
-      {/* PANEL IZQUIERDO: Componente Sidebar separado */}
+    <div className="flex flex-col h-[calc(100vh-5rem)] bg-[#f4f6fb]">
       <Sidebar />
 
-      {/* PANEL DERECHO: Contenido Dinámico */}
-      <main className="flex-1 overflow-y-auto px-10 py-9">
-        <div className="mx-auto max-w-2xl">
-          <Outlet />
+      <main className="flex-1 overflow-y-auto md:px-10 pb-5">
+        <div className="mx-auto px-10">
+          <Outlet context={informationForm} />
         </div>
       </main>
     </div>

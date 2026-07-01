@@ -4,7 +4,6 @@ const baseField =
   'w-full rounded-xl border-[1.5px] border-[#e2e7f2] bg-[#fafbfe] text-sm text-[#1c2a52] ' +
   'outline-none transition focus:bg-white placeholder:text-[#b3b3b3]';
 
-/** Etiqueta + texto de ayuda reutilizable para cualquier campo. */
 export function Field({ label, hint, hintAlign = 'left', children }) {
   return (
     <div>

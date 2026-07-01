@@ -1,113 +1,20 @@
-import { useState } from "react";
-import { authService } from "../../services/authService";
+import { useRegisterForm } from "../../hooks/useRegisterForm";
 
 export default function RegisterForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Estado para el spinner de carga
-  const [successMessage, setSuccessMessage] = useState("");
-  const [generalError, setGeneralError] = useState("");
-  const [errors, setErrors] = useState({});
+  const {
+    formData,
+    errors,
+    generalError,
+    successMessage,
+    isLoading,
+    showPassword,
+    setShowPassword,
+    passwordChecks,
+    handleChange,
+    handleSubmit,
+  } = useRegisterForm();
 
-  const [formData, setFormData] = useState({
-    nombre: "",
-    correo: "",
-    password: "",
-    telefono: "",
-    cv: null,
-  });
-
-  const hasMinLength = formData.password.length >= 8;
-  const hasUppercase = /[A-Z]/.test(formData.password);
-  const hasSymbol = /[!@#$%^&*.,_\-]/.test(formData.password);
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value,
-    });
-    if (errors[name]) setErrors({ ...errors, [name]: null });
-  };
-
-  const validateForm = () => {
-    let newErrors = {};
-    let isValid = true;
-
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre es obligatorio.";
-      isValid = false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.correo) {
-      newErrors.correo = "El correo es obligatorio.";
-      isValid = false;
-    } else if (!emailRegex.test(formData.correo)) {
-      newErrors.correo = "Ingresa un correo válido.";
-      isValid = false;
-    }
-
-    const pwdRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*.,_\-]).{8,}$/;
-    if (!formData.password) {
-      newErrors.password = "La contraseña es obligatoria.";
-      isValid = false;
-    } else if (!pwdRegex.test(formData.password)) {
-      newErrors.password = "La contraseña no cumple con los requisitos.";
-      isValid = false;
-    }
-
-    const telRegex = /^\d{9}$/;
-    if (!formData.telefono) {
-      newErrors.telefono = "El teléfono es obligatorio.";
-      isValid = false;
-    } else if (!telRegex.test(formData.telefono)) {
-      newErrors.telefono = "Debe contener exactamente 9 dígitos.";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isLoading) return; // Evitar doble clic
-
-    setGeneralError("");
-    setSuccessMessage("");
-
-    if (validateForm()) {
-      setIsLoading(true); // Activar spinner
-      try {
-        const userData = {
-          nombre_completo: formData.nombre,
-          correo: formData.correo,
-          password: formData.password,
-          telefono: formData.telefono,
-        };
-
-        const response = await authService.register(userData);
-
-        if (response.success) {
-          setSuccessMessage(
-            "¡Cuenta creada! Por favor revisa tu bandeja de entrada para verificar tu correo.",
-          );
-          // Opcional: Limpiar el formulario
-          setFormData({
-            nombre: "",
-            correo: "",
-            password: "",
-            telefono: "",
-            cv: null,
-          });
-        }
-      } catch (error) {
-        setGeneralError(error.message);
-      } finally {
-        setIsLoading(false); // Desactivar spinner
-      }
-    }
-  };
+  const { hasMinLength, hasUppercase, hasSymbol } = passwordChecks;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>

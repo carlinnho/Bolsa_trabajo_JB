@@ -1,21 +1,22 @@
-import { BookmarkIcon, UserCircleIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { BookmarkIcon, UserIcon, HeartIcon } from "@heroicons/react/24/outline";
 
 export const NAV_ITEMS = [
   {
     id: "information",
-    path: "/profile/my-information", // Debe coincidir con App.jsx
+    path: "/mi-perfil",
     label: "Mis Datos",
-    icon: UserCircleIcon,
+    icon: UserIcon,
+    end: true,
   },
   {
     id: "applications",
-    path: "/profile/my-applications", // Debe coincidir con App.jsx
+    path: "/mi-perfil/postulaciones",
     label: "Mis Postulaciones",
     icon: BookmarkIcon,
   },
   {
     id: "favorites",
-    path: "/profile/my-favorite-applications", // Debe coincidir con App.jsx
+    path: "/mi-perfil/favoritos",
     label: "Mis Favoritos",
     icon: HeartIcon,
   },

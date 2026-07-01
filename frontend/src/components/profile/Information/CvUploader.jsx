@@ -6,11 +6,6 @@ import { TrashIcon as TrashOutline } from '@heroicons/react/24/outline';
 
 const MAX_SIZE_MB = 5;
 
-/**
- * Zona de carga de CV con drag & drop.
- * Notifica al padre vía `onFileSelect` / `onRemove`; no guarda estado propio
- * para mantenerlo controlado y testeable.
- */
 export default function CvUploader({ file, onFileSelect, onRemove }) {
   const inputRef = useRef(null);
 
@@ -40,8 +35,8 @@ export default function CvUploader({ file, onFileSelect, onRemove }) {
         onChange={(e) => pickFile(e.target.files?.[0])}
       />
 
-      <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-[13px] bg-linear-to-br from-brand-orange to-brand-yellow text-white shadow-cta">
-        <ArrowUpTrayOutline size={21} strokeWidth={2} />
+      <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-[13px] bg-linear-to-br from-naranja to-amarillo-hansa text-white shadow-cta">
+        <ArrowUpTrayOutline strokeWidth={2} className='h-6 w-6 text-white'/>
       </span>
 
       <p className="font-heading text-[14.5px] font-bold text-[#1c2a52]">
@@ -58,15 +53,15 @@ export default function CvUploader({ file, onFileSelect, onRemove }) {
           onClick={(e) => e.stopPropagation()}
           className="mt-4.5 inline-flex items-center gap-3 rounded-xl border border-[#f0e3d3] bg-white px-3.75 py-2.5 shadow-[0_1px_5px_rgba(244,111,11,0.08)]"
         >
-          <DocumentTextOutline size={17} strokeWidth={2} className="text-brand-orange" />
+          <DocumentTextOutline strokeWidth={2} className=" w-5 h-5 text-naranja" />
           <span className="text-[13px] font-bold text-[#3a4566]">{file.name}</span>
           <button
             type="button"
             aria-label="Eliminar CV"
             onClick={onRemove}
-            className="text-brand-red transition hover:opacity-70"
+            className="text-green transition hover:opacity-70"
           >
-            <TrashOutline size={15} strokeWidth={2} />
+            <TrashOutline strokeWidth={2} className=" w-5 h-5 text-rojo"/>
           </button>
         </div>
       )}
