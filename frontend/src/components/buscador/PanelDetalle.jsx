@@ -14,12 +14,12 @@ export default function PanelDetalle({ estado, vacante, error, onPostular, onRei
   return (
     <div className="flex flex-col flex-1 min-h-0">
       {/* Header fijo */}
-      <div className="flex-shrink-0 px-4 py-2.5 border-b border-gray-100 bg-white flex items-center gap-2">
+      <div className="flex-shrink-0 px-6 py-3 border-b border-gray-100 bg-white flex items-center gap-2">
         {onVolver && (
           <button
             type="button"
             onClick={onVolver}
-            className="lg:hidden p-1 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex-shrink-0"
+            className="lg:hidden p-1.5 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex-shrink-0"
             title="Volver a la lista"
           >
             <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,14 +27,14 @@ export default function PanelDetalle({ estado, vacante, error, onPostular, onRei
             </svg>
           </button>
         )}
-        <h2 className="font-montserrat font-semibold text-azul text-xs truncate flex-1">
+        <h2 className="font-montserrat font-semibold text-azul text-sm truncate flex-1">
           {estado === 'detail' ? vacante?.cargo : 'Detalle de la oferta'}
         </h2>
         {estado === 'detail' && (
           <button
             type="button"
             onClick={onPostular}
-            className="bg-naranja hover:bg-orange-600 text-white font-semibold text-xs px-4 py-1.5 rounded-lg transition-colors shadow-sm flex-shrink-0"
+            className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-6 py-2 rounded-lg transition-colors shadow-sm flex-shrink-0 cursor-pointer"
           >
             Postularme
           </button>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { listar, detalle, postular } from "../services/vacantesService";
 import FiltrosVacantes from "../components/buscador/FiltrosVacantes";
@@ -29,6 +29,8 @@ export default function Buscador() {
   const [mensajePostulacion, setMensajePostulacion] = useState("");
   const [guardados, setGuardados] = useState(new Set());
   const [pagina, setPagina] = useState(0);
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   const cargarLista = useCallback(async (filtrosActuales) => {
     setListaLoading(true);
@@ -51,6 +53,20 @@ export default function Buscador() {
   useEffect(() => {
     setPagina(0);
   }, [vacantes.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY.current && currentY > 80) {
+        setHeaderHidden(true);
+      } else {
+        setHeaderHidden(false);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const totalPaginas = Math.ceil(vacantes.length / ITEMS_POR_PAGINA);
   const inicio = pagina * ITEMS_POR_PAGINA;
@@ -125,7 +141,7 @@ export default function Buscador() {
   }, [seleccionadaId, handleSelect]);
 
   return (
-    <div className="min-h-dvh bg-[#eef3f9] flex flex-col">
+    <div className="min-h-dvh bg-[#eef3f9] flex flex-col overflow-x-clip">
       {mensajePostulacion && (
         <div className="fixed top-4 right-4 z-50 animate-fade-slide">
           <div
@@ -166,99 +182,111 @@ export default function Buscador() {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto w-full p-4 flex flex-col">
-        <div className="bg-[#eef3f9] rounded-lg shadow-sm p-4 mb-4 flex-shrink-0">
+      <div className="max-w-7xl mx-auto w-full p-6 flex flex-col">
+        <div className="p-5 mb-5 flex-shrink-0">
           <FiltrosVacantes
             filtros={filtros}
             onFilterChange={handleFilterChange}
           />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
-          <aside
-            className={`w-full lg:w-[38%] bg-[#eef3f9] rounded-lg shadow-sm flex flex-col ${
+        <div className="flex flex-col lg:flex-row gap-6 lg:items-start">
+          <div
+            className={`w-full lg:w-[42%] flex flex-col ${
               seleccionadaId ? "hidden lg:flex" : "flex"
             }`}
           >
-            <ListaVacantes
-              vacantes={visibles}
-              seleccionadaId={seleccionadaId}
-              onSelect={handleSelect}
-              loading={listaLoading}
-              error={listaError}
-              guardados={guardados}
-              onGuardar={handleGuardar}
-            />
+            <div className="flex items-center gap-3 bg-[#eef3f9] border-b border-gray-200/50 py-3 px-5 sticky top-0 z-40">
+              <svg className="w-5 h-5 text-naranja flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span className="font-montserrat font-bold text-azul text-base">EMPLEOS PARA TI</span>
+            </div>
+            <aside className="flex flex-col bg-[#eef3f9] rounded-lg shadow-sm">
+              <ListaVacantes
+                vacantes={visibles}
+                seleccionadaId={seleccionadaId}
+                onSelect={handleSelect}
+                loading={listaLoading}
+                error={listaError}
+                guardados={guardados}
+                onGuardar={handleGuardar}
+              />
 
-            {totalPaginas > 1 && (
-              <div className="flex items-center justify-center gap-2 border-t border-gray-100 px-4 py-3">
-                <button
-                  type="button"
-                  onClick={() => setPagina((p) => Math.max(0, p - 1))}
-                  disabled={pagina === 0}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
-                >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Anterior
-                </button>
-
-                {Array.from({ length: totalPaginas }, (_, i) => (
+              {totalPaginas > 1 && (
+                <div className="flex items-center justify-center gap-2 border-t border-gray-100 px-4 py-3">
                   <button
-                    key={i}
                     type="button"
-                    onClick={() => setPagina(i)}
-                    className={`w-9 h-9 text-sm font-medium rounded-lg transition-all cursor-pointer ${
-                      pagina === i
-                        ? "bg-naranja text-white shadow-sm"
-                        : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
-                    }`}
+                    onClick={() => setPagina((p) => Math.max(0, p - 1))}
+                    disabled={pagina === 0}
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
                   >
-                    {i + 1}
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                    Anterior
                   </button>
-                ))}
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setPagina((p) => Math.min(totalPaginas - 1, p + 1))
-                  }
-                  disabled={pagina >= totalPaginas - 1}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
-                >
-                  Siguiente
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  {Array.from({ length: totalPaginas }, (_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setPagina(i)}
+                      className={`w-9 h-9 text-sm font-medium rounded-lg transition-all cursor-pointer ${
+                        pagina === i
+                          ? "bg-naranja text-white shadow-sm"
+                          : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPagina((p) => Math.min(totalPaginas - 1, p + 1))
+                    }
+                    disabled={pagina >= totalPaginas - 1}
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-default transition-all shadow-sm cursor-pointer"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </aside>
+                    Siguiente
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </aside>
+          </div>
 
           <main
-            className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm flex flex-col lg:sticky lg:top-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto ${
+            className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm flex flex-col lg:sticky lg:overflow-y-auto ${
               seleccionadaId ? "flex" : "hidden lg:flex"
+            } ${
+              headerHidden
+                ? "lg:top-0 lg:max-h-screen"
+                : "lg:top-20 lg:max-h-[calc(100vh-5rem)]"
             }`}
           >
             <PanelDetalle

@@ -2,14 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../services/authService";
 
-export default function Header() {
+export default function Header({ hideOnScroll = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [headerHidden, setHeaderHidden] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const profileMenuRef = useRef(null);
+  const lastScrollY = useRef(0);
 
   // Efecto para verificar si el usuario está logueado al cargar el componente
   useEffect(() => {
@@ -40,6 +42,24 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  // Ocultar/mostrar header al scrollear (solo cuando hideOnScroll está activo)
+  useEffect(() => {
+    if (!hideOnScroll) return;
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setHeaderHidden(currentY > 0);
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hideOnScroll]);
+
+  // Resetear estado al cambiar de ruta
+  useEffect(() => {
+    if (!hideOnScroll) setHeaderHidden(false);
+    lastScrollY.current = 0;
+  }, [location, hideOnScroll]);
+
   const handleLogout = () => {
     authService.logout();
     setUser(null);
@@ -68,7 +88,7 @@ export default function Header() {
         Saltar al contenido principal
       </a>
 
-      <header className="bg-white shadow-sm sticky top-0 z-50" role="banner">
+      <header className={`bg-white shadow-sm sticky top-0 z-50 will-change-transform ${hideOnScroll && headerHidden ? '-translate-y-full' : 'translate-y-0'}`} role="banner">
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             {/* LADO IZQUIERDO: Logo y Enlaces (Desktop) */}
@@ -864,6 +884,7 @@ export default function Header() {
           </div>
         </div>
       </header>
+
     </>
   );
 }
