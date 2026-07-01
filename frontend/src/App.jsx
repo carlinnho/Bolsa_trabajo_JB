@@ -8,6 +8,8 @@ import Header from "./components/Header";
 import Login from "./pages/Login";
 import Buscador from "./pages/Buscador";
 import Home from "./pages/Home";
+import CuentaValidada from "./pages/CuentaValidada";
+import RevisaCorreo from "./pages/RevisaCorreo";
 
 function MainLayout() {
   return (
@@ -37,6 +39,8 @@ function App() {
             </main>
           }
         />
+        <Route path="/cuenta-validada" element={<CuentaValidada />} />
+        <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
       </Routes>
     </Router>
   );

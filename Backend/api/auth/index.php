@@ -105,27 +105,33 @@ if ($method === 'POST' && $action === 'login') {
 // ─── VALIDACIÓN DE CORREO (GET) ───────────────────────────────
 if ($method === 'GET' && $action === 'verify_email') {
     $token = $_GET['token'] ?? '';
-    if (!$token) respondError('Token no proporcionado.');
+    
+    // URL base de tu frontend en React (Ajusta el puerto si tu Vite usa otro)
+    $frontendUrl = "http://localhost:5173/cuenta-validada";
 
-    // Decodificar el token para sacar el ID del usuario
+    // 1. Si no hay token, redirigir con error genérico
+    if (!$token) {
+        header("Location: $frontendUrl?status=error");
+        exit;
+    }
+
+    // 2. Decodificar el token para sacar el ID del usuario
     $payload = jwtDecode($token);
+    
+    // 3. Si el token es inválido, fue alterado o expiró
     if (!$payload || !isset($payload['verify_id'])) {
-        // En lugar de JSON, mandamos HTML para que el navegador lo muestre bien
-        echo "<h2 style='color: red; text-align: center; margin-top: 50px; font-family: Arial;'>Enlace de validación inválido o expirado.</h2>";
+        header("Location: $frontendUrl?status=expired");
         exit;
     }
 
     $userId = $payload['verify_id'];
 
-    // Actualizar el estado en la base de datos
+    // 4. Actualizar el estado en la base de datos (se mantiene la seguridad PDO)
     $stmt = $db->prepare("UPDATE usuarios SET correo_verificado = 1 WHERE id = ?");
     $stmt->execute([$userId]);
 
-    // Mostrar mensaje de éxito en el navegador
-    echo "<div style='text-align: center; margin-top: 50px; font-family: Arial;'>
-            <h2 style='color: #003366;'>¡Cuenta validada con éxito!</h2>
-            <p style='color: #333;'>Tu correo ha sido verificado. Ya puedes volver a la aplicación e iniciar sesión.</p>
-          </div>";
+    // 5. Redirigir a la interfaz amigable de React con éxito
+    header("Location: $frontendUrl?status=success");
     exit;
 }
 

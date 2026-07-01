@@ -44,7 +44,7 @@ export default function Header() {
     authService.logout();
     setUser(null);
     setIsProfileMenuOpen(false);
-    navigate("/login");
+    navigate("/");
   };
 
   // Determina si una ruta está activa, para resaltado visual y aria-current

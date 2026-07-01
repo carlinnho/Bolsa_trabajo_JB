@@ -38,6 +38,6 @@ export const authService = {
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login"; // Redirigir al login
+    window.location.href = "/"; // Redirigir al login
   },
 };

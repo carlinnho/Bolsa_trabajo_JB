@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Estado para el spinner de carga
   const [successMessage, setSuccessMessage] = useState("");
@@ -95,9 +97,7 @@ export default function RegisterForm() {
         const response = await authService.register(userData);
 
         if (response.success) {
-          setSuccessMessage(
-            "¡Cuenta creada! Por favor revisa tu bandeja de entrada para verificar tu correo.",
-          );
+          navigate("/revisa-tu-correo");
           // Opcional: Limpiar el formulario
           setFormData({
             nombre: "",
@@ -121,13 +121,6 @@ export default function RegisterForm() {
       {generalError && (
         <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200">
           {generalError}
-        </div>
-      )}
-
-      {/* Mensaje de Éxito (Fondo Verde) */}
-      {successMessage && (
-        <div className="p-3 bg-green-50 text-green-700 text-sm rounded-lg border border-green-200">
-          {successMessage}
         </div>
       )}
 
