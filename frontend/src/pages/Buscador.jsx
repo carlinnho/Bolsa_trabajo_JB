@@ -27,7 +27,10 @@ export default function Buscador() {
   const [listaError, setListaError] = useState("");
   const [postulando, setPostulando] = useState(false);
   const [mensajePostulacion, setMensajePostulacion] = useState("");
+  const [postulacionStep, setPostulacionStep] = useState(null);
+  const [respuestasFiltro, setRespuestasFiltro] = useState({});
   const [guardados, setGuardados] = useState(new Set());
+  const [vacantesPostuladas, setVacantesPostuladas] = useState(new Set());
   const [pagina, setPagina] = useState(0);
   const [headerHidden, setHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -68,6 +71,12 @@ export default function Buscador() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!mensajePostulacion) return;
+    const timer = setTimeout(() => setMensajePostulacion(""), 4000);
+    return () => clearTimeout(timer);
+  }, [mensajePostulacion]);
+
   const totalPaginas = Math.ceil(vacantes.length / ITEMS_POR_PAGINA);
   const inicio = pagina * ITEMS_POR_PAGINA;
   const visibles = vacantes.slice(inicio, inicio + ITEMS_POR_PAGINA);
@@ -85,6 +94,8 @@ export default function Buscador() {
     setPanelEstado("loading");
     setVacanteDetalle(null);
     setMensajePostulacion("");
+    setPostulacionStep(null);
+    setRespuestasFiltro({});
 
     try {
       const data = await detalle(id);
@@ -100,6 +111,8 @@ export default function Buscador() {
     setSeleccionadaId(null);
     setVacanteDetalle(null);
     setPanelEstado("empty");
+    setPostulacionStep(null);
+    setRespuestasFiltro({});
   }, []);
 
   const handleGuardar = useCallback((id) => {
@@ -111,20 +124,43 @@ export default function Buscador() {
     });
   }, []);
 
-  const handlePostular = useCallback(async () => {
+  const handleIniciarPostulacion = useCallback(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
     }
+    if (!seleccionadaId) return;
+
+    setRespuestasFiltro({});
+    setPostulacionStep("preguntas");
+  }, [seleccionadaId, navigate]);
+
+  const handlePreguntasCompletadas = useCallback(() => {
+    setPostulacionStep("cv");
+  }, []);
+
+  const handleVolverAPreguntas = useCallback(() => {
+    setPostulacionStep("preguntas");
+  }, []);
+
+  const handleCancelarPostulacion = useCallback(() => {
+    setPostulacionStep(null);
+    setRespuestasFiltro({});
+  }, []);
+
+  const handlePostularConCV = useCallback(async (cvFile) => {
     if (!seleccionadaId || postulando) return;
 
     setPostulando(true);
     setMensajePostulacion("");
 
     try {
-      const result = await postular(seleccionadaId);
+      const result = await postular(seleccionadaId, respuestasFiltro, cvFile);
       setMensajePostulacion(result.message);
+      setPostulacionStep(null);
+      setRespuestasFiltro({});
+      setVacantesPostuladas(prev => new Set(prev).add(seleccionadaId));
     } catch (err) {
       if (err.message === "Debes iniciar sesión para postularte") {
         navigate("/login");
@@ -134,7 +170,7 @@ export default function Buscador() {
     } finally {
       setPostulando(false);
     }
-  }, [seleccionadaId, postulando, navigate]);
+  }, [seleccionadaId, respuestasFiltro, postulando, navigate]);
 
   const handleReintentar = useCallback(() => {
     if (seleccionadaId) handleSelect(seleccionadaId);
@@ -177,6 +213,15 @@ export default function Buscador() {
                 )}
               </svg>
               {mensajePostulacion}
+              <button
+                onClick={() => setMensajePostulacion("")}
+                className="ml-auto p-0.5 rounded hover:bg-black/5 transition-colors flex-shrink-0 cursor-pointer"
+                title="Cerrar"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -293,9 +338,18 @@ export default function Buscador() {
               estado={panelEstado}
               vacante={vacanteDetalle}
               error={listaError && panelEstado === "error" ? listaError : ""}
-              onPostular={handlePostular}
+              onPostular={handleIniciarPostulacion}
               onReintentar={handleReintentar}
               onVolver={handleVolver}
+              postulacionStep={postulacionStep}
+              respuestasFiltro={respuestasFiltro}
+              setRespuestasFiltro={setRespuestasFiltro}
+              onPreguntasCompletadas={handlePreguntasCompletadas}
+              onPostularConCV={handlePostularConCV}
+              onCancelarPostulacion={handleCancelarPostulacion}
+              onVolverAPreguntas={handleVolverAPreguntas}
+              postulando={postulando}
+              yaPostulada={vacantesPostuladas.has(seleccionadaId)}
             />
           </main>
         </div>

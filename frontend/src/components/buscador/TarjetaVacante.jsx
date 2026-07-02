@@ -45,10 +45,10 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <h3 className="font-montserrat font-semibold text-azul text-base leading-snug mb-1.5 truncate">
-            {vacante.cargo}
+            {vacante.titulo}
           </h3>
 
-          <p className="text-base text-gray-700 mb-2.5">{vacante.empresa}</p>
+          <p className="text-base text-gray-700 mb-2.5">{vacante.empresa_nombre || vacante.empresa}</p>
 
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <span className="flex items-center gap-1">
