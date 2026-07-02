@@ -1,0 +1,21 @@
+info:
+  name: DAR DE BAJA USUARIO
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/users/?action=delete_account"
+  params:
+    - name: action
+      value: delete_account
+      type: query
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlNjEwNzc4LTI3ZTEtNDZjMS1hMzdhLWJiZjJjZDM5MzViYiIsInJvbGUiOiJ1c3VhcmlvIiwiaWF0IjoxNzgzMDA2NjQ0LCJleHAiOjE3ODMwOTMwNDR9.Nk_jJ7IQgKfJMkzOAXYbqXWlqZoT_YiX2ljaPDMNDes
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

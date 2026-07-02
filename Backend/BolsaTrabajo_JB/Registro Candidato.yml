@@ -14,10 +14,10 @@ http:
     type: json
     data: |-
       {
-        "nombre_completo": "Carlos Perez",
-        "correo": "carlos.prueba@gmail.com",
-        "password": "Password123*",
-        "telefono": "987654321"
+        "nombre_completo": "Administrador",
+        "correo": "Admin@gmail.com",
+        "password": "Carlinnho$$20",
+        "telefono": "999999999"
       }
   auth: inherit
 

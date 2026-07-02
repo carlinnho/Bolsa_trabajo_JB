@@ -1,0 +1,30 @@
+info:
+  name: ADMIN - Categoria
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/?resource=categorias&action=crear"
+  params:
+    - name: resource
+      value: categorias
+      type: query
+    - name: action
+      value: crear
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "nombre": "Tecnología y Sistemas"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg0MzMxYjc3LTU3NzYtNDhlNS04M2Q5LWUyZjg3MGQ4ZTVmOSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4MzAxMTc5MiwiZXhwIjoxNzgzMDk4MTkyfQ.392cAA1AeYX4fodNSdHm_84Lb4oKJmJXmHKtsDdTI5w
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
