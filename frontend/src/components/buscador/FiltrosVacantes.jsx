@@ -39,18 +39,18 @@ const OPCIONES_FECHA = [
 
 const OPCIONES_TIPO = [
   { value: '', label: 'Todos los tipos' },
-  { value: 'Tiempo completo', label: 'Jornada Completa' },
+  { value: 'Tiempo completo', label: 'Tiempo completo' },
+  { value: 'Permanente', label: 'Permanente' },
   { value: 'Medio tiempo', label: 'Medio tiempo' },
+  { value: 'Freelance', label: 'Freelance' },
   { value: 'Prácticas', label: 'Prácticas' },
   { value: 'Temporal', label: 'Temporal' },
-  { value: 'Permanente', label: 'Permanente' },
-  { value: 'Full Stack', label: 'Full Stack' },
 ];
 
 const OPCIONES_MODALIDAD = [
   { value: '', label: 'Todas las modalidades' },
-  { value: 'Presencial', label: 'Presencial' },
-  { value: 'Remoto', label: 'Remoto' },
+  { value: 'presencial', label: 'Presencial' },
+  { value: 'remoto', label: 'Remoto' },
   { value: 'Híbrida', label: 'Híbrida' },
 ];
 

@@ -47,7 +47,7 @@ export default function PanelDetalle({
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1 min-h-0 pt-2">
       {/* Header fijo */}
       <div className="flex-shrink-0 px-6 py-3 border-b border-gray-100 bg-white flex items-center gap-2">
         {(onVolver && !postulacionStep) && (
