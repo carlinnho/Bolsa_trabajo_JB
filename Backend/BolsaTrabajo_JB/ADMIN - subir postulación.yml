@@ -1,0 +1,41 @@
+info:
+  name: ADMIN - subir postulación
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/?resource=ofertas&action=crear"
+  params:
+    - name: resource
+      value: ofertas
+      type: query
+    - name: action
+      value: crear
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "empresa_id": 1,
+        "categoria_id": 1,
+        "titulo": "Desarrollador Frontend React Js",
+        "descripcion": "Buscamos un desarrollador apasionado por crear interfaces limpias y rápidas. Trabajarás directo con el equipo de producto.",
+        "requisitos": "- 2 años de experiencia en React\n- Conocimiento avanzado de Tailwind CSS\n- Uso de Git y GitHub",
+        "salario_min": 2500.00,
+        "salario_max": 3500.00,
+        "ubicacion": "Lima, Perú",
+        "modalidad": "híbrido",
+        "tipo_contrato": "indefinido",
+        "nivel_experiencia": "semisenior",
+        "estado": "activa"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg0MzMxYjc3LTU3NzYtNDhlNS04M2Q5LWUyZjg3MGQ4ZTVmOSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4MzAxOTM2NSwiZXhwIjoxNzgzMTA1NzY1fQ.9dPlkXyJ7IeAzA7xe1X-_SAQgSQU5i_6hsNGHCXveh8
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

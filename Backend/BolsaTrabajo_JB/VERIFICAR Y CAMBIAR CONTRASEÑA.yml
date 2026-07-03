@@ -1,0 +1,28 @@
+info:
+  name: VERIFICAR Y CAMBIAR CONTRASEÑA
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/users/?action=verify_password_change"
+  params:
+    - name: action
+      value: verify_password_change
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "codigo": "352752",
+        "nueva_password": "Carlosxyz.123"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlNjEwNzc4LTI3ZTEtNDZjMS1hMzdhLWJiZjJjZDM5MzViYiIsInJvbGUiOiJ1c3VhcmlvIiwiaWF0IjoxNzgzMDA2NjQ0LCJleHAiOjE3ODMwOTMwNDR9.Nk_jJ7IQgKfJMkzOAXYbqXWlqZoT_YiX2ljaPDMNDes
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

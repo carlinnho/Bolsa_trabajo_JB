@@ -1,0 +1,42 @@
+info:
+  name: ADMIN - Registrar cliente empresa
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/?resource=empresas&action=crear"
+  params:
+    - name: resource
+      value: empresas
+      type: query
+    - name: action
+      value: crear
+      type: query
+  body:
+    type: multipart-form
+    data:
+      - name: nombre
+        type: text
+        value: I.seg
+      - name: ruc
+        type: text
+        value: "10756036373"
+      - name: sector
+        type: text
+        value: Seguridad industrial
+      - name: descripción
+        type: text
+        value: empres de seguridad muy segura por cierto
+      - name: logo_utl
+        type: text
+        value: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpm9Iv7WI9svBSuQkpRZ-N52QVOjGgzyul0lEhxt87kgBhrIdpxO5-be3r&s=10
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg0MzMxYjc3LTU3NzYtNDhlNS04M2Q5LWUyZjg3MGQ4ZTVmOSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4MzAxMTc5MiwiZXhwIjoxNzgzMDk4MTkyfQ.392cAA1AeYX4fodNSdHm_84Lb4oKJmJXmHKtsDdTI5w
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

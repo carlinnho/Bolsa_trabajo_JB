@@ -1,0 +1,37 @@
+info:
+  name: ACTUALIZAR PERFIL Y SUBIR CV
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/users/?action=update_profile"
+  params:
+    - name: action
+      value: update_profile
+      type: query
+  body:
+    type: multipart-form
+    data:
+      - name: nombre_completo
+        type: text
+        value: Diana Isabel Pure Tocre
+      - name: telefono
+        type: text
+        value: "999999999"
+      - name: texto_presentacion
+        type: text
+        value: Soy un trabajador responsable, lo juro, no soy vago, enserio lo juro, aunque tengo vagancia si eso si, pero juro no soy vago
+      - name: cv
+        type: file
+        value:
+          - d:\JB\BolsaTrabajo\Backend\BolsaTrabajo_JB\CV_CarlosPure.pdf
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlNjEwNzc4LTI3ZTEtNDZjMS1hMzdhLWJiZjJjZDM5MzViYiIsInJvbGUiOiJ1c3VhcmlvIiwiaWF0IjoxNzgzMDA2NjQ0LCJleHAiOjE3ODMwOTMwNDR9.Nk_jJ7IQgKfJMkzOAXYbqXWlqZoT_YiX2ljaPDMNDes
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
