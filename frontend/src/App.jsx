@@ -18,7 +18,7 @@ function MainLayout() {
     <>
       {location.pathname !== "/buscar-empleo" && <Header />}
       <main className="min-h-screen bg-slate-50">
-        <Outlet />{" "}
+        <Outlet />
       </main>
     </>
   );

@@ -138,8 +138,6 @@ const MOCK_JOBS = [
   },
 ];
 
-
-
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationTerm, setLocationTerm] = useState("");
@@ -179,7 +177,7 @@ export default function Home() {
     });
   }, [appliedFilters, activeCategory]);
 
-  // Mostrar un máximo de 3 vacantes en empleos recientes
+  // Mostrar un máximo de 3 vacantes en empleos recientes como solicita el usuario
   const displayedJobs = useMemo(() => {
     return filteredJobs.slice(0, 3);
   }, [filteredJobs]);
