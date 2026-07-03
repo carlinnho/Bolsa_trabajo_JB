@@ -11,6 +11,10 @@ import Buscador from "./pages/Buscador";
 import Home from "./pages/Home";
 import CuentaValidada from "./pages/CuentaValidada";
 import RevisaCorreo from "./pages/RevisaCorreo";
+import Profile from "./pages/Profile";
+import Information from "./components/profile/Information/Information";
+import Applications from "./components/profile/Application/Applications";
+import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
 
 function MainLayout() {
   const location = useLocation();
@@ -31,6 +35,11 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/buscar-empleo" element={<Buscador />} />
+          <Route path="/mi-perfil" element={<Profile />}>
+            <Route index element={<Information />} />
+            <Route path="postulaciones" element={<Applications />} />
+            <Route path="favoritos" element={<FavoriteApplications />} />
+          </Route>
         </Route>
 
         <Route
