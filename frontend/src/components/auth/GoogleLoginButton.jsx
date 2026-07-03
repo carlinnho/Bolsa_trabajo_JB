@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authService } from "../services/authService";
+import { authService } from "../../services/authService";
 
 export default function GoogleLoginButton() {
   const [isLoading, setIsLoading] = useState(false);

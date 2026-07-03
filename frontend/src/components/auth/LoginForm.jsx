@@ -1,58 +1,15 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { authService } from "../services/authService";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ correo: "", password: "" });
-  const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState("");
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (errors[name]) setErrors({ ...errors, [name]: null });
-  };
-
-  const validateForm = () => {
-    let newErrors = {};
-    let isValid = true;
-
-    if (!formData.correo) {
-      newErrors.correo = "El correo es obligatorio.";
-      isValid = false;
-    }
-    if (!formData.password) {
-      newErrors.password = "La contraseña es obligatoria.";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setGeneralError("");
-
-    if (validateForm()) {
-      try {
-        const response = await authService.login({
-          correo: formData.correo,
-          password: formData.password,
-        });
-
-        if (response.success) {
-          console.log("Login exitoso:", response.data);
-          navigate("/"); // Redirigir al Home o Dashboard tras éxito
-        }
-      } catch (error) {
-        // Mostrar el error real que manda el backend PHP
-        setGeneralError(error.message);
-      }
-    }
-  };
+  const {
+    formData,
+    errors,
+    generalError,
+    showPassword,
+    setShowPassword,
+    handleChange,
+    handleSubmit,
+  } = useLoginForm();
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>

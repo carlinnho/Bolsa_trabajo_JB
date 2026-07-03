@@ -1,44 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  --font-montserrat: 'Montserrat', sans-serif;
-  --font-lato: 'Lato', sans-serif;
+  --font-montserrat: "Montserrat", "system-ui", sans-serif;
+  --font-lato: "Lato", "system-ui", sans-serif;
 
   --color-azul: #123498;
-  --color-naranja: #F46F0B;
-  --color-azul-marino: #096ACC;
-  --color-amarillo-hansa: #FDB907;
-  --color-rojo-persa: #CE0B19;
-  --color-turquesa: #41C4C0;
-  --color-gris-oscuro: #A3A3A3;
-  --color-blanco: #FFFFFF;
+  --color-naranja: #f46f0b;
+  --color-azul-marino: #096acc;
+  --color-amarillo-hansa: #fdb907;
+  --color-rojo-persa: #ce0b19;
+  --color-turquesa: #41c4c0;
+  --color-gris-oscuro: #a3a3a3;
+  --color-blanco: #ffffff;
 
   --color-azul-profundo: #123498;
-  --color-azul-brillante: #096ACC;
-  --color-naranja-oscuro: #F46F0B;
-  --color-blanco-suave: #FFFFFF;
-  --color-gris-texto: #A3A3A3;
-  --color-gris-borde: #A3A3A3;
-  --color-rojo: #CE0B19;
+  --color-azul-brillante: #096acc;
+  --color-naranja-oscuro: #f46f0b;
+  --color-blanco-suave: #ffffff;
+  --color-gris-texto: #a3a3a3;
+  --color-gris-borde: #a3a3a3;
+  --color-rojo: #ce0b19;
 }
 
 :root {
   --azul: #123498;
-  --naranja: #F46F0B;
-  --azul-marino: #096ACC;
-  --amarillo-hansa: #FDB907;
-  --rojo-persa: #CE0B19;
-  --turquesa: #41C4C0;
-  --gris-oscuro: #A3A3A3;
-  --blanco: #FFFFFF;
+  --naranja: #f46f0b;
+  --azul-marino: #096acc;
+  --amarillo-hansa: #fdb907;
+  --rojo-persa: #ce0b19;
+  --turquesa: #41c4c0;
+  --gris-oscuro: #a3a3a3;
+  --blanco: #ffffff;
 
   --azul-profundo: #123498;
-  --azul-brillante: #096ACC;
-  --naranja-oscuro: #F46F0B;
-  --blanco-suave: #FFFFFF;
-  --gris-texto: #A3A3A3;
-  --gris-borde: #A3A3A3;
-  --rojo: #CE0B19;
+  --azul-brillante: #096acc;
+  --naranja-oscuro: #f46f0b;
+  --blanco-suave: #ffffff;
+  --gris-texto: #a3a3a3;
+  --gris-borde: #a3a3a3;
+  --rojo: #ce0b19;
 }
 
 body {
@@ -77,8 +77,14 @@ h6,
 }
 
 @keyframes chipIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .animate-chip-in {
   animation: chipIn 0.2s ease-out forwards;
@@ -94,4 +100,4 @@ h6,
 }
 .btn-primary:hover {
   background: var(--color-azul-brillante);
-}
+}
