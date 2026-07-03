@@ -16,7 +16,7 @@ function MainLayout() {
   const location = useLocation();
   return (
     <>
-      <Header hideOnScroll={location.pathname === "/buscar-empleo"} />
+      {location.pathname !== "/buscar-empleo" && <Header />}
       <main className="min-h-screen bg-slate-50">
         <Outlet />{" "}
       </main>
