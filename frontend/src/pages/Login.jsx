@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import GoogleLoginButton from "../components/auth/GoogleLoginButton";
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
@@ -27,7 +28,10 @@ export default function Login() {
         <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 lg:p-16 flex-1">
           <div className="w-full max-w-md">
 
-            <GoogleLoginButton />
+            {/* ===== NUEVO: ENVOLVEMOS EL BOTÓN ===== */}
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <GoogleLoginButton />
+            </GoogleOAuthProvider>
 
             <div className="my-6 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-gray-300 after:mt-0.5 after:flex-1 after:border-t after:border-gray-300">
               <p className="mx-4 mb-0 text-center text-sm font-semibold text-gray-500">

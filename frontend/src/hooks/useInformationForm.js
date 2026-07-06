@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { userService } from "../services/userService";
 
 const PHONE_REGEX = /^9\d{8}$/;
 
@@ -7,6 +8,9 @@ export function useInformationForm() {
   const [presentacion, setPresentacion] = useState("");
   const [cvArchivo, setCvArchivo] = useState(null);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [generalError, setGeneralError] = useState("");
 
   const isDirty = telefono !== "" || presentacion !== "";
 
@@ -31,16 +35,39 @@ export function useInformationForm() {
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: null }));
   };
 
-  const handleGuardar = (e) => {
+  const handleGuardar = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    console.log("Guardando datos...", { telefono, presentacion, cvArchivo });
+    
+    setIsLoading(true);
+    setGeneralError("");
+    setSuccessMessage("");
+
+    try {
+      // Leemos el nombre del usuario guardado en localStorage por authService
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      await userService.updateProfile({
+        nombre_completo: user.nombre_completo,
+        telefono: telefono.trim(),
+        texto_presentacion: presentacion.trim(),
+        cv: cvArchivo instanceof File ? cvArchivo : undefined,
+      });
+
+      setSuccessMessage("¡Perfil actualizado correctamente!");
+    } catch (error) {
+      setGeneralError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDescartar = () => {
     setTelefono("");
     setPresentacion("");
     setErrors({});
+    setSuccessMessage("");
+    setGeneralError("");
   };
 
   return {
@@ -50,6 +77,9 @@ export function useInformationForm() {
     errors,
     clearError,
     isDirty,
+    isLoading,
+    successMessage,
+    generalError,
     handleGuardar,
     handleDescartar,
   };

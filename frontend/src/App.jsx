@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import Information from "./components/profile/Information/Information";
 import Applications from "./components/profile/Application/Applications";
 import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
+import ChangePassword from "./pages/ChangePassword";
 
 function MainLayout() {
   const location = useLocation();
@@ -50,6 +51,16 @@ function App() {
             </main>
           }
         />
+
+        <Route
+          path="/cambiar-contrasena"
+          element={
+            <main className="min-h-screen bg-[#f4f6fb]">
+              <ChangePassword />
+            </main>
+          }
+        />
+
         <Route path="/cuenta-validada" element={<CuentaValidada />} />
         <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
       </Routes>
