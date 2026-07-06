@@ -121,7 +121,7 @@ const Information = () => {
           />
         </SectionCard>
 
-        <SectionCard icon={LockClosedIcon} title="Seguridad" tone="blue">
+        <SectionCard icon={LockClosedIcon} title="Seguridad" tone="red">
           <div className="flex flex-col gap-3">
             <p className="text-sm text-[#6b7a9f]">
               Para cambiar tu contraseña te enviaremos un código de verificación
@@ -136,7 +136,7 @@ const Information = () => {
               type="button"
               onClick={handleSolicitarCambio}
               disabled={requestLoading}
-              className="self-start rounded-xl border-[1.5px] border-[#123498] px-5 py-2.5 text-sm font-semibold text-[#123498] transition hover:bg-[#f2f5fc] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="self-start rounded-xl border-[1.5px] border-rojo-persa px-5 py-2.5 text-sm font-semibold text-rojo-persa transition hover:bg-rojo-persa/10 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {requestLoading
                 ? "Enviando código..."
