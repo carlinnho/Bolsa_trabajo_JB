@@ -13,7 +13,7 @@ import { useChangePassword } from "../hooks/useChangePassword";
 
 export default function ChangePassword() {
   const {
-    paso,
+    paso, setPaso,
     codigo, setCodigo,
     nuevaPassword, setNuevaPassword,
     confirmarPassword, setConfirmarPassword,
@@ -227,7 +227,7 @@ export default function ChangePassword() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-xl bg-azul py-3 text-sm font-bold text-white transition hover:bg-[#d65f09] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-azul py-3 text-sm font-bold text-white transition hover:bg-[#0f2a80] disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading ? "Guardando..." : "Cambiar contraseña"}
             </button>

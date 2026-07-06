@@ -7,6 +7,8 @@ export default function LoginForm() {
     generalError,
     showPassword,
     setShowPassword,
+    rememberMe,
+    setRememberMe,
     handleChange,
     handleSubmit,
   } = useLoginForm();
@@ -45,6 +47,7 @@ export default function LoginForm() {
           <input
             type="email"
             name="correo"
+            value={formData.correo}   
             placeholder="Ingresa tu usuario o correo"
             className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-1 ${errors.correo ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:border-azul"}`}
             onChange={handleChange}
@@ -132,6 +135,38 @@ export default function LoginForm() {
         {errors.password && (
           <p className="text-red-500 text-xs mt-1">{errors.password}</p>
         )}
+      </div>
+
+      {/* RECUÉRDAME */}
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-2 cursor-pointer select-none">
+          <div
+            onClick={() => setRememberMe((v) => !v)}
+            className={`h-4 w-4 rounded border-2 flex items-center justify-center transition-colors ${
+              rememberMe
+                ? "bg-azul border-azul"
+                : "bg-white border-gray-300 hover:border-azul"
+            }`}
+          >
+            {rememberMe && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth={3}
+                className="h-2.5 w-2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
+              </svg>
+            )}
+          </div>
+          <span className="text-xs text-gray-500">Recuérdame</span>
+        </label>
       </div>
 
       <button
