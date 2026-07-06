@@ -7,7 +7,7 @@
 //   onPostular        : fn
 //   onReintentar      : fn
 //   onVolver          : fn
-//   postulacionStep   : string | null → null | 'preguntas' | 'cv'
+//   postulacionStep   : string | null → null | 'preguntas' | 'cv' | 'exito'
 //   respuestasFiltro  : object
 //   setRespuestasFiltro : fn
 //   onPreguntasCompletadas : fn
@@ -42,6 +42,7 @@ export default function PanelDetalle({
   const tituloHeader = () => {
     if (postulacionStep === 'preguntas') return 'Preguntas de filtrado';
     if (postulacionStep === 'cv') return 'Confirmación de CV';
+    if (postulacionStep === 'exito') return 'Postulación exitosa';
     if (estado === 'detail') return vacante?.titulo;
     return 'Detalle de la oferta';
   };
@@ -105,6 +106,52 @@ export default function PanelDetalle({
             onAtras={onVolverAPreguntas}
             postulando={postulando}
           />
+        )}
+
+        {postulacionStep === 'exito' && (
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-8 py-12 space-y-6">
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center animate-chip-in">
+              <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-azul">¡Postulación enviada con éxito!</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Hemos recibido tu postulación para <strong className="text-azul">{vacante?.titulo}</strong>
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50/40 border border-blue-100 rounded-xl p-5 max-w-sm space-y-3 text-left w-full">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-600">
+                  La empresa <strong>{vacante?.empresa_nombre}</strong> revisará tu CV y las respuestas proporcionadas.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Te sugerimos estar pendiente de tu bandeja de entrada para cualquier actualización.
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-400">Gracias por tu interés, ¡te deseamos mucho éxito!</p>
+            <button
+              type="button"
+              onClick={onVolver}
+              className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-8 py-3 rounded-xl transition-colors shadow-sm cursor-pointer"
+            >
+              Seguir buscando empleos
+            </button>
+          </div>
         )}
 
         {!postulacionStep && estado === 'empty' && (

@@ -19,8 +19,17 @@ if ($method === 'GET' && $action === 'listar') {
     $params = [];
 
     if (!empty($_GET['cargo'])) {
-        $where .= " AND o.titulo LIKE ?";
-        $params[] = '%' . $_GET['cargo'] . '%';
+        $cargo = $_GET['cargo'];
+        $stem = raizEspanol($cargo);
+        $terms = $stem !== $cargo ? [$cargo, $stem] : [$cargo];
+        $clausulas = [];
+        foreach ($terms as $term) {
+            $clausulas[] = "(o.titulo LIKE ? OR c.nombre LIKE ? OR e.nombre LIKE ?)";
+            $params[] = '%' . $term . '%';
+            $params[] = '%' . $term . '%';
+            $params[] = '%' . $term . '%';
+        }
+        $where .= ' AND (' . implode(' OR ', $clausulas) . ')';
     }
     if (!empty($_GET['ubicacion'])) {
         $where .= " AND o.ubicacion LIKE ?";
@@ -58,6 +67,36 @@ if ($method === 'GET' && $action === 'listar') {
         ORDER BY o.fecha_creacion DESC
     ");
     $stmt->execute($params);
+    respond(true, $stmt->fetchAll());
+}
+
+// ─── SUGERENCIAS (AUTOCOMPLETE) ───────────────────────────
+if ($method === 'GET' && $action === 'sugerencias') {
+    $q = $_GET['q'] ?? '';
+    if (strlen($q) < 1) respond(true, []);
+
+    $term = '%' . $q . '%';
+    $stmt = $db->prepare("
+        (SELECT DISTINCT o.titulo COLLATE utf8mb4_unicode_ci AS texto, 'cargo' AS tipo
+         FROM ofertas_trabajo o
+         WHERE o.estado = 'activa' AND o.titulo LIKE ? LIMIT 4)
+        UNION
+        (SELECT DISTINCT c.nombre COLLATE utf8mb4_unicode_ci, 'categoria'
+         FROM categorias c
+         WHERE c.nombre LIKE ? LIMIT 3)
+        UNION
+        (SELECT DISTINCT e.nombre COLLATE utf8mb4_unicode_ci, 'empresa'
+         FROM empresas_clientes e
+         WHERE e.nombre LIKE ? LIMIT 3)
+        LIMIT 8
+    ");
+    $stmt->execute([$term, $term, $term]);
+    respond(true, $stmt->fetchAll());
+}
+
+// ─── LISTAR CATEGORÍAS ────────────────────────────────────
+if ($method === 'GET' && $action === 'categorias') {
+    $stmt = $db->query("SELECT id, nombre, slug FROM categorias ORDER BY nombre ASC");
     respond(true, $stmt->fetchAll());
 }
 

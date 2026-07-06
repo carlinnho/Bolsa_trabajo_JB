@@ -197,7 +197,7 @@ export default function Buscador() {
     try {
       const result = await vacantesService.postular(seleccionadaId, respuestasFiltro, cvFile);
       setMensajePostulacion(result.message);
-      setPostulacionStep(null);
+      setPostulacionStep('exito');
       setRespuestasFiltro({});
       setVacantesPostuladas(prev => prev.includes(seleccionadaId) ? prev : [...prev, seleccionadaId]);
     } catch (err) {

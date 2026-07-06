@@ -171,3 +171,46 @@ function sanitizarTexto(string $texto): string
 {
     return htmlspecialchars(strip_tags(trim($texto)), ENT_QUOTES, 'UTF-8');
 }
+
+function raizEspanol(string $palabra): string
+{
+    $palabra = mb_strtolower(trim($palabra));
+    $palabra = str_replace(
+        ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
+        ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
+        $palabra
+    );
+
+    $sufijos = [
+        'mientos', 'miento', 'mienta',
+        'ciones', 'ción', 'cional',
+        'adores', 'ador', 'adora',
+        'edores', 'edor', 'edora',
+        'idores', 'idor', 'idora',
+        'dores', 'dor', 'dora',
+        'tivos', 'tivo', 'tiva',
+        'antes', 'ante', 'entes', 'ente',
+        'istas', 'ista',
+        'ativos', 'ativo', 'ativa',
+        'ivos', 'ivo', 'iva',
+        'dad', 'dades', 'tud',
+        'ario', 'aria', 'arios', 'arias',
+        'ando', 'iendo',
+        'ados', 'adas', 'ado', 'ada',
+        'idos', 'idas', 'ido', 'ida',
+        'ero', 'era', 'eros', 'eras',
+        'tor', 'tora', 'sor', 'sora',
+        'ar', 'er', 'ir',
+        'os', 'as', 'o', 'a',
+        'es', 's',
+    ];
+
+    foreach ($sufijos as $suf) {
+        $l = strlen($suf);
+        if (strlen($palabra) - $l >= 3 && substr($palabra, -$l) === $suf) {
+            return substr($palabra, 0, -$l);
+        }
+    }
+
+    return $palabra;
+}

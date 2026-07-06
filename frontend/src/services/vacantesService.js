@@ -39,8 +39,16 @@ function postular(id, respuestas = {}, cvFile = null) {
   });
 }
 
+function sugerencias(termino) {
+  return apiFetch(`/vacantes/?action=sugerencias&q=${encodeURIComponent(termino)}`).then(r => r.data);
+}
+
+function listarCategorias() {
+  return apiFetch("/vacantes/?action=categorias").then(r => r.data);
+}
+
 function misPostulaciones() {
   return apiFetch("/vacantes/?action=mis_postulaciones").then(r => r.data);
 }
 
-export const vacantesService = { listar, detalle, postular, misPostulaciones };
+export const vacantesService = { listar, detalle, postular, sugerencias, listarCategorias, misPostulaciones };
