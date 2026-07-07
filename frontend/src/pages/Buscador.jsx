@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { listar, detalle, postular } from "../services/vacantesService";
+import { vacantesService } from "../services/vacantesService";
 import { authService } from "../services/authService";
 import FiltrosVacantes from "../components/buscador/FiltrosVacantes";
 import ListaVacantes from "../components/buscador/ListaVacantes";
@@ -37,14 +37,14 @@ export default function Buscador() {
   const [postulacionStep, setPostulacionStep] = useState(null);
   const [respuestasFiltro, setRespuestasFiltro] = useState({});
   const [guardados, setGuardados] = useState(new Set());
-  const [vacantesPostuladas, setVacantesPostuladas] = useState(new Set());
+  const [vacantesPostuladas, setVacantesPostuladas] = useState([]);
   const [pagina, setPagina] = useState(0);
 
   const cargarLista = useCallback(async (filtrosActuales) => {
     setListaLoading(true);
     setListaError("");
     try {
-      const data = await listar(filtrosActuales);
+      const data = await vacantesService.listar(filtrosActuales);
       setVacantes(data);
     } catch (e) {
       setListaError(e.message || "Error al cargar vacantes");
@@ -61,6 +61,14 @@ export default function Buscador() {
   useEffect(() => {
     setPagina(0);
   }, [vacantes.length]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    vacantesService.misPostulaciones()
+      .then(ids => setVacantesPostuladas(ids))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -88,6 +96,26 @@ export default function Buscador() {
     return () => clearTimeout(timer);
   }, [mensajePostulacion]);
 
+  useEffect(() => {
+    if (vacanteDetalle && panelEstado === "detail") {
+      document.title = `${vacanteDetalle.titulo} | ${vacanteDetalle.empresa_nombre} | Bolsa de Trabajo JB`;
+      let meta = document.querySelector('meta[name="keywords"]');
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.name = "keywords";
+        document.head.appendChild(meta);
+      }
+      const keywords = [
+        vacanteDetalle.titulo,
+        vacanteDetalle.categoria_nombre,
+        vacanteDetalle.empresa_nombre,
+        vacanteDetalle.ubicacion,
+        "empleo", "trabajo", "Perú",
+      ].filter(Boolean).join(", ");
+      meta.content = keywords;
+    }
+  }, [vacanteDetalle, panelEstado]);
+
   const totalPaginas = Math.ceil(vacantes.length / ITEMS_POR_PAGINA);
   const inicio = pagina * ITEMS_POR_PAGINA;
   const visibles = vacantes.slice(inicio, inicio + ITEMS_POR_PAGINA);
@@ -109,7 +137,7 @@ export default function Buscador() {
     setRespuestasFiltro({});
 
     try {
-      const data = await detalle(id);
+      const data = await vacantesService.detalle(id);
       setVacanteDetalle(data);
       setPanelEstado("detail");
     } catch {
@@ -167,11 +195,11 @@ export default function Buscador() {
     setMensajePostulacion("");
 
     try {
-      const result = await postular(seleccionadaId, respuestasFiltro, cvFile);
+      const result = await vacantesService.postular(seleccionadaId, respuestasFiltro, cvFile);
       setMensajePostulacion(result.message);
-      setPostulacionStep(null);
+      setPostulacionStep('exito');
       setRespuestasFiltro({});
-      setVacantesPostuladas(prev => new Set(prev).add(seleccionadaId));
+      setVacantesPostuladas(prev => prev.includes(seleccionadaId) ? prev : [...prev, seleccionadaId]);
     } catch (err) {
       if (err.message === "Debes iniciar sesión para postularte") {
         navigate("/login");
@@ -642,9 +670,9 @@ export default function Buscador() {
           </div>
 
           <main
-            className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm flex flex-col lg:sticky lg:overflow-y-auto ${
+            className={`w-full lg:flex-1 bg-white rounded-lg shadow-sm flex flex-col lg:sticky lg:overflow-y-auto mt-5 ${
               seleccionadaId ? "flex" : "hidden lg:flex"
-            } lg:top-0 lg:max-h-screen`}
+            } lg:top-5 lg:max-h-[calc(100vh-3rem)]`}
           >
             <PanelDetalle
               estado={panelEstado}
@@ -661,7 +689,7 @@ export default function Buscador() {
               onCancelarPostulacion={handleCancelarPostulacion}
               onVolverAPreguntas={handleVolverAPreguntas}
               postulando={postulando}
-              yaPostulada={vacantesPostuladas.has(seleccionadaId)}
+              yaPostulada={vacantesPostuladas.includes(seleccionadaId)}
             />
           </main>
         </div>

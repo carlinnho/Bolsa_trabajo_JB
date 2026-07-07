@@ -5,6 +5,7 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import Header from "./components/Header";
 import Login from "./pages/Login";
 import Buscador from "./pages/Buscador";
@@ -16,6 +17,8 @@ import Information from "./components/profile/Information/Information";
 import Applications from "./components/profile/Application/Applications";
 import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
 import ChangePassword from "./pages/ChangePassword";
+
+const GOOGLE_CLIENT_ID = "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
 
 function MainLayout() {
   const location = useLocation();
@@ -31,8 +34,9 @@ function MainLayout() {
 
 function App() {
   return (
-    <Router>
-      <Routes>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Router>
+        <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/buscar-empleo" element={<Buscador />} />
@@ -65,6 +69,7 @@ function App() {
         <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
       </Routes>
     </Router>
+    </GoogleOAuthProvider>
   );
 }
 
