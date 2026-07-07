@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { userService } from "../services/userService";
 
 const PHONE_REGEX = /^9\d{8}$/;
@@ -11,6 +11,25 @@ export function useInformationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [generalError, setGeneralError] = useState("");
+
+  // ── Cargar datos del perfil al entrar a la sección ──────────────────────
+  useEffect(() => {
+    const cargarPerfil = async () => {
+      try {
+        const response = await userService.getProfile();
+        if (response.success && response.data) {
+          const { telefono, texto_presentacion, cv_url } = response.data;
+          if (telefono) setTelefono(telefono);
+          if (texto_presentacion) setPresentacion(texto_presentacion);
+          if (cv_url) setCvArchivo({ name: cv_url.split("/").pop() });
+        }
+      } catch {
+        // Si falla, los campos quedan vacíos — no bloqueamos al usuario
+      }
+    };
+
+    cargarPerfil();
+  }, []);
 
   const isDirty = telefono !== "" || presentacion !== "";
 
