@@ -1,16 +1,19 @@
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { PhoneIcon as PhoneOutline } from "@heroicons/react/24/outline";
-import { ChatBubbleLeftIcon as ChatBubbleLeftOutline } from "@heroicons/react/24/outline";
-import { DocumentTextIcon as DocumentTextOutline } from "@heroicons/react/24/outline";
-import { LockClosedIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import {
+  PhoneIcon,
+  ChatBubbleLeftIcon,
+  DocumentTextIcon,
+  LockClosedIcon,
+  UserIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/outline";
 
 import PageHeader from "../PageHeader";
 import SectionCard from "./SectionCard";
 import CvUploader from "./CvUploader";
-
-import { useState } from "react";
-import { userService } from "../../../services/userService";
 import { Field, TextInput, TextArea } from "./FormControls";
+import { userService } from "../../../services/userService";
 
 const Information = () => {
   const {
@@ -28,9 +31,11 @@ const Information = () => {
   } = useOutletContext();
 
   const navigate = useNavigate();
-
   const [requestLoading, setRequestLoading] = useState(false);
   const [requestError, setRequestError] = useState("");
+
+  // Leemos nombre y correo del localStorage — son solo lectura
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleSolicitarCambio = async () => {
     setRequestLoading(true);
@@ -54,98 +59,124 @@ const Information = () => {
       />
 
       <form onSubmit={handleGuardar} className="space-y-6">
-        <SectionCard
-          icon={PhoneOutline}
-          title="Información de Contacto"
-          tone="blue"
-        >
-          <Field
-            label="Número de Teléfono"
-            hint={
-              !errors.telefono
-                ? "Utilizamos este número para contactarte sobre postulaciones activas."
-                : undefined
-            }
-          >
-            <TextInput
-              inputMode="tel"
-              placeholder="999 999 999"
-              value={telefono}
-              onChange={(e) => {
-                setTelefono(e.target.value);
-                clearError("telefono");
-              }}
-              focusColor={errors.telefono ? "#ef4444" : "#123498"}
-            />
-            {errors.telefono && (
-              <p className="mt-2 text-xs text-red-500">{errors.telefono}</p>
-            )}
-          </Field>
-        </SectionCard>
 
-        <SectionCard
-          icon={ChatBubbleLeftOutline}
-          title="Presentación Personal"
-          tone="teal"
-        >
-          <Field
-            label="Breve introducción"
-            hint={!errors.presentacion ? "Máximo 500 caracteres" : undefined}
-            hintAlign="right"
-          >
-            <TextArea
-              maxLength={500}
-              placeholder="Cuéntanos sobre tu experiencia, logros clave y qué buscas en tu próximo desafío profesional..."
-              value={presentacion}
-              onChange={(e) => {
-                setPresentacion(e.target.value);
-                clearError("presentacion");
-              }}
-              focusColor={errors.presentacion ? "#ef4444" : "#41C4C0"}
-            />
-            {errors.presentacion && (
-              <p className="mt-2 text-xs text-red-500">{errors.presentacion}</p>
-            )}
-          </Field>
-        </SectionCard>
+        {/* ── DOS COLUMNAS ─────────────────────────────────────── */}
+        <div className="grid grid-cols-1 gap-1 lg:grid-cols-2 lg:gap-6 items-start">
 
-        <SectionCard
-          icon={DocumentTextOutline}
-          title="Gestión de CV"
-          tone="orange"
-        >
-          <CvUploader
-            file={cvArchivo}
-            onFileSelect={(file) => setCvArchivo(file)}
-            onRemove={() => setCvArchivo(null)}
-          />
-        </SectionCard>
+          {/* COLUMNA IZQUIERDA — Datos personales */}
+          <div className="flex flex-col">
+            <SectionCard icon={UserIcon} title="Datos personales" tone="blue">
+              <div className="flex flex-col gap-4">
 
-        <SectionCard icon={LockClosedIcon} title="Seguridad" tone="red">
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-[#6b7a9f]">
-              Para cambiar tu contraseña te enviaremos un código de verificación
-              a tu correo registrado. El código es válido por 15 minutos.
-            </p>
-            {requestError && (
-              <p className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
-                {requestError}
-              </p>
-            )}
-            <button
-              type="button"
-              onClick={handleSolicitarCambio}
-              disabled={requestLoading}
-              className="self-start rounded-xl border-[1.5px] border-rojo-persa px-5 py-2.5 text-sm font-semibold text-rojo-persa transition hover:bg-rojo-persa/10 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {requestLoading
-                ? "Enviando código..."
-                : "Solicitar cambio de contraseña"}
-            </button>
+                {/* Nombre — solo lectura */}
+                <Field label="Nombre completo">
+                  <TextInput
+                    value={user.nombre_completo || ""}
+                    readOnly
+                    focusColor="#123498"
+                    className="bg-gray-50 cursor-not-allowed"
+                  />
+                </Field>
+
+                {/* Correo — solo lectura */}
+                <Field label="Correo electrónico">
+                  <TextInput
+                    type="email"
+                    value={user.correo || ""}
+                    readOnly
+                    focusColor="#123498"
+                    className="bg-gray-50 cursor-not-allowed"
+                  />
+                </Field>
+
+                {/* Teléfono — editable */}
+                <Field
+                  label="Número de teléfono"
+                  hint={!errors.telefono
+                    ? "Usaremos este número para contactarte sobre postulaciones activas."
+                    : undefined}
+                >
+                  <TextInput
+                    inputMode="tel"
+                    placeholder="999 999 999"
+                    value={telefono}
+                    onChange={(e) => {
+                      setTelefono(e.target.value);
+                      clearError("telefono");
+                    }}
+                    focusColor={errors.telefono ? "#ef4444" : "#123498"}
+                  />
+                  {errors.telefono && (
+                    <p className="mt-2 text-xs text-red-500">{errors.telefono}</p>
+                  )}
+                </Field>
+              </div>
+            </SectionCard>
+
+            {/* Seguridad */}
+            <SectionCard icon={LockClosedIcon} title="Seguridad" tone="red">
+              <div className="flex flex-col gap-3">
+                <p className="text-sm text-[#6b7a9f]">
+                  Cambia tu contraseña por código de verificación.
+                </p>
+                {requestError && (
+                  <p className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+                    {requestError}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSolicitarCambio}
+                  disabled={requestLoading}
+                  className="self-start rounded-xl border-[1.5px] border-rojo-persa px-5 py-2.5 text-sm font-semibold text-rojo-persa transition hover:bg-rojo-persa/10 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {requestLoading ? "Enviando código..." : "Cambiar contraseña"}
+                </button>
+              </div>
+            </SectionCard>
           </div>
-        </SectionCard>
 
-        {/* Mensajes de feedback del guardado */}
+          {/* COLUMNA DERECHA — Datos de postulante */}
+          <div className="flex flex-col gap-6">
+            <SectionCard icon={DocumentTextIcon} title="Datos de postulante" tone="orange">
+              <div className="flex flex-col gap-6">
+
+                {/* CV */}
+                <Field label="Currículum (CV)">
+                  <CvUploader
+                    file={cvArchivo}
+                    onFileSelect={(file) => setCvArchivo(file)}
+                    onRemove={() => setCvArchivo(null)}
+                  />
+                </Field>
+
+                {/* Presentación */}
+                <Field
+                  label="Presentación personal"
+                  hint={!errors.presentacion ? "Máximo 500 caracteres" : undefined}
+                  hintAlign="right"
+                >
+                  <TextArea
+                    maxLength={500}
+                    placeholder="Cuéntanos sobre tu experiencia, logros clave y qué buscas en tu próximo desafío profesional..."
+                    value={presentacion}
+                    onChange={(e) => {
+                      setPresentacion(e.target.value);
+                      clearError("presentacion");
+                    }}
+                    focusColor={errors.presentacion ? "#ef4444" : "#41C4C0"}
+                  />
+                  {errors.presentacion && (
+                    <p className="mt-2 text-xs text-red-500">{errors.presentacion}</p>
+                  )}
+                </Field>
+              </div>
+            </SectionCard>
+          </div>
+        </div>
+        {/* ─────────────────────────────────────────────────────── */}
+
+        {/* Mensajes de feedback */}
         {generalError && (
           <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 border border-red-200">
             {generalError}
@@ -157,6 +188,7 @@ const Information = () => {
           </p>
         )}
 
+        {/* Botones */}
         <div className="flex justify-end gap-3 pb-16">
           <button
             type="button"
