@@ -1,4 +1,6 @@
 import logo from "../../assets/images/logo_blanco.webp";
+import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 export default function InfoPanel({ isRegister }) {
   return (
@@ -51,6 +53,14 @@ export default function InfoPanel({ isRegister }) {
           </>
         )}
       </div>
+      {/* BOTON PARA REGRESAR AL INICIO DE LA PAGINA */}
+      <Link
+        to="/"
+        className="flex flex-row gap-2 items-center justify-center text-center text-sm border-[0.5px] border-[#c3cbe0] py-2 px-3 mb-5 rounded-2xl text-[#c3cbe0] hover:bg-gris-oscuro/50 transition"
+      >
+        <ArrowLongLeftIcon className="h-5 w-5" />
+        Volver al inicio
+      </Link>
 
       {/* 1. SECCIÓN SUPERIOR: Logo y Título */}
       <div className="relative z-10 w-full flex flex-row items-center justify-center md:justify-start gap-1">
