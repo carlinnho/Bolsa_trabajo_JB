@@ -53,25 +53,29 @@ export default function InfoPanel({ isRegister }) {
           </>
         )}
       </div>
-      {/* BOTON PARA REGRESAR AL INICIO DE LA PAGINA */}
-      <Link
-        to="/"
-        className="flex flex-row gap-2 items-center justify-center text-center text-sm border-[0.5px] border-[#c3cbe0] py-2 px-3 mb-5 rounded-2xl text-[#c3cbe0] hover:bg-gris-oscuro/50 transition"
-      >
-        <ArrowLongLeftIcon className="h-5 w-5" />
-        Volver al inicio
-      </Link>
+      {/* 1. SECCION SUPERIOR */}
+      <div className="relative z-10 w-full flex flex-col items-center md:items-start">
+        
+        {/* BOTON PARA REGRESAR AL INICIO */}
+        <Link
+          to="/"
+          className="flex flex-row gap-2 items-center justify-center text-center text-sm border-[0.5px] border-[#c3cbe0] py-2 px-3 mb-5 rounded-2xl text-[#c3cbe0] hover:bg-gris-oscuro/50 transition w-fit"
+        >
+          <ArrowLongLeftIcon className="h-5 w-5" />
+          Volver al inicio
+        </Link>
 
-      {/* 1. SECCIÓN SUPERIOR: Logo y Título */}
-      <div className="relative z-10 w-full flex flex-row items-center justify-center md:justify-start gap-1">
-        <img
-          src={logo}
-          alt="Logo de Consultora JB"
-          className="w-12 md:w-16 h-auto"
-        />
-        <h2 className="text-lg md:text-xl font-bold text-white">
-          Portal de Empleo JB
-        </h2>
+        {/* Logo y Título */}
+        <div className="w-full flex flex-row items-center justify-center md:justify-start gap-1">
+          <img
+            src={logo}
+            alt="Logo de Consultora JB"
+            className="w-12 md:w-16 h-auto"
+          />
+          <h2 className="text-lg md:text-xl font-bold text-white">
+            Portal de Empleo JB
+          </h2>
+        </div>
       </div>
 
       {/* 2. TEXTO PRINCIPAL: flex-grow y justify-center lo mantienen SIEMPRE al centro */}
