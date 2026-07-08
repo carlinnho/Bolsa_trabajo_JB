@@ -4,6 +4,7 @@ const TONES = {
   blue: 'bg-azul/10 text-azul',
   teal: 'bg-turquesa/15 text-[#0f8f8b]',
   orange: 'bg-naranja/10 text-naranja',
+  red: 'bg-rojo-persa/15 text-rojo-persa',
 };
 
 export default function SectionCard({ icon: Icon, title, tone = 'blue', children }) {

@@ -33,9 +33,11 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
   const modalidadEtiqueta = MAP_MODALIDAD_ETIQUETA[vacante.modalidad];
 
   return (
-    <button
-      type="button"
+    <div
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onClick?.()}
       className={`w-full text-left p-5 rounded-xl border transition-all cursor-pointer relative shadow-sm ${
         seleccionada
           ? 'border-naranja bg-orange-50'
@@ -87,6 +89,6 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
           </button>
         </div>
       </div>
-    </button>
+    </div>
   );
 }

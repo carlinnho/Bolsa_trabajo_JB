@@ -15,11 +15,23 @@ export default function DetalleVacante({ vacante }) {
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       {/* Encabezado */}
-      <div>
-        <h2 className="font-montserrat font-bold text-xl text-azul leading-tight">
-          {vacante.titulo}
-        </h2>
-        <p className="text-naranja font-semibold text-base mt-1">{vacante.empresa_nombre}</p>
+      <div className="flex items-start gap-4">
+        {vacante.logo_url && (
+          <img
+            src={vacante.logo_url}
+            alt={vacante.empresa_nombre}
+            className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+          />
+        )}
+        <div className="min-w-0">
+          <h2 className="font-montserrat font-bold text-xl text-azul leading-tight">
+            {vacante.titulo}
+          </h2>
+          <p className="text-naranja font-semibold text-base mt-1">{vacante.empresa_nombre}</p>
+          {vacante.sector && (
+            <p className="text-xs text-gray-400 mt-0.5">{vacante.sector}</p>
+          )}
+        </div>
       </div>
 
       {/* Metadatos */}
@@ -57,6 +69,15 @@ export default function DetalleVacante({ vacante }) {
           </div>
         )}
       </div>
+
+      {vacante.categoria_nombre && (
+        <div>
+          <p className="text-xs font-bold text-gray-400 uppercase">Categoría</p>
+          <span className="inline-block mt-0.5 px-2.5 py-0.5 bg-orange-50 text-naranja text-xs font-semibold rounded-full">
+            {vacante.categoria_nombre}
+          </span>
+        </div>
+      )}
 
       {/* Descripción */}
       <div>

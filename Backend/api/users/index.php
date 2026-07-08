@@ -31,6 +31,21 @@ if ($method === 'GET' && $action === 'listar') {
 $user = requireAuth();
 $userId = $user['id'];
 
+// OBTENER DATOS DEL PERFIL
+if ($method === 'GET' && $action === 'get_profile') {
+    $stmt = $db->prepare("
+        SELECT nombre_completo, correo, telefono, texto_presentacion, cv_url
+        FROM usuarios
+        WHERE id = ?
+    ");
+    $stmt->execute([$userId]);
+    $perfil = $stmt->fetch();
+
+    if (!$perfil) respondError('Usuario no encontrado.', 404);
+
+    respond(true, $perfil);
+}
+
 // 2. ACTUALIZAR PERFIL Y SUBIR CV
 if ($method === 'POST' && $action === 'update_profile') {
     $nombre = $_POST['nombre_completo'] ?? null;

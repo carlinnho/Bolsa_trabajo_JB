@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
 
 export function useLoginForm() {
+  const navigate = useNavigate();
+
+  const savedEmail = localStorage.getItem("remembered_email") || "";
+
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ correo: "", password: "" });
+  const [formData, setFormData] = useState({
+    correo: savedEmail,
+    password: "",
+  });
+  const [rememberMe, setRememberMe] = useState(!!savedEmail);
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +24,8 @@ export function useLoginForm() {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.correo) newErrors.correo = "El correo es obligatorio.";
     if (!formData.password) newErrors.password = "La contraseña es obligatoria.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -38,10 +43,14 @@ export function useLoginForm() {
       });
 
       if (response.success) {
-        navigate("/"); // Redirigir al Home o Dashboard tras éxito
+        if (rememberMe) {
+          localStorage.setItem("remembered_email", formData.correo);
+        } else {
+          localStorage.removeItem("remembered_email");
+        }
+        navigate("/");
       }
     } catch (error) {
-      // Mostrar el error real que manda el backend PHP
       setGeneralError(error.message);
     }
   };
@@ -52,6 +61,8 @@ export function useLoginForm() {
     generalError,
     showPassword,
     setShowPassword,
+    rememberMe,
+    setRememberMe,
     handleChange,
     handleSubmit,
   };

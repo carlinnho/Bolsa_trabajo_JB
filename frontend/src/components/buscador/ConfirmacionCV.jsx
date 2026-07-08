@@ -129,15 +129,34 @@ export default function ConfirmacionCV({ onPostular, onAtras, postulando }) {
         </div>
 
         {/* Resumen de postulación */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-          <div className="flex items-start gap-2">
-            <svg className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="text-xs text-amber-700">
-              Al hacer clic en "Postular ahora", tus respuestas a las preguntas de filtrado y tu CV serán enviados al empleador.
-            </p>
+        <div className="bg-gradient-to-br from-orange-50 to-amber-50/40 border-l-4 border-naranja rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-naranja/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-naranja" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-sm font-bold text-azul">Antes de enviar tu postulación</p>
           </div>
+
+          <div className="space-y-2">
+            <div className="flex items-start gap-2.5">
+              <svg className="w-4 h-4 text-naranja mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-xs text-gray-600">Tu <strong>CV</strong> será enviado junto con tu postulación</p>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <svg className="w-4 h-4 text-naranja mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-xs text-gray-600">Tus <strong>respuestas</strong> a las preguntas de filtro serán incluidas</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-400 italic border-t border-amber-200/50 pt-2">
+            Al hacer clic en "Postular ahora" aceptas compartir esta información con el empleador.
+          </p>
         </div>
       </div>
 
