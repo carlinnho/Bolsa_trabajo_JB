@@ -15,7 +15,7 @@ import Profile from "./pages/Profile";
 import Information from "./components/profile/Information/Information";
 import Applications from "./components/profile/Application/Applications";
 import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
-import Admin from "./components/admin/Admin";
+import Admin from "./pages/Admin";
 
 function MainLayout() {
   const location = useLocation();
@@ -55,7 +55,7 @@ function App() {
         <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
 
         {/* RUTA ADMIN */}
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/*" element={<Admin />} />
 
       </Routes>
     </Router>
