@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Information from "./components/profile/Information/Information";
 import Applications from "./components/profile/Application/Applications";
 import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
+import Admin from "./pages/Admin";
 import ChangePassword from "./pages/ChangePassword";
 
 const GOOGLE_CLIENT_ID = "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
@@ -67,6 +68,10 @@ function App() {
 
         <Route path="/cuenta-validada" element={<CuentaValidada />} />
         <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+
+        {/* RUTA ADMIN */}
+        <Route path="/admin/*" element={<Admin />} />
+
       </Routes>
     </Router>
     </GoogleOAuthProvider>
