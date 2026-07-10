@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useApplications } from "../../../hooks/useApplications";
 import ApplicationCard from "./ApplicationCard";
-import PageHeader from "../PageHeader";
+import PageHeader from "../shared/PageHeader";
 
 export default function Applications() {
   const {

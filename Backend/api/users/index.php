@@ -125,16 +125,11 @@ if ($method === 'POST' && $action === 'request_password_change') {
     $stmt = $db->prepare("UPDATE usuarios SET codigo_recuperacion = ?, expiracion_codigo = ? WHERE id = ?");
     $stmt->execute([$codigo, $expiracion, $userId]);
 
-    // Enviar correo
+    // Enviar correo usando el template
+    require_once __DIR__ . '/../../templates/password_change_email.php';
+
     $asunto = "Código de seguridad - Cambio de contraseña";
-    $cuerpoHTML = "
-        <div style='font-family: Arial; text-align: center; padding: 20px;'>
-            <h2>Solicitud de cambio de contraseña</h2>
-            <p>Has solicitado cambiar tu contraseña. Usa el siguiente código para autorizar el cambio (válido por 15 minutos):</p>
-            <h1 style='background: #f4f4f4; padding: 15px; letter-spacing: 5px; color: #ff6600;'>$codigo</h1>
-            <p>Si no fuiste tú, ignora este correo y tu contraseña seguirá siendo la misma.</p>
-        </div>
-    ";
+    $cuerpoHTML = getPasswordChangeEmailTemplate($codigo);
     
     enviarCorreo($user['correo'], $asunto, $cuerpoHTML);
 
