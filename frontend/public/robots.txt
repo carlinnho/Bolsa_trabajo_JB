@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /mi-perfil
+Disallow: /cambiar-contrasena
+
+Sitemap: https://tusitio.com/sitemap.xml

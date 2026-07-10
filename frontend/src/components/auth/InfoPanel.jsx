@@ -70,6 +70,8 @@ export default function InfoPanel({ isRegister }) {
           <img
             src={logo}
             alt="Logo de Consultora JB"
+            width={240}
+            height={160}
             className="w-12 md:w-16 h-auto"
           />
           <h2 className="text-lg md:text-xl font-bold text-white">
@@ -95,7 +97,7 @@ export default function InfoPanel({ isRegister }) {
 
       {/* 3. FOOTER */}
       <div className="relative z-10 w-full">
-        <p className="text-blue-300/60 text-xs text-center md:text-left">
+        <p className="text-blue-200 text-xs text-center md:text-left">
           Consultora de Asesoría Empresarial JB.
         </p>
       </div>

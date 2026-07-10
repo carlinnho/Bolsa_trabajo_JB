@@ -24,7 +24,7 @@ export default function LoginForm() {
 
       {/* CAMPO DE CORREO */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Correo eléctronico
         </label>
         <div className="relative flex items-center">
@@ -60,7 +60,7 @@ export default function LoginForm() {
 
       {/* CAMPO DE CONTRASEÑA */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Contraseña
         </label>
         <div className="relative flex items-center">
@@ -91,8 +91,9 @@ export default function LoginForm() {
           {/* Ícono de Ojo */}
           <button
             type="button"
+            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-600"
           >
             {showPassword ? (
               <svg
@@ -171,7 +172,8 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        className="w-full bg-naranja hover:bg-orange-600 text-white font-semibold py-3 rounded-lg mt-4 transition-colors"
+        aria-label="Ingresar al sistema"
+        className="w-full bg-naranja hover:bg-orange-600 text-white font-bold py-3 rounded-lg mt-4 transition-colors"
       >
         Ingresar al sistema
       </button>

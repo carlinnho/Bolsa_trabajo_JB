@@ -222,6 +222,7 @@ export default function RegisterForm() {
           />
           <button
             type="button"
+            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             onClick={() => setShowPassword(!showPassword)}
             className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
           >
@@ -366,6 +367,7 @@ export default function RegisterForm() {
       {/* BOTÓN NARANJA CON ANIMACIÓN DE CARGA */}
       <button
         type="submit"
+        aria-label="Crear mi cuenta"
         disabled={isLoading}
         className={`w-full text-white font-semibold py-3 rounded-lg mt-4 transition-colors flex justify-center items-center gap-2 ${
           isLoading
