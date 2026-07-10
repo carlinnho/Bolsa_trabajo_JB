@@ -1,4 +1,4 @@
-import logoBlanco from "../assets/images/logo_blanco.webp";
+import logoBlanco from "../../assets/images/logo_blanco.webp";
 
 export default function Footer() {
   return (

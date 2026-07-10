@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import Footer from "../components/Footer";
+import Footer from "../components/layout/Footer";
 import HeroSection from "../components/home/HeroSection";
 import EmpresasSection from "../components/home/EmpresasSection";
 import EmpleosSection from "../components/home/EmpleosSection";

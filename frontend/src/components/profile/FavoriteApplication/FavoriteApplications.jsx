@@ -1,6 +1,6 @@
 import { useFavorites } from "../../../hooks/useFavorites";
 import FavoriteCard from "./FavoriteCard";
-import PageHeader from "../PageHeader";
+import PageHeader from "../shared/PageHeader";
 
 export default function FavoriteApplications() {
   const { favoritos, total, isDirty, eliminarFavorito } = useFavorites();

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/profile/Sidebar";
+import Sidebar from "../components/profile/shared/Sidebar";
 import { useInformationForm } from "../hooks/useInformationForm";
 
 const Profile = () => {

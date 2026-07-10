@@ -9,7 +9,7 @@ import {
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 
-import PageHeader from "../PageHeader";
+import PageHeader from "../shared/PageHeader";
 import SectionCard from "./SectionCard";
 import CvUploader from "./CvUploader";
 import { Field, TextInput, TextArea } from "./FormControls";
