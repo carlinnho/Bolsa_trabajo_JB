@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { NAV_ITEMS } from '../../config/Navigation';
+import { NAV_ITEMS } from '../../../config/Navigation';
 
 export default function Sidebar() {
   return (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { authService } from "../services/authService";
+import { authService } from "../../services/authService";
 
 export default function Header({ hideOnScroll = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
