@@ -98,12 +98,14 @@ export default function FavoriteCard({ favorito, onEliminar }) {
         <div className="flex items-center gap-2 justify-center">
           <button
             type="button"
+            aria-label={`Ver detalles de la aplicación para ${cargo} en ${empresa}`}
             className="rounded-xl border-[1.5px] border-[#cdd6ea] bg-white px-5 py-2.5 text-sm font-semibold text-[#123498] transition hover:bg-[#f2f5fc]"
           >
             Ver detalles
           </button>
           <button
             type="button"
+            aria-label={`Postular a la aplicación para ${cargo} en ${empresa}`}
             className="flex items-center gap-2 rounded-xl bg-[#f46f0b] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#d65f09]"
           >
             Postular
