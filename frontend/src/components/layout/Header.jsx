@@ -83,7 +83,7 @@ export default function Header({ hideOnScroll = false }) {
       {/* Enlace de salto para usuarios de teclado y lectores de pantalla */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-60 focus:bg-naranja focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-naranja focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-semibold"
       >
         Saltar al contenido principal
       </a>

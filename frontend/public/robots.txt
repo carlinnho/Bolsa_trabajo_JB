@@ -1,5 +1,28 @@
+# robots.txt
+# Este archivo le indica a los buscadores (Google, Bing, etc.)
+# qué páginas pueden rastrear e indexar en sus resultados.
+#
+# User-agent: * → aplica la regla a TODOS los buscadores
+# Disallow: /ruta → bloquea esa ruta para que NO aparezca en Google
+# Allow: /ruta → permite explícitamente esa ruta (opcional)
+# Sitemap: → le dice a Google dónde está el mapa del sitio
+
 User-agent: *
+
+# Bloqueamos las páginas privadas que requieren login
+# No tiene sentido que Google las indexe porque el usuario
+# no podría acceder a ellas sin estar autenticado
 Disallow: /mi-perfil
 Disallow: /cambiar-contrasena
 
-Sitemap: https://tusitio.com/sitemap.xml
+# Sitemap: es el mapa del sitio que le dice a Google qué páginas
+# existen en tu web, su prioridad e importancia.
+# Beneficios:
+#   - Google indexa tu sitio más rápido
+#   - Asegura que ninguna página importante quede sin indexar
+#   - Le indicas cuáles páginas son más importantes que otras
+#
+# IMPORTANTE: Solo funciona con una URL real de producción.
+# Cuando el proyecto pase al servidor, descomentar y cambiar
+# la URL por la del servidor real:
+# Sitemap: https://tusitio.com/sitemap.xml

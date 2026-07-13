@@ -126,7 +126,7 @@ export default function RegisterForm() {
 
       {/* NOMBRE COMPLETO */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Nombre completo
         </label>
         <div className="relative flex items-center">
@@ -160,7 +160,7 @@ export default function RegisterForm() {
 
       {/* CORREO ELECTRÓNICO */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Correo electrónico
         </label>
         <div className="relative flex items-center">
@@ -194,7 +194,7 @@ export default function RegisterForm() {
 
       {/* CONTRASEÑA */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Contraseña
         </label>
         <div className="relative flex items-center">
@@ -224,7 +224,7 @@ export default function RegisterForm() {
             type="button"
             aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-600"
           >
             {showPassword ? (
               <svg
@@ -276,7 +276,7 @@ export default function RegisterForm() {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className={`w-4 h-4 transition-colors duration-300 ${hasMinLength ? "text-green-500" : "text-gray-200"}`}
+            className={`w-4 h-4 transition-colors duration-300 ${hasMinLength ? "text-green-600" : "text-gray-300"}`}
           >
             <path
               fillRule="evenodd"
@@ -285,7 +285,7 @@ export default function RegisterForm() {
             />
           </svg>
           <span
-            className={`text-xs font-medium transition-colors duration-300 ${hasMinLength ? "text-gray-500" : "text-gray-400"}`}
+            className={`text-xs font-medium transition-colors duration-300 ${hasMinLength ? "text-gray-600" : "text-gray-500"}`}
           >
             Mínimo 8 caracteres
           </span>
@@ -295,7 +295,7 @@ export default function RegisterForm() {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className={`w-4 h-4 transition-colors duration-300 ${hasUppercase ? "text-green-500" : "text-gray-200"}`}
+            className={`w-4 h-4 transition-colors duration-300 ${hasUppercase ? "text-green-600" : "text-gray-300"}`}
           >
             <path
               fillRule="evenodd"
@@ -304,7 +304,7 @@ export default function RegisterForm() {
             />
           </svg>
           <span
-            className={`text-xs font-medium transition-colors duration-300 ${hasUppercase ? "text-gray-500" : "text-gray-400"}`}
+            className={`text-xs font-medium transition-colors duration-300 ${hasUppercase ? "text-gray-600" : "text-gray-500"}`}
           >
             Al menos una letra mayúscula
           </span>
@@ -314,7 +314,7 @@ export default function RegisterForm() {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className={`w-4 h-4 transition-colors duration-300 ${hasSymbol ? "text-green-500" : "text-gray-200"}`}
+            className={`w-4 h-4 transition-colors duration-300 ${hasSymbol ? "text-green-600" : "text-gray-300"}`}
           >
             <path
               fillRule="evenodd"
@@ -323,7 +323,7 @@ export default function RegisterForm() {
             />
           </svg>
           <span
-            className={`text-xs font-medium transition-colors duration-300 ${hasSymbol ? "text-gray-500" : "text-gray-400"}`}
+            className={`text-xs font-medium transition-colors duration-300 ${hasSymbol ? "text-gray-600" : "text-gray-500"}`}
           >
             Al menos un símbolo
           </span>
@@ -332,7 +332,7 @@ export default function RegisterForm() {
 
       {/* TELÉFONO */}
       <div className="flex flex-col gap-1.5 mt-1">
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+        <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">
           Teléfono
         </label>
         <div className="relative flex items-center">
