@@ -1,6 +1,4 @@
-// src/services/api.js
-
-const BASE_URL = "http://localhost/backend-bolsajb/api"; // Ajusta si tu carpeta se llama distinto
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const apiFetch = async (endpoint, options = {}) => {
   const token = localStorage.getItem("token");

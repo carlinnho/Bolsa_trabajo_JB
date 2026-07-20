@@ -55,6 +55,7 @@ export default function ApplicationCard({ aplicacion }) {
       {/* Botón Ver detalles — sin funcionalidad por ahora */}
       <button
         type="button"
+        aria-label={`Ver detalles de la aplicación para ${cargo} en ${empresa}`}
         className="shrink-0 flex items-center gap-2 rounded-xl border-[1.5px] border-[#cdd6ea] bg-white px-5 py-2.5 text-sm font-semibold text-[#123498] transition hover:bg-naranja hover:shadow hover:shadow-amarillo-hansa hover:border-naranja hover:text-white"
       >
         Ver detalles
