@@ -1,6 +1,6 @@
 import { apiFetch } from "./api";
 
-const BASE_URL = "http://localhost/backend-bolsajb/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const userService = {
   // ─── ACTUALIZAR PERFIL Y SUBIR CV ───────────────────────────────────────

@@ -75,6 +75,7 @@ const Information = () => {
                     readOnly
                     focusColor="#123498"
                     className="bg-gray-50 cursor-not-allowed"
+                    aria-label="Nombre completo (solo lectura)"
                   />
                 </Field>
 
@@ -86,6 +87,7 @@ const Information = () => {
                     readOnly
                     focusColor="#123498"
                     className="bg-gray-50 cursor-not-allowed"
+                    aria-label="Correo electrónico (solo lectura)"
                   />
                 </Field>
 
@@ -105,6 +107,7 @@ const Information = () => {
                       clearError("telefono");
                     }}
                     focusColor={errors.telefono ? "#ef4444" : "#123498"}
+                    aria-label="Número de teléfono"
                   />
                   {errors.telefono && (
                     <p className="mt-2 text-xs text-red-500">{errors.telefono}</p>
@@ -126,6 +129,7 @@ const Information = () => {
                 )}
                 <button
                   type="button"
+                  aria-label="Cambiar contraseña"
                   onClick={handleSolicitarCambio}
                   disabled={requestLoading}
                   className="self-start rounded-xl border-[1.5px] border-rojo-persa px-5 py-2.5 text-sm font-semibold text-rojo-persa transition hover:bg-rojo-persa/10 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -147,6 +151,7 @@ const Information = () => {
                     file={cvArchivo}
                     onFileSelect={(file) => setCvArchivo(file)}
                     onRemove={() => setCvArchivo(null)}
+                    aria-label="Subir o eliminar currículum vitae (CV)"
                   />
                 </Field>
 
@@ -158,6 +163,7 @@ const Information = () => {
                 >
                   <TextArea
                     maxLength={500}
+                    aria-label="Presentación personal"
                     placeholder="Cuéntanos sobre tu experiencia, logros clave y qué buscas en tu próximo desafío profesional..."
                     value={presentacion}
                     onChange={(e) => {
@@ -192,6 +198,7 @@ const Information = () => {
         <div className="flex justify-end gap-3 pb-16">
           <button
             type="button"
+            aria-label="Descartar cambios"
             onClick={handleDescartar}
             className="rounded-xl border-[1.5px] border-[#cdd6ea] bg-white px-[22px] py-3 text-sm font-semibold text-[#123498] transition hover:bg-[#f2f5fc]"
           >
@@ -199,6 +206,7 @@ const Information = () => {
           </button>
           <button
             type="submit"
+            aria-label="Guardar cambios"
             disabled={isLoading}
             className="rounded-xl bg-[#f46f0b] px-7 py-3 text-sm font-bold text-white transition hover:bg-[#d65f09] disabled:opacity-60 disabled:cursor-not-allowed"
           >
