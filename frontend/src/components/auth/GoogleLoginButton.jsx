@@ -2,6 +2,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import GoogleIcon from "../../assets/images/google_icono.webp";
 
 export default function GoogleLoginButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,8 +55,10 @@ export default function GoogleLoginButton() {
           ) : (
             <>
               <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                src={GoogleIcon}
                 alt="Logo de Google"
+                width={240}
+                height={240}
                 className="w-5 h-5"
               />
               Continuar con Google
