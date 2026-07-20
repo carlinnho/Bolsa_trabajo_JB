@@ -10,7 +10,8 @@
 //   Fila 2: chips de filtros activos + dropdowns
 // ─────────────────────────────────────────────────────────────
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { vacantesService } from '../../services/vacantesService';
 import BottomSheet from './BottomSheet';
 
 function ChipFilter({ label, onRemove }) {
@@ -39,18 +40,18 @@ const OPCIONES_FECHA = [
 
 const OPCIONES_TIPO = [
   { value: '', label: 'Todos los tipos' },
-  { value: 'Tiempo completo', label: 'Jornada Completa' },
+  { value: 'Tiempo completo', label: 'Tiempo completo' },
+  { value: 'Permanente', label: 'Permanente' },
   { value: 'Medio tiempo', label: 'Medio tiempo' },
+  { value: 'Freelance', label: 'Freelance' },
   { value: 'Prácticas', label: 'Prácticas' },
   { value: 'Temporal', label: 'Temporal' },
-  { value: 'Permanente', label: 'Permanente' },
-  { value: 'Full Stack', label: 'Full Stack' },
 ];
 
 const OPCIONES_MODALIDAD = [
   { value: '', label: 'Todas las modalidades' },
-  { value: 'Presencial', label: 'Presencial' },
-  { value: 'Remoto', label: 'Remoto' },
+  { value: 'presencial', label: 'Presencial' },
+  { value: 'remoto', label: 'Remoto' },
   { value: 'Híbrida', label: 'Híbrida' },
 ];
 
@@ -72,6 +73,19 @@ const CIUDADES = [
   'Ayacucho, Perú',
 ];
 
+const TIPOS_LABEL = { cargo: 'Cargos', categoria: 'Categorías', empresa: 'Empresas' };
+
+function agruparSugerencias(lista) {
+  const grupos = {};
+  lista.forEach((item, i) => {
+    item._index = i;
+    if (!grupos[item.tipo]) grupos[item.tipo] = [];
+    grupos[item.tipo].push(item);
+  });
+  const orden = ['cargo', 'categoria', 'empresa'];
+  return orden.filter(t => grupos[t]).map(t => ({ tipo: t, label: TIPOS_LABEL[t], items: grupos[t] }));
+}
+
 export default function FiltrosVacantes({ filtros, onFilterChange }) {
   const [locales, setLocales] = useState(filtros);
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -81,6 +95,11 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
   const [sugerencias, setSugerencias] = useState([]);
   const [indiceSugerencia, setIndiceSugerencia] = useState(-1);
   const [inputUbicacionFoco, setInputUbicacionFoco] = useState(false);
+  const [sugerenciasCargo, setSugerenciasCargo] = useState([]);
+  const [indiceSugerenciaCargo, setIndiceSugerenciaCargo] = useState(-1);
+  const [inputCargoFoco, setInputCargoFoco] = useState(false);
+  const debounceRef = useRef(null);
+  const inputCargoRef = useRef(null);
   const menuRef = useRef(null);
   const menuTipoRef = useRef(null);
   const menuModalidadRef = useRef(null);
@@ -102,8 +121,30 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const buscarSugerencias = useCallback(async (termino) => {
+    if (termino.length < 1) {
+      setSugerenciasCargo([]);
+      return;
+    }
+    try {
+      const res = await vacantesService.sugerencias(termino);
+      setSugerenciasCargo(res || []);
+    } catch {
+      setSugerenciasCargo([]);
+    }
+  }, []);
+
   const handleInputChange = (campo, valor) => {
     setLocales((prev) => ({ ...prev, [campo]: valor }));
+    if (campo === 'cargo') {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      setIndiceSugerenciaCargo(-1);
+      if (valor.length >= 1) {
+        debounceRef.current = setTimeout(() => buscarSugerencias(valor), 300);
+      } else {
+        setSugerenciasCargo([]);
+      }
+    }
   };
 
   const handleBuscar = () => {
@@ -156,13 +197,64 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
+            ref={inputCargoRef}
             type="text"
             placeholder="Cargo, categoría o empresa"
             value={locales.cargo}
             onChange={(e) => handleInputChange('cargo', e.target.value)}
-            onKeyDown={handleKeyDown}
+            onFocus={() => {
+              setInputCargoFoco(true);
+              if (locales.cargo.length >= 1 && sugerenciasCargo.length === 0) {
+                buscarSugerencias(locales.cargo);
+              }
+            }}
+            onBlur={() => setTimeout(() => setInputCargoFoco(false), 200)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setIndiceSugerenciaCargo((i) => Math.min(i + 1, sugerenciasCargo.length - 1));
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setIndiceSugerenciaCargo((i) => Math.max(i - 1, 0));
+              } else if (e.key === 'Enter' && indiceSugerenciaCargo >= 0) {
+                handleInputChange('cargo', sugerenciasCargo[indiceSugerenciaCargo].texto);
+                setSugerenciasCargo([]);
+                setIndiceSugerenciaCargo(-1);
+              } else if (e.key === 'Enter') {
+                handleBuscar();
+              }
+            }}
             className="w-full pl-10 pr-3 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:border-azul focus:ring-azul transition-colors"
           />
+          {sugerenciasCargo.length > 0 && inputCargoFoco && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 max-h-48 overflow-y-auto">
+              {agruparSugerencias(sugerenciasCargo).map((grupo) => (
+                <div key={grupo.tipo}>
+                  <div className="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50">
+                    {grupo.label}
+                  </div>
+                  {grupo.items.map((item, i) => (
+                    <button
+                      key={item.texto + item.tipo}
+                      type="button"
+                      onMouseDown={() => {
+                        handleInputChange('cargo', item.texto);
+                        setSugerenciasCargo([]);
+                        setIndiceSugerenciaCargo(-1);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
+                        item._index === indiceSugerenciaCargo
+                          ? 'bg-orange-50 text-naranja font-semibold'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {item.texto}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="relative">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +306,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
             className="w-full pl-10 pr-3 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:border-azul focus:ring-azul transition-colors"
           />
           {sugerencias.length > 0 && inputUbicacionFoco && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1 max-h-48 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 max-h-48 overflow-y-auto">
               {sugerencias.map((ciudad, i) => (
                 <button
                   key={ciudad}
@@ -252,13 +344,64 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
+            ref={inputCargoRef}
             type="text"
             placeholder="Cargo, categoría o empresa"
             value={locales.cargo}
             onChange={(e) => handleInputChange('cargo', e.target.value)}
-            onKeyDown={handleKeyDown}
+            onFocus={() => {
+              setInputCargoFoco(true);
+              if (locales.cargo.length >= 1 && sugerenciasCargo.length === 0) {
+                buscarSugerencias(locales.cargo);
+              }
+            }}
+            onBlur={() => setTimeout(() => setInputCargoFoco(false), 200)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setIndiceSugerenciaCargo((i) => Math.min(i + 1, sugerenciasCargo.length - 1));
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setIndiceSugerenciaCargo((i) => Math.max(i - 1, 0));
+              } else if (e.key === 'Enter' && indiceSugerenciaCargo >= 0) {
+                handleInputChange('cargo', sugerenciasCargo[indiceSugerenciaCargo].texto);
+                setSugerenciasCargo([]);
+                setIndiceSugerenciaCargo(-1);
+              } else if (e.key === 'Enter') {
+                handleBuscar();
+              }
+            }}
             className="w-full pl-10 pr-3 py-3 bg-transparent text-sm focus:outline-none rounded-l-lg"
           />
+          {sugerenciasCargo.length > 0 && inputCargoFoco && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 max-h-48 overflow-y-auto">
+              {agruparSugerencias(sugerenciasCargo).map((grupo) => (
+                <div key={grupo.tipo}>
+                  <div className="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50">
+                    {grupo.label}
+                  </div>
+                  {grupo.items.map((item) => (
+                    <button
+                      key={item.texto + item.tipo}
+                      type="button"
+                      onMouseDown={() => {
+                        handleInputChange('cargo', item.texto);
+                        setSugerenciasCargo([]);
+                        setIndiceSugerenciaCargo(-1);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
+                        item._index === indiceSugerenciaCargo
+                          ? 'bg-orange-50 text-naranja font-semibold'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {item.texto}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
@@ -314,7 +457,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
           />
 
           {sugerencias.length > 0 && inputUbicacionFoco && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1 max-h-48 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 max-h-48 overflow-y-auto">
               {sugerencias.map((ciudad, i) => (
                 <button
                   key={ciudad}
