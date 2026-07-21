@@ -48,7 +48,8 @@ export function useLoginForm() {
         } else {
           localStorage.removeItem("remembered_email");
         }
-        navigate("/");
+        const user = response.data?.user;
+        navigate(user?.rol_nombre === "admin" ? "/admin" : "/");
       }
     } catch (error) {
       setGeneralError(error.message);

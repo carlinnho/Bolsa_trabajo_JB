@@ -17,6 +17,7 @@ import Information from "./components/profile/Information/Information";
 import Applications from "./components/profile/Application/Applications";
 import FavoriteApplications from "./components/profile/FavoriteApplication/FavoriteApplications";
 import Admin from "./pages/Admin";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ChangePassword from "./pages/ChangePassword";
 
 const GOOGLE_CLIENT_ID = "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
@@ -70,7 +71,11 @@ function App() {
         <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
 
         {/* RUTA ADMIN */}
-        <Route path="/admin/*" element={<Admin />} />
+        <Route path="/admin/*" element={
+          <ProtectedRoute requiredRole="admin">
+            <Admin />
+          </ProtectedRoute>
+        } />
 
       </Routes>
     </Router>

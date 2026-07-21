@@ -17,7 +17,8 @@ export default function GoogleLoginButton() {
         credentialResponse.credential,
       );
       if (response.success) {
-        navigate("/");
+        const user = response.data?.user;
+        navigate(user?.rol_nombre === "admin" ? "/admin" : "/");
       }
     } catch (err) {
       setError(err.message || "Error al autenticar con Google");
