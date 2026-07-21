@@ -328,3 +328,38 @@ COMMIT;
 ALTER TABLE preguntas_oferta
 ADD COLUMN tipo ENUM('si_no', 'opciones', 'texto', 'numero') NOT NULL DEFAULT 'texto' AFTER pregunta,
 ADD COLUMN opciones JSON NULL AFTER tipo;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `favoritos`
+--
+
+CREATE TABLE `favoritos` (
+  `id` int(11) NOT NULL,
+  `usuario_id` varchar(36) NOT NULL,
+  `oferta_id` int(11) NOT NULL,
+  `fecha_guardado` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indices de la tabla `favoritos`
+--
+ALTER TABLE `favoritos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_favorito_usuario_oferta` (`usuario_id`,`oferta_id`),
+  ADD KEY `idx_favoritos_usuario` (`usuario_id`),
+  ADD KEY `idx_favoritos_oferta` (`oferta_id`);
+
+--
+-- AUTO_INCREMENT de la tabla `favoritos`
+--
+ALTER TABLE `favoritos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Filtros para la tabla `favoritos`
+--
+ALTER TABLE `favoritos`
+  ADD CONSTRAINT `fk_favorito_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favorito_oferta` FOREIGN KEY (`oferta_id`) REFERENCES `ofertas_trabajo` (`id`) ON DELETE CASCADE;
