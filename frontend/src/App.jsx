@@ -2,8 +2,9 @@ import {
   BrowserRouter as Router,
   Routes, Route, Outlet, useLocation,
 } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Header from "./components/Header";
+import Header from "./components/layout/Header";
 import Login from "./pages/Login";
 import Buscador from "./pages/Buscador";
 import Home from "./pages/Home";
@@ -19,6 +20,12 @@ import ChangePassword from "./pages/ChangePassword";
 
 const GOOGLE_CLIENT_ID = "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
 
+const Loading = () => (
+  <div className="flex min-h-screen items-center justify-center text-[#6b7a9f] text-sm">
+    Cargando...
+  </div>
+);
+
 function MainLayout() {
   const location = useLocation();
   return (
@@ -33,6 +40,7 @@ function MainLayout() {
 
 function App() {
   return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Router>
       <Suspense fallback={<Loading />}>
         <Routes>
