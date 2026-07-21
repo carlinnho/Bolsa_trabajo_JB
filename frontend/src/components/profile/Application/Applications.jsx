@@ -13,11 +13,11 @@ export default function Applications() {
     aplicaciones,
     total,
     isDirty,
+    isLoading,
   } = useApplications();
 
   return (
     <div className="w-full pt-2">
-
       {/* Header */}
       <div className="mb-6 flex flex-col md:flex-row items-start justify-between">
         <PageHeader
@@ -64,9 +64,13 @@ export default function Applications() {
         </div>
       </div>
 
-      {/* Lista de tarjetas */}
+      {/* Lista de postulaciones */}
       <div className="flex flex-col gap-3">
-        {aplicaciones.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-sm text-[#9aa3bd]">
+            Cargando postulaciones...
+          </div>
+        ) : aplicaciones.length > 0 ? (
           aplicaciones.map((aplicacion) => (
             <ApplicationCard key={aplicacion.id} aplicacion={aplicacion} />
           ))

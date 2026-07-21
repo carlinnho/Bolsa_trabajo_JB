@@ -1,4 +1,8 @@
-import { BuildingOfficeIcon, MapPinIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  BuildingOfficeIcon,
+  MapPinIcon,
+  CalendarIcon,
+} from "@heroicons/react/24/outline";
 import ApplicationStatusBadge from "./ApplicationStatusBadge";
 
 // Convierte "2025-06-15" → "15 de junio"
@@ -8,26 +12,23 @@ const formatearFecha = (fechaStr) => {
 };
 
 export default function ApplicationCard({ aplicacion }) {
-  const {
-    cargo,
-    empresa,
-    inicialesLogo,
-    colorLogo,
-    ubicacion,
-    fechaPostulacion,
-    estado,
-  } = aplicacion;
+  const { cargo, empresa, ubicacion, fecha_postulacion, estado, logo_url } =
+    aplicacion;
 
   return (
     <div className="flex flex-col sm:flex-row items-center gap-5 rounded-2xl bg-white px-6 py-5 shadow-sm border border-[#e8edf5]">
-      
-      {/* Avatar con iniciales */}
-      <div
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
-        style={{ backgroundColor: colorLogo }}
-      >
-        {inicialesLogo}
-      </div>
+      {/* Avatar con logo o iniciales */}
+      {logo_url ? (
+        <img
+          src={`http://localhost/backend-bolsajb/${logo_url}`}
+          alt={empresa}
+          className="h-12 w-12 rounded-xl object-cover shrink-0"
+        />
+      ) : (
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#123498] text-sm font-bold text-white">
+          {empresa?.charAt(0).toUpperCase()}
+        </div>
+      )}
 
       {/* Info principal */}
       <div className="flex flex-1 flex-col gap-4 sm:gap-2 min-w-0">
@@ -47,7 +48,7 @@ export default function ApplicationCard({ aplicacion }) {
           </span>
           <span className="flex items-center gap-1">
             <CalendarIcon className="h-3.5 w-3.5" />
-            Postulaste el {formatearFecha(fechaPostulacion)}
+            Postulaste el {formatearFecha(fecha_postulacion)}
           </span>
         </div>
       </div>
