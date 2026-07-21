@@ -1,3 +1,31 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 20-07-2026 a las 03:06:14
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `bolsa_trabajo_jb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
@@ -60,7 +88,7 @@ CREATE TABLE `ofertas_trabajo` (
   `vistas_count` int(11) NOT NULL DEFAULT 0,
   `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
   `fecha_expiracion` datetime NOT NULL DEFAULT (current_timestamp() + interval 90 day)
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ofertas_trabajo`
@@ -80,7 +108,7 @@ CREATE TABLE `postulaciones_candidatos` (
   `usuario_id` varchar(36) NOT NULL,
   `oferta_id` int(11) NOT NULL,
   `cv_enviado_url` varchar(500) DEFAULT NULL,
-  `estado` enum('recibido','revisado','entrevista','aprobado','rechazado') NOT NULL DEFAULT 'recibido',
+  `estado` enum('recibido','revisado','rechazado','aprobado') NOT NULL DEFAULT 'recibido',
   `notas_internas` text DEFAULT NULL,
   `fecha_postulacion` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -256,7 +284,7 @@ ALTER TABLE `empresas_clientes`
 -- AUTO_INCREMENT de la tabla `ofertas_trabajo`
 --
 ALTER TABLE `ofertas_trabajo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `postulaciones_candidatos`
@@ -325,6 +353,24 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 
+-- 1) Agregar columnas nuevas a preguntas_oferta
 ALTER TABLE preguntas_oferta
-ADD COLUMN tipo ENUM('si_no', 'opciones', 'texto', 'numero') NOT NULL DEFAULT 'texto' AFTER pregunta,
-ADD COLUMN opciones JSON NULL AFTER tipo;
+  ADD COLUMN tipo enum('si_no','opciones','texto','numero') NOT NULL DEFAULT 'texto' AFTER pregunta,
+  ADD COLUMN opciones longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
+      CHECK (json_valid(opciones)) AFTER tipo;
+
+-- 2) IMPORTANTE: primero mapear los datos existentes de ofertas_trabajo
+--    antes de alterar los enums (ajusta el mapeo según tu criterio real)
+UPDATE ofertas_trabajo SET modalidad = 'Híbrida' WHERE modalidad = 'híbrido';
+
+UPDATE ofertas_trabajo SET tipo_contrato = 'Permanente'   WHERE tipo_contrato = 'indefinido';
+UPDATE ofertas_trabajo SET tipo_contrato = 'Temporal'     WHERE tipo_contrato = 'temporal';
+UPDATE ofertas_trabajo SET tipo_contrato = 'Freelance'    WHERE tipo_contrato = 'freelance';
+UPDATE ofertas_trabajo SET tipo_contrato = 'Prácticas'    WHERE tipo_contrato = 'prácticas';
+UPDATE ofertas_trabajo SET tipo_contrato = 'Medio tiempo' WHERE tipo_contrato = 'por_horas';
+
+-- 3) Ahora sí, alterar los enums y el charset/collation de la tabla
+ALTER TABLE ofertas_trabajo
+  MODIFY modalidad enum('presencial','remoto','Híbrida') NOT NULL DEFAULT 'presencial',
+  MODIFY tipo_contrato enum('Tiempo completo','Permanente','Medio tiempo','Freelance','Prácticas','Temporal') NOT NULL DEFAULT 'Tiempo completo',
+  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

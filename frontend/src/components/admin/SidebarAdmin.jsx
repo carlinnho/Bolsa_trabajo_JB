@@ -17,6 +17,10 @@ const NAV_ITEMS = [
 
 export default function SidebarAdmin() {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const userName = user.nombre_completo || "Administrador";
+    const userRole = user.rol_nombre || "Administrador";
+    const initials = userName.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-[248px] bg-white border-r border-slate-200/80 flex flex-col z-30">
@@ -72,11 +76,11 @@ export default function SidebarAdmin() {
             <div className="px-4 pb-5 pt-4 border-t border-slate-100">
                 <div className="flex items-center gap-3 p-3 bg-white border border-slate-200/80 rounded-xl shadow-2xs">
                     <div className="w-9 h-9 rounded-full bg-[#123498]/15 text-[#123498] flex items-center justify-center text-xs font-black shrink-0 border border-[#123498]/10">
-                        RM
+                        {initials}
                     </div>
                     <div className="leading-tight min-w-0">
-                        <p className="text-xs font-extrabold text-[#1A1A1A] truncate">Rodrigo Mendoza</p>
-                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Administrador</p>
+                        <p className="text-xs font-extrabold text-[#1A1A1A] truncate">{userName}</p>
+                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{userRole}</p>
                     </div>
                 </div>
             </div>
