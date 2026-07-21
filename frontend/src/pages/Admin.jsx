@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Building2, Briefcase, Users, LogOut,
-  ChevronRight, Menu, X, PlusCircle, ArrowRight,
+  ChevronRight, ChevronDown, ChevronUp, Menu, X, PlusCircle, ArrowRight,
   CheckCircle2, XCircle, Download, Mail, Phone,
   Eye, Check, FileText, HelpCircle, Edit3, Trash2, Search, ToggleLeft,
-  ToggleRight, Plus, Sparkles, User, AlertCircle, Home
+  ToggleRight, Plus, Sparkles, User, AlertCircle, Home, MessageCircle
 } from "lucide-react";
 import StatCard from "../components/admin/StatCard";
 import SidebarAdmin from "../components/admin/SidebarAdmin";
@@ -419,6 +419,7 @@ function SectionOfertas() {
   const [preguntas, setPreguntas] = useState([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [expandedRowId, setExpandedRowId] = useState(null);
 
   const reload = async () => {
     try { setOffers(await getOffers()); } catch (e) { setOffers([]); }
@@ -581,41 +582,85 @@ function SectionOfertas() {
               <tr className="text-left text-[9px] text-slate-400 uppercase tracking-widest border-b border-slate-100 bg-slate-50/50">
                 <th className="px-5 py-3.5 font-black">Título</th>
                 <th className="px-5 py-3.5 font-black">Empresa</th>
-                <th className="px-5 py-3.5 font-black">Ubicación</th>
-                <th className="px-5 py-3.5 font-black">Modalidad</th>
-                <th className="px-5 py-3.5 font-black">Contrato</th>
-                <th className="px-5 py-3.5 font-black text-center">Estado</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black">Ubicación</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black">Modalidad</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black">Contrato</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black text-center">Estado</th>
                 <th className="px-5 py-3.5 font-black text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filteredOffers.map(o => (
-                <tr key={o.id} className="border-t border-slate-50 hover:bg-slate-50/50 transition-colors">
-                  <td className="px-5 py-3.5 font-bold text-[#1A1A1A]">{o.titulo}</td>
-                  <td className="px-5 py-3.5 text-slate-500">{o.empresa_nombre}</td>
-                  <td className="px-5 py-3.5 text-slate-400">{o.ubicacion || "—"}</td>
-                  <td className="px-5 py-3.5">
-                    <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_MODALIDAD[o.modalidad] || o.modalidad}</span>
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_CONTRATO[o.tipo_contrato] || o.tipo_contrato}</span>
-                  </td>
-                  <td className="px-5 py-3.5 text-center">
-                    <button onClick={() => handleToggle(o.id)} className="inline-flex items-center gap-1.5" title="Toggle estado">
-                      {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
-                      <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
-                    </button>
-                  </td>
-                  <td className="px-5 py-3.5 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(o)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#123498] transition-colors"><Edit3 size={13} /></button>
-                      <button onClick={() => handleDelete(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {filteredOffers.map(o => {
+                const isExpanded = expandedRowId === o.id;
+                return (
+                  <React.Fragment key={o.id}>
+                    <tr
+                      className="border-t border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer lg:cursor-default"
+                      onClick={() => setExpandedRowId(isExpanded ? null : o.id)}
+                    >
+                      <td className="px-5 py-3.5 font-bold text-[#1A1A1A]">
+                        <span className="flex items-center gap-2">
+                          <span className="lg:hidden text-slate-300 transition-transform duration-200">
+                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </span>
+                          {o.titulo}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-slate-500">{o.empresa_nombre}</td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-slate-400">{o.ubicacion || "—"}</td>
+                      <td className="hidden lg:table-cell px-5 py-3.5">
+                        <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_MODALIDAD[o.modalidad] || o.modalidad}</span>
+                      </td>
+                      <td className="hidden lg:table-cell px-5 py-3.5">
+                        <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_CONTRATO[o.tipo_contrato] || o.tipo_contrato}</span>
+                      </td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-center">
+                        <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                          {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                          <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                        </button>
+                      </td>
+                      <td className="px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => openEdit(o)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#123498] transition-colors"><Edit3 size={13} /></button>
+                          <button onClick={() => handleDelete(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <tr className="lg:hidden border-t border-slate-100 bg-slate-50/80">
+                        <td colSpan="3" className="px-5 py-4">
+                          <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Ubicación</span>
+                              <p className="text-slate-600 font-semibold mt-0.5">{o.ubicacion || "—"}</p>
+                            </div>
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Modalidad</span>
+                              <p className="mt-0.5"><span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_MODALIDAD[o.modalidad] || o.modalidad}</span></p>
+                            </div>
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Contrato</span>
+                              <p className="mt-0.5"><span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_CONTRATO[o.tipo_contrato] || o.tipo_contrato}</span></p>
+                            </div>
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Estado</span>
+                              <p className="mt-0.5">
+                                <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                                  {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                                  <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                                </button>
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
               {filteredOffers.length === 0 && (
-                <tr><td colSpan="7" className="py-12 text-center text-slate-400 text-sm">No se encontraron ofertas.</td></tr>
+                <tr><td colSpan="3" className="lg:col-span-7 py-12 text-center text-slate-400 text-sm">No se encontraron ofertas.</td></tr>
               )}
             </tbody>
           </table>
@@ -787,6 +832,7 @@ function SectionPostulantes() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [loadingNota, setLoadingNota] = useState(false);
   const [notaText, setNotaText] = useState("");
+  const [expandedRowId, setExpandedRowId] = useState(null);
 
   const reload = async () => {
     try { setCandidates(await getPostulaciones()); } catch (e) { setCandidates([]); }
@@ -886,41 +932,85 @@ function SectionPostulantes() {
               <tr className="text-left text-[9px] text-slate-400 uppercase tracking-widest border-b border-slate-100 bg-slate-50/50">
                 <th className="px-5 py-3.5 font-black">Candidato</th>
                 <th className="px-5 py-3.5 font-black">Oferta</th>
-                <th className="px-5 py-3.5 font-black">Empresa</th>
-                <th className="px-5 py-3.5 font-black">Fecha</th>
-                <th className="px-5 py-3.5 font-black text-center">Estado</th>
-                  <th className="px-5 py-3.5 font-black text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(c => (
-                  <tr key={c.id} className="border-t border-slate-50 hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <div className="font-bold text-[#1A1A1A]">{c.candidato_nombre}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{c.candidato_correo}</div>
-                    </td>
-                    <td className="px-5 py-3.5 text-slate-500">{c.oferta_titulo}</td>
-                    <td className="px-5 py-3.5 text-slate-400 font-bold">{c.empresa_nombre}</td>
-                    <td className="px-5 py-3.5 text-slate-400">{c.fecha_postulacion ? new Date(c.fecha_postulacion).toLocaleDateString() : "—"}</td>
-                    <td className="px-5 py-3.5 text-center">
-                      <select value={c.estado} onChange={e => handleStageChange(c.id, e.target.value)} className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider border-0 cursor-pointer focus:outline-none ${ESTADO_STYLES[c.estado] || "text-slate-500 bg-slate-50"}`}>
-                        {STAGES.map(st => <option key={st} value={st}>{STAGE_LABELS[st]}</option>)}
-                      </select>
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <button onClick={() => openDetail(c)} className="p-1.5 rounded-lg hover:bg-[#123498]/5 text-slate-400 hover:text-[#123498] transition-colors" title="Ver detalle">
-                        <Eye size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {filtered.length === 0 && (
-                  <tr><td colSpan="6" className="py-12 text-center text-slate-400 text-sm">No se encontraron postulantes.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black">Empresa</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black">Fecha</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black text-center">Estado</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 font-black text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(c => {
+                const isExpanded = expandedRowId === c.id;
+                return (
+                  <React.Fragment key={c.id}>
+                    <tr
+                      className="border-t border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer lg:cursor-default"
+                      onClick={() => setExpandedRowId(isExpanded ? null : c.id)}
+                    >
+                      <td className="px-5 py-3.5">
+                        <span className="flex items-center gap-2">
+                          <span className="lg:hidden text-slate-300 transition-transform duration-200">
+                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </span>
+                          <span>
+                            <div className="font-bold text-[#1A1A1A]">{c.candidato_nombre}</div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">{c.candidato_correo}</div>
+                          </span>
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-slate-500">{c.oferta_titulo}</td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-slate-400 font-bold">{c.empresa_nombre}</td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-slate-400">{c.fecha_postulacion ? new Date(c.fecha_postulacion).toLocaleDateString() : "—"}</td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-center">
+                        <select value={c.estado} onChange={(e) => { e.stopPropagation(); handleStageChange(c.id, e.target.value); }} onClick={(e) => e.stopPropagation()} className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider border-0 cursor-pointer focus:outline-none ${ESTADO_STYLES[c.estado] || "text-slate-500 bg-slate-50"}`}>
+                          {STAGES.map(st => <option key={st} value={st}>{STAGE_LABELS[st]}</option>)}
+                        </select>
+                      </td>
+                      <td className="hidden lg:table-cell px-5 py-3.5 text-right">
+                        <button onClick={(e) => { e.stopPropagation(); openDetail(c); }} className="p-1.5 rounded-lg hover:bg-[#123498]/5 text-slate-400 hover:text-[#123498] transition-colors" title="Ver detalle">
+                          <Eye size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <tr className="lg:hidden border-t border-slate-100 bg-slate-50/80">
+                        <td colSpan="2" className="px-5 py-4">
+                          <div className="space-y-3 text-xs">
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Empresa</span>
+                              <p className="text-slate-600 font-bold mt-0.5">{c.empresa_nombre}</p>
+                            </div>
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Fecha</span>
+                              <p className="text-slate-600 font-semibold mt-0.5">{c.fecha_postulacion ? new Date(c.fecha_postulacion).toLocaleDateString() : "—"}</p>
+                            </div>
+                            <div>
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Estado</span>
+                              <div className="mt-1">
+                                <select value={c.estado} onChange={(e) => { e.stopPropagation(); handleStageChange(c.id, e.target.value); }} onClick={(e) => e.stopPropagation()} className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider border-0 cursor-pointer focus:outline-none ${ESTADO_STYLES[c.estado] || "text-slate-500 bg-slate-50"}`}>
+                                  {STAGES.map(st => <option key={st} value={st}>{STAGE_LABELS[st]}</option>)}
+                                </select>
+                              </div>
+                            </div>
+                            <div>
+                              <button onClick={(e) => { e.stopPropagation(); openDetail(c); }} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#123498]/5 hover:bg-[#123498]/10 text-[#123498] text-[10px] font-black uppercase tracking-wider transition-colors">
+                                <Eye size={13} />Ver detalle
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              {filtered.length === 0 && (
+                <tr><td colSpan="2" className="lg:col-span-6 py-12 text-center text-slate-400 text-sm">No se encontraron postulantes.</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
+      </div>
 
       {/* Modal detalle */}
       {selectedCandidate && (
@@ -946,6 +1036,17 @@ function SectionPostulantes() {
                 <div className="flex items-center gap-2 text-xs text-slate-500"><Mail size={12} />{selectedCandidate.candidato_correo}</div>
                 <div className="flex items-center gap-2 text-xs text-slate-500"><Phone size={12} />{selectedCandidate.candidato_telefono || "—"}</div>
               </div>
+
+              {selectedCandidate.candidato_telefono && (
+                <a
+                  href={`https://wa.me/51${selectedCandidate.candidato_telefono.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1da851] text-white text-xs font-black uppercase tracking-wider transition-colors"
+                >
+                  <MessageCircle size={14} />Contactar por WhatsApp
+                </a>
+              )}
 
               <div className="bg-slate-50 rounded-xl p-4">
                 <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">Oferta Postulada</h4>
@@ -1013,6 +1114,7 @@ function SectionPostulantes() {
 export default function Admin() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Determinar sección activa basándose en la URL
   const getSection = () => {
@@ -1031,11 +1133,29 @@ export default function Admin() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <SidebarAdmin />
-      <div className="flex-1 flex flex-col ml-[248px]">
-        <TopbarAdmin />
-        <main className="flex-1 p-6 overflow-auto">
+    <div className="flex h-screen bg-slate-50 overflow-x-hidden">
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-[248px]
+        transform transition-transform duration-200 ease-in-out
+        lg:relative lg:translate-x-0 lg:shrink-0
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        <SidebarAdmin onCloseMobile={() => setSidebarOpen(false)} />
+      </aside>
+
+      {/* Overlay oscuro móvil */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Contenido principal */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 lg:ml-0">
+        <TopbarAdmin onToggleSidebar={() => setSidebarOpen(prev => !prev)} />
+        <main className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden">
           {section === "dashboard" && <SectionDashboard onNavigate={handleNavigate} />}
           {section === "empresas" && <SectionEmpresas />}
           {section === "ofertas" && <SectionOfertas />}
