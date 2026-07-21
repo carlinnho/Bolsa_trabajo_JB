@@ -15,11 +15,15 @@ const NAV_ITEMS = [
     { to: "/admin/postulantes", label: "Postulantes", icon: Users },
 ];
 
-export default function SidebarAdmin() {
+export default function SidebarAdmin({ onCloseMobile }) {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const userName = user.nombre_completo || "Administrador";
+    const userRole = user.rol_nombre || "Administrador";
+    const initials = userName.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-[248px] bg-white border-r border-slate-200/80 flex flex-col z-30">
+        <aside className="relative left-0 top-0 h-full w-[248px] bg-white border-r border-slate-200/80 flex flex-col z-30">
             {/* Logo */}
             <div className="flex flex-col justify-center px-6 h-20 border-b border-slate-100">
                 <span className="font-black text-[#123498] text-[16px] tracking-wide font-heading uppercase">
@@ -37,6 +41,7 @@ export default function SidebarAdmin() {
                         key={to}
                         to={to}
                         end={end}
+                        onClick={onCloseMobile}
                         className={({ isActive }) =>
                             `flex items-center justify-between gap-2.5 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${isActive
                                 ? "bg-[#123498] text-white shadow-md shadow-[#123498]/10"
@@ -72,11 +77,11 @@ export default function SidebarAdmin() {
             <div className="px-4 pb-5 pt-4 border-t border-slate-100">
                 <div className="flex items-center gap-3 p-3 bg-white border border-slate-200/80 rounded-xl shadow-2xs">
                     <div className="w-9 h-9 rounded-full bg-[#123498]/15 text-[#123498] flex items-center justify-center text-xs font-black shrink-0 border border-[#123498]/10">
-                        RM
+                        {initials}
                     </div>
                     <div className="leading-tight min-w-0">
-                        <p className="text-xs font-extrabold text-[#1A1A1A] truncate">Rodrigo Mendoza</p>
-                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Administrador</p>
+                        <p className="text-xs font-extrabold text-[#1A1A1A] truncate">{userName}</p>
+                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{userRole}</p>
                     </div>
                 </div>
             </div>

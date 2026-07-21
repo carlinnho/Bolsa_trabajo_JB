@@ -1,15 +1,15 @@
 import { Search, Bell, Menu, User } from "lucide-react";
 
-export default function TopbarAdmin() {
+export default function TopbarAdmin({ onToggleSidebar }) {
     return (
-        <header className="h-20 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 sticky top-0 z-20">
+        <header className="h-20 bg-white border-b border-slate-200/80 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20">
             {/* Left side: Menu toggle & Corporate Title */}
             <div className="flex items-center gap-4">
-                <button className="p-1 rounded-lg text-slate-400 hover:text-[#123498] hover:bg-slate-50 transition-colors sm:hidden">
+                <button onClick={onToggleSidebar} className="p-1 rounded-lg text-slate-400 hover:text-[#123498] hover:bg-slate-50 transition-colors lg:hidden">
                     <Menu size={20} />
                 </button>
                 <div className="flex items-center gap-3">
-                    <span className="font-heading font-black text-[#123498] text-[15px] tracking-wider uppercase">
+                    <span className="font-heading font-black text-[#123498] text-[15px] tracking-wider uppercase truncate">
                         Control de Reclutamiento
                     </span>
                 </div>
