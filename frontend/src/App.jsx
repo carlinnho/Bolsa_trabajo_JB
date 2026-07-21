@@ -1,8 +1,12 @@
 import {
   BrowserRouter as Router,
-  Routes, Route, Outlet, useLocation,
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
 } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // ── Layout global ────────────────────────────────────────────
 import Header from "./components/layout/Header";
@@ -15,9 +19,15 @@ const Profile = lazy(() => import("./pages/Profile"));
 const ChangePassword = lazy(() => import("./pages/ChangePassword"));
 const CuentaValidada = lazy(() => import("./pages/CuentaValidada"));
 const RevisaCorreo = lazy(() => import("./pages/RevisaCorreo"));
-const Information = lazy(() => import("./components/profile/Information/Information"));
-const Applications = lazy(() => import("./components/profile/Application/Applications"));
-const FavoriteApplications = lazy(() => import("./components/profile/FavoriteApplication/FavoriteApplications"));
+const Information = lazy(
+  () => import("./components/profile/Information/Information"),
+);
+const Applications = lazy(
+  () => import("./components/profile/Application/Applications"),
+);
+const FavoriteApplications = lazy(
+  () => import("./components/profile/FavoriteApplication/FavoriteApplications"),
+);
 
 // ── Fallback de carga ────────────────────────────────────────
 const Loading = () => (
@@ -26,7 +36,8 @@ const Loading = () => (
   </div>
 );
 
-const GOOGLE_CLIENT_ID = "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =
+  "102292791934-vdo8ihbfaqrkmvsp91r1druc46pes4ho.apps.googleusercontent.com";
 
 function MainLayout() {
   const location = useLocation();
@@ -42,42 +53,43 @@ function MainLayout() {
 
 function App() {
   return (
-    <Router>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/buscar-empleo" element={<Buscador />} />
-            <Route path="/mi-perfil" element={<Profile />}>
-              <Route index element={<Information />} />
-              <Route path="postulaciones" element={<Applications />} />
-              <Route path="favoritos" element={<FavoriteApplications />} />
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Router>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/buscar-empleo" element={<Buscador />} />
+              <Route path="/mi-perfil" element={<Profile />}>
+                <Route index element={<Information />} />
+                <Route path="postulaciones" element={<Applications />} />
+                <Route path="favoritos" element={<FavoriteApplications />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route
-            path="/login"
-            element={
-              <main className="min-h-screen bg-slate-50">
-                <Login />
-              </main>
-            }
-          />
+            <Route
+              path="/login"
+              element={
+                <main className="min-h-screen bg-slate-50">
+                  <Login />
+                </main>
+              }
+            />
 
-          <Route
-            path="/cambiar-contrasena"
-            element={
-              <main className="min-h-screen bg-[#f4f6fb]">
-                <ChangePassword />
-              </main>
-            }
-          />
+            <Route
+              path="/cambiar-contrasena"
+              element={
+                <main className="min-h-screen bg-[#f4f6fb]">
+                  <ChangePassword />
+                </main>
+              }
+            />
 
-          <Route path="/cuenta-validada" element={<CuentaValidada />} />
-          <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
-        </Routes>
-      </Suspense>
-    </Router>
+            <Route path="/cuenta-validada" element={<CuentaValidada />} />
+            <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+          </Routes>
+        </Suspense>
+      </Router>
     </GoogleOAuthProvider>
   );
 }
