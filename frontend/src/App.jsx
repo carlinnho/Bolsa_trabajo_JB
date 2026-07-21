@@ -1,9 +1,6 @@
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-  useLocation,
+  Routes, Route, Outlet, useLocation,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Header from "./components/Header";
@@ -27,7 +24,7 @@ function MainLayout() {
   return (
     <>
       {location.pathname !== "/buscar-empleo" && <Header />}
-      <main className="bg-slate-50">
+      <main id="main-content" className="bg-slate-50">
         <Outlet />
       </main>
     </>
@@ -36,39 +33,27 @@ function MainLayout() {
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Router>
+    <Router>
+      <Suspense fallback={<Loading />}>
         <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/buscar-empleo" element={<Buscador />} />
-          <Route path="/mi-perfil" element={<Profile />}>
-            <Route index element={<Information />} />
-            <Route path="postulaciones" element={<Applications />} />
-            <Route path="favoritos" element={<FavoriteApplications />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/buscar-empleo" element={<Buscador />} />
+            <Route path="/mi-perfil" element={<Profile />}>
+              <Route index element={<Information />} />
+              <Route path="postulaciones" element={<Applications />} />
+              <Route path="favoritos" element={<FavoriteApplications />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route
-          path="/login"
-          element={
-            <main className="min-h-screen bg-slate-50">
-              <Login />
-            </main>
-          }
-        />
-
-        <Route
-          path="/cambiar-contrasena"
-          element={
-            <main className="min-h-screen bg-[#f4f6fb]">
-              <ChangePassword />
-            </main>
-          }
-        />
-
-        <Route path="/cuenta-validada" element={<CuentaValidada />} />
-        <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+          <Route
+            path="/login"
+            element={
+              <main className="min-h-screen bg-slate-50">
+                <Login />
+              </main>
+            }
+          />
 
         {/* RUTA ADMIN */}
         <Route path="/admin/*" element={
@@ -77,7 +62,10 @@ function App() {
           </ProtectedRoute>
         } />
 
-      </Routes>
+          <Route path="/cuenta-validada" element={<CuentaValidada />} />
+          <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+        </Routes>
+      </Suspense>
     </Router>
     </GoogleOAuthProvider>
   );

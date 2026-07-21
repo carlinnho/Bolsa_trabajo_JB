@@ -51,7 +51,7 @@ export default function CvUploader({ file, onFileSelect, onRemove }) {
       {file && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="mt-4.5 inline-flex items-center gap-3 rounded-xl border border-[#f0e3d3] bg-white px-3.75 py-2.5 shadow-[0_1px_5px_rgba(244,111,11,0.08)]"
+          className="mt-4.5 flex flex-col lg:flex-row items-center gap-3 rounded-xl border border-[#f0e3d3] bg-white px-3.75 py-2.5 shadow-[0_1px_5px_rgba(244,111,11,0.08)]"
         >
           <DocumentTextOutline strokeWidth={2} className=" w-5 h-5 text-naranja" />
           <span className="text-[13px] font-bold text-[#3a4566]">{file.name}</span>

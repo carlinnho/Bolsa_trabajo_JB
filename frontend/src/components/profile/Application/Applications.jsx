@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useApplications } from "../../../hooks/useApplications";
 import ApplicationCard from "./ApplicationCard";
-import PageHeader from "../PageHeader";
+import PageHeader from "../shared/PageHeader";
 
 export default function Applications() {
   const {
@@ -37,6 +37,7 @@ export default function Applications() {
             <button
               key={filtro}
               type="button"
+              aria-label={`Filtrar postulaciones por estado: ${filtro}`}
               onClick={() => setFiltroActivo(filtro)}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 filtroActivo === filtro
@@ -54,6 +55,7 @@ export default function Applications() {
           <MagnifyingGlassIcon className="h-4 w-4 text-[#9aa3bd]" />
           <input
             type="text"
+            aria-label="Buscar puesto o empresa"
             placeholder="Buscar puesto o empresa"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}

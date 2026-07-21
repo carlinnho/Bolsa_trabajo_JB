@@ -2,6 +2,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import GoogleIcon from "../../assets/images/google_icono.webp";
 
 export default function GoogleLoginButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +44,7 @@ export default function GoogleLoginButton() {
       <div className="relative w-full">
         <button
           type="button"
+          aria-label="Iniciar sesión con Google"
           onClick={handleCustomClick}
           disabled={isLoading}
           className={`w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition-colors ${
@@ -54,8 +56,10 @@ export default function GoogleLoginButton() {
           ) : (
             <>
               <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                src={GoogleIcon}
                 alt="Logo de Google"
+                width={240}
+                height={240}
                 className="w-5 h-5"
               />
               Continuar con Google
@@ -67,6 +71,7 @@ export default function GoogleLoginButton() {
         <div
           ref={hiddenButtonWrapperRef}
           className="absolute inset-0 opacity-0 overflow-hidden"
+          aria-label="Iniciar sesión con Google"
           aria-hidden="true"
         >
           <GoogleLogin

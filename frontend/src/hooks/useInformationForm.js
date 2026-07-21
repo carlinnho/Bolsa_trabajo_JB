@@ -12,26 +12,47 @@ export function useInformationForm() {
   const [successMessage, setSuccessMessage] = useState("");
   const [generalError, setGeneralError] = useState("");
 
-  // ── Cargar datos del perfil al entrar a la sección ──────────────────────
+  // Guardamos los valores originales que vinieron del backend
+  // para comparar y solo enviar lo que realmente cambió
+  const [initialValues, setInitialValues] = useState({
+    telefono: "",
+    presentacion: "",
+    cvArchivo: null,
+  });
+
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
         const response = await userService.getProfile();
         if (response.success && response.data) {
           const { telefono, texto_presentacion, cv_url } = response.data;
-          if (telefono) setTelefono(telefono);
-          if (texto_presentacion) setPresentacion(texto_presentacion);
-          if (cv_url) setCvArchivo({ name: cv_url.split("/").pop() });
+          const telefonoCargado = telefono || "";
+          const presentacionCargada = texto_presentacion || "";
+          const cvCargado = cv_url ? { name: cv_url.split("/").pop() } : null;
+
+          setTelefono(telefonoCargado);
+          setPresentacion(presentacionCargada);
+          setCvArchivo(cvCargado);
+
+          // Guardamos los valores iniciales para comparar después
+          setInitialValues({
+            telefono: telefonoCargado,
+            presentacion: presentacionCargada,
+            cvArchivo: cvCargado,
+          });
         }
       } catch {
-        // Si falla, los campos quedan vacíos — no bloqueamos al usuario
+        // Si falla, los campos quedan vacíos
       }
     };
 
     cargarPerfil();
   }, []);
 
-  const isDirty = telefono !== "" || presentacion !== "";
+  const isDirty =
+    telefono !== initialValues.telefono ||
+    presentacion !== initialValues.presentacion ||
+    cvArchivo instanceof File; // solo es "sucio" si subieron un archivo nuevo
 
   const validateForm = () => {
     const newErrors = {};
@@ -57,20 +78,43 @@ export function useInformationForm() {
   const handleGuardar = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     setGeneralError("");
     setSuccessMessage("");
 
     try {
-      // Leemos el nombre del usuario guardado en localStorage por authService
       const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // Solo construimos el objeto con los campos que realmente cambiaron
+      const cambios = {};
+
+      if (telefono.trim() !== initialValues.telefono) {
+        cambios.telefono = telefono.trim();
+      }
+      if (presentacion.trim() !== initialValues.presentacion) {
+        cambios.texto_presentacion = presentacion.trim();
+      }
+      if (cvArchivo instanceof File) {
+        cambios.cv = cvArchivo;
+      }
+
+      // Si no cambió nada, no llamamos al backend
+      if (Object.keys(cambios).length === 0) {
+        setSuccessMessage("No hay cambios que guardar.");
+        return;
+      }
 
       await userService.updateProfile({
         nombre_completo: user.nombre_completo,
+        ...cambios,
+      });
+
+      // Actualizamos los valores iniciales con los nuevos guardados
+      setInitialValues({
         telefono: telefono.trim(),
-        texto_presentacion: presentacion.trim(),
-        cv: cvArchivo instanceof File ? cvArchivo : undefined,
+        presentacion: presentacion.trim(),
+        cvArchivo: cvArchivo instanceof File ? { name: cvArchivo.name } : cvArchivo,
       });
 
       setSuccessMessage("¡Perfil actualizado correctamente!");
@@ -82,8 +126,10 @@ export function useInformationForm() {
   };
 
   const handleDescartar = () => {
-    setTelefono("");
-    setPresentacion("");
+    // Restauramos los valores iniciales que vinieron del backend
+    setTelefono(initialValues.telefono);
+    setPresentacion(initialValues.presentacion);
+    setCvArchivo(initialValues.cvArchivo);
     setErrors({});
     setSuccessMessage("");
     setGeneralError("");
