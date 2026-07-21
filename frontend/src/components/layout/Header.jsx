@@ -309,10 +309,12 @@ export default function Header({ hideOnScroll = false }) {
               )}
               <div className="h-6 w-px bg-gray-300" aria-hidden="true"></div>{" "}
               {/* Separador visual */}
-              {/* Enlace de Publicar Empleos (Ahora al final) */}
-              <Link to="/empresas/publicar" className={navLinkClasses}>
-                Publicar empleos
-              </Link>
+              {/* Enlace de Publicar Empleos (Solo admin) */}
+              {user?.rol_nombre === "admin" && (
+                <Link to="/admin/ofertas" className={navLinkClasses}>
+                  Publicar empleos
+                </Link>
+              )}
             </div>
 
             {/* BOTÓN HAMBURGUESA (Móvil) */}
@@ -783,7 +785,8 @@ export default function Header({ hideOnScroll = false }) {
                   </div>
                 </section>
 
-                {/* TARJETA: Para empresas */}
+                {/* TARJETA: Para empresas (Solo admin) */}
+                {user?.rol_nombre === "admin" && (
                 <section aria-labelledby="mobile-business-heading">
                   <h2
                     id="mobile-business-heading"
@@ -795,7 +798,7 @@ export default function Header({ hideOnScroll = false }) {
                     <ul className="list-none bg-white rounded-2xl shadow-sm divide-y divide-gray-100 overflow-hidden">
                       <li>
                         <Link
-                          to="/empresas/publicar"
+                          to="/admin/ofertas"
                           className={mobileCardLinkClasses}
                         >
                           <div
@@ -880,6 +883,7 @@ export default function Header({ hideOnScroll = false }) {
                     </ul>
                   </nav>
                 </section>
+                )}
               </>
             ) : null}
           </div>

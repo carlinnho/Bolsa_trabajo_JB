@@ -71,7 +71,7 @@ function getColor(nombre) {
   return colores[Math.abs(hash) % colores.length];
 }
 
-export default function FavoriteCard({ favorito, onEliminar }) {
+export default function FavoriteCard({ favorito, onEliminar, yaPostulada = false }) {
   const navigate = useNavigate();
 
   const ofertaId = favorito.oferta_id || favorito.id;
@@ -320,11 +320,16 @@ export default function FavoriteCard({ favorito, onEliminar }) {
             </button>
             <button
               type="button"
-              onClick={abrirPostulacion}
-              className="flex items-center gap-2 rounded-xl bg-[#f46f0b] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#d65f09]"
+              onClick={yaPostulada ? undefined : abrirPostulacion}
+              disabled={yaPostulada}
+              className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition ${
+                yaPostulada
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-[#f46f0b] text-white hover:bg-[#d65f09]"
+              }`}
             >
-              Postular
-              <span aria-hidden>→</span>
+              {yaPostulada ? "Ya postulaste" : "Postular"}
+              {!yaPostulada && <span aria-hidden>→</span>}
             </button>
           </div>
         </div>

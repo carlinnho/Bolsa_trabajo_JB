@@ -1,9 +1,20 @@
+import { useState, useEffect } from "react";
 import { useFavorites } from "../../../hooks/useFavorites";
+import { vacantesService } from "../../../services/vacantesService";
 import FavoriteCard from "./FavoriteCard";
 import PageHeader from "../shared/PageHeader";
 
 export default function FavoriteApplications() {
   const { favoritos, total, cargando, eliminarFavorito } = useFavorites();
+  const [postuladas, setPostuladas] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    vacantesService.misPostulaciones()
+      .then(ids => setPostuladas(ids))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="w-full pt-2">
@@ -28,6 +39,7 @@ export default function FavoriteApplications() {
               key={favorito.oferta_id || favorito.id}
               favorito={favorito}
               onEliminar={eliminarFavorito}
+              yaPostulada={postuladas.includes(favorito.oferta_id)}
             />
           ))
         ) : (
