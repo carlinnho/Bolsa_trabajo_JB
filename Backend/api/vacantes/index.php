@@ -149,6 +149,7 @@ if ($method === 'GET' && $action === 'mis_postulaciones_detalle') {
             pc.id,
             pc.estado,
             pc.fecha_postulacion,
+            o.id            AS oferta_id,
             o.titulo        AS cargo,
             e.nombre        AS empresa,
             e.logo_url,

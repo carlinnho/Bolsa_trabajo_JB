@@ -59,6 +59,15 @@ export default function Buscador() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const vacanteId = params.get("vacante");
+    if (vacanteId) {
+      handleSelect(vacanteId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setPagina(0);
   }, [vacantes.length]);
 
@@ -66,7 +75,7 @@ export default function Buscador() {
     const token = localStorage.getItem("token");
     if (!token) return;
     vacantesService.misPostulaciones()
-      .then(ids => setVacantesPostuladas(ids))
+      .then(ids => setVacantesPostuladas(ids.map(String)))
       .catch(() => {});
   }, []);
 
@@ -199,7 +208,7 @@ export default function Buscador() {
       setMensajePostulacion(result.message);
       setPostulacionStep('exito');
       setRespuestasFiltro({});
-      setVacantesPostuladas(prev => prev.includes(seleccionadaId) ? prev : [...prev, seleccionadaId]);
+      setVacantesPostuladas(prev => prev.includes(String(seleccionadaId)) ? prev : [...prev, String(seleccionadaId)]);
     } catch (err) {
       if (err.message === "Debes iniciar sesión para postularte") {
         navigate("/login");
