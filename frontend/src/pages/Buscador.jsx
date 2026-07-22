@@ -138,7 +138,7 @@ export default function Buscador() {
   );
 
   const handleSelect = useCallback(async (id) => {
-    setSeleccionadaId(id);
+    setSeleccionadaId(String(id));
     setPanelEstado("loading");
     setVacanteDetalle(null);
     setMensajePostulacion("");
