@@ -47,6 +47,8 @@ export default function PanelDetalle({
     return 'Detalle de la oferta';
   };
 
+  const expirada = vacante?.fecha_expiracion && new Date(vacante.fecha_expiracion) <= new Date();
+
   return (
     <div className="flex flex-col flex-1 min-h-0 pt-2">
       {/* Header fijo */}
@@ -67,7 +69,11 @@ export default function PanelDetalle({
           {tituloHeader()}
         </h2>
         {estado === 'detail' && !postulacionStep && (
-          yaPostulada ? (
+          expirada ? (
+            <span className="flex items-center gap-1.5 bg-red-50 text-red-400 font-semibold text-sm px-4 py-2 rounded-lg flex-shrink-0 cursor-default">
+              Oferta cerrada
+            </span>
+          ) : yaPostulada ? (
             <span className="flex items-center gap-1.5 bg-gray-100 text-gray-400 font-semibold text-sm px-4 py-2 rounded-lg flex-shrink-0 cursor-default">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

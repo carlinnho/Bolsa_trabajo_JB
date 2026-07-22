@@ -5,14 +5,14 @@ import {
   ChevronRight, ChevronDown, ChevronUp, Menu, X, PlusCircle, ArrowRight,
   CheckCircle2, XCircle, Download, Mail, Phone,
   Eye, Check, FileText, HelpCircle, Edit3, Trash2, Search, ToggleLeft,
-  ToggleRight, Plus, Sparkles, User, AlertCircle, Home, MessageCircle
+  ToggleRight, Plus, Sparkles, User, AlertCircle, Home, MessageCircle, Lock
 } from "lucide-react";
 import StatCard from "../components/admin/StatCard";
 import SidebarAdmin from "../components/admin/SidebarAdmin";
 import TopbarAdmin from "../components/admin/TopbarAdmin";
 import {
   getStatsSummary, getOffers,
-  getCompanies, saveCompany, deleteCompany, saveOffer, deleteOffer, toggleOfferStatus,
+  getCompanies, saveCompany, deleteCompany, saveOffer, deleteOffer, toggleOfferStatus, closeOffer,
   saveCategory, getQuestions, saveQuestion, deleteQuestionsByOffer,
   getPostulaciones, getPostulacionDetalle, changePostulacionEstado, savePostulacionNota
 } from "../services/adminService";
@@ -213,7 +213,7 @@ function SectionDashboard({ onNavigate }) {
 // ═══════════════════════════════════════════════════════════
 // SECCIÓN: EMPRESAS
 // ═══════════════════════════════════════════════════════════
-const API_BASE_URL = "http://localhost/backend-bolsajb/";
+const API_BASE_URL = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "") + "/";
 
 function SectionEmpresas() {
   const [companies, setCompanies] = useState([]);
@@ -414,7 +414,8 @@ function SectionOfertas() {
   const [form, setForm] = useState({
     titulo: "", empresa_id: "", ubicacion: "", salario_min: "", salario_max: "",
     tipo_contrato: "indefinido", modalidad: "presencial", nivel_experiencia: "",
-    categoria_id: "", descripcion: "", requisitos: ""
+    categoria_id: "", descripcion: "", requisitos: "",
+    fecha_publicacion: "", fecha_expiracion: ""
   });
   const [preguntas, setPreguntas] = useState([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
@@ -451,7 +452,8 @@ function SectionOfertas() {
     setForm({
       titulo: "", empresa_id: companies[0]?.id || "", ubicacion: "", salario_min: "", salario_max: "",
       tipo_contrato: "indefinido", modalidad: "presencial", nivel_experiencia: "",
-      categoria_id: "", descripcion: "", requisitos: ""
+      categoria_id: "", descripcion: "", requisitos: "",
+      fecha_publicacion: "", fecha_expiracion: ""
     });
     setPreguntas([]);
     setShowNewCategory(false);
@@ -472,7 +474,9 @@ function SectionOfertas() {
       nivel_experiencia: o.nivel_experiencia || "",
       categoria_id: o.categoria_id || "",
       descripcion: o.descripcion || "",
-      requisitos: o.requisitos || ""
+      requisitos: o.requisitos || "",
+      fecha_publicacion: o.fecha_publicacion ? o.fecha_publicacion.slice(0, 16) : "",
+      fecha_expiracion: o.fecha_expiracion ? o.fecha_expiracion.slice(0, 16) : ""
     });
     try {
       const qs = await getQuestions(o.id);
@@ -541,6 +545,18 @@ function SectionOfertas() {
       alert(err.message || "Error al cambiar estado");
     }
   };
+
+  const handleCerrar = async (id, name) => {
+    if (!window.confirm(`¿Cerrar la oferta "${name}"? Ya no será visible en las búsquedas.`)) return;
+    try {
+      await closeOffer(id);
+      await reload();
+    } catch (err) {
+      alert(err.message || "Error al cerrar oferta");
+    }
+  };
+
+  const isExpired = (o) => o.fecha_expiracion && new Date(o.fecha_expiracion) <= new Date();
 
   const filteredOffers = offers.filter(o =>
     (o.titulo || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -615,13 +631,22 @@ function SectionOfertas() {
                         <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_CONTRATO[o.tipo_contrato] || o.tipo_contrato}</span>
                       </td>
                       <td className="hidden lg:table-cell px-5 py-3.5 text-center">
-                        <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
-                          {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
-                          <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
-                        </button>
+                        {o.estado === 'activa' && isExpired(o) ? (
+                          <span className="inline-flex items-center gap-1.5" title="Oferta cerrada (expirada)">
+                            <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Cerrada</span>
+                          </span>
+                        ) : (
+                          <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                            {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                            <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                          </button>
+                        )}
                       </td>
                       <td className="px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1">
+                          {!isExpired(o) && o.estado === 'activa' && (
+                            <button onClick={() => handleCerrar(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-amber-50 text-slate-400 hover:text-amber-600 transition-colors" title="Cerrar oferta"><Lock size={13} /></button>
+                          )}
                           <button onClick={() => openEdit(o)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#123498] transition-colors"><Edit3 size={13} /></button>
                           <button onClick={() => handleDelete(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
                         </div>
@@ -646,10 +671,14 @@ function SectionOfertas() {
                             <div>
                               <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Estado</span>
                               <p className="mt-0.5">
-                                <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
-                                  {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
-                                  <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
-                                </button>
+                                {o.estado === 'activa' && isExpired(o) ? (
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Cerrada</span>
+                                ) : (
+                                  <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                                    {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                                    <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                                  </button>
+                                )}
                               </p>
                             </div>
                           </div>
@@ -719,6 +748,28 @@ function SectionOfertas() {
                 <div>
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Salario máximo (S/)</label>
                   <input type="number" value={form.salario_max} onChange={e => setForm({ ...form, salario_max: e.target.value })} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]" placeholder="Ej: 4500" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Fecha de publicación</label>
+                  <input
+                    type="datetime-local"
+                    value={form.fecha_publicacion}
+                    onChange={e => setForm({ ...form, fecha_publicacion: e.target.value })}
+                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]"
+                  />
+                  <p className="text-[9px] text-slate-400 mt-1">Vacío = publicación inmediata</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Fecha de cierre</label>
+                  <input
+                    type="datetime-local"
+                    value={form.fecha_expiracion}
+                    onChange={e => setForm({ ...form, fecha_expiracion: e.target.value })}
+                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]"
+                  />
+                  <p className="text-[9px] text-slate-400 mt-1">Vacío = 90 días desde hoy</p>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -1057,7 +1108,7 @@ function SectionPostulantes() {
               {selectedCandidate.cv_enviado_url && (
                 <div className="bg-slate-50 rounded-xl p-4">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">CV Enviado</h4>
-                  <a href={`http://localhost/backend-bolsajb/${selectedCandidate.cv_enviado_url}`} target="_blank" rel="noreferrer" className="text-xs text-[#123498] font-bold hover:underline">Ver CV</a>
+                  <a href={`${API_BASE_URL}${selectedCandidate.cv_enviado_url}`} target="_blank" rel="noreferrer" className="text-xs text-[#123498] font-bold hover:underline">Ver CV</a>
                 </div>
               )}
 

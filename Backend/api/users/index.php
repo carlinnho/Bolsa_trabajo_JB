@@ -69,6 +69,7 @@ if ($method === 'POST' && $action === 'update_profile') {
     }
 
     // Procesar la subida del CV
+    $newCvUrl = null;
     if (isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['cv']['tmp_name'];
         $fileName = $_FILES['cv']['name'];
@@ -85,8 +86,9 @@ if ($method === 'POST' && $action === 'update_profile') {
         $destPath = $uploadDir . $newFileName;
 
         if (move_uploaded_file($fileTmpPath, $destPath)) {
+            $newCvUrl = 'uploads/cvs/' . $newFileName;
             $fields[] = 'cv_url = ?';
-            $params[] = 'uploads/cvs/' . $newFileName;
+            $params[] = $newCvUrl;
         } else {
             respondError('Error interno al guardar el CV.');
         }
@@ -98,7 +100,7 @@ if ($method === 'POST' && $action === 'update_profile') {
     $stmt = $db->prepare("UPDATE usuarios SET " . implode(', ', $fields) . " WHERE id = ?");
     $stmt->execute($params);
 
-    respond(true, null, 'Perfil actualizado correctamente.');
+    respond(true, ['cv_url' => $newCvUrl], 'Perfil actualizado correctamente.');
 }
 
 // 3. SOLICITAR CÓDIGO PARA CAMBIO DE CONTRASEÑA

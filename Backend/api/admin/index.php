@@ -263,19 +263,24 @@ if ($resource === 'ofertas') {
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : 'activa';
 
+        $fecha_publicacion = !empty($body['fecha_publicacion']) ? $body['fecha_publicacion'] : null;
+        $fecha_expiracion = !empty($body['fecha_expiracion']) ? $body['fecha_expiracion'] : null;
+
         try {
             $stmt = $db->prepare("
                 INSERT INTO ofertas_trabajo (
                     empresa_id, titulo, slug, descripcion, requisitos, 
                     salario_min, salario_max, ubicacion, modalidad, 
-                    tipo_contrato, nivel_experiencia, categoria_id, estado
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    tipo_contrato, nivel_experiencia, categoria_id, estado,
+                    fecha_publicacion, fecha_expiracion
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, IFNULL(?, DATE_ADD(NOW(), INTERVAL 90 DAY)))
             ");
             
             $stmt->execute([
                 $empresa_id, $titulo, $slug, $descripcion, $requisitos,
                 $salario_min, $salario_max, $ubicacion, $modalidad,
-                $tipo_contrato, $nivel_experiencia, $categoria_id, $estado
+                $tipo_contrato, $nivel_experiencia, $categoria_id, $estado,
+                $fecha_publicacion, $fecha_expiracion
             ]);
             
             respond(true, [
@@ -317,6 +322,9 @@ if ($resource === 'ofertas') {
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : null;
 
+        $fecha_publicacion = isset($body['fecha_publicacion']) ? ($body['fecha_publicacion'] ?: null) : null;
+        $fecha_expiracion = isset($body['fecha_expiracion']) ? ($body['fecha_expiracion'] ?: null) : null;
+
         $slug = $oferta['slug'];
         if ($titulo) {
             $slugBase = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titulo)));
@@ -340,6 +348,8 @@ if ($resource === 'ofertas') {
             if ($tipo_contrato !== null) { $campos[] = 'tipo_contrato = ?'; $valores[] = $tipo_contrato; }
             if ($nivel_experiencia !== null) { $campos[] = 'nivel_experiencia = ?'; $valores[] = $nivel_experiencia; }
             if ($estado !== null) { $campos[] = 'estado = ?'; $valores[] = $estado; }
+            if ($fecha_publicacion !== null) { $campos[] = 'fecha_publicacion = ?'; $valores[] = $fecha_publicacion; }
+            if ($fecha_expiracion !== null) { $campos[] = 'fecha_expiracion = ?'; $valores[] = $fecha_expiracion; }
 
             if (empty($campos)) {
                 respondError('No se enviaron campos para actualizar.');
@@ -395,6 +405,24 @@ if ($resource === 'ofertas') {
         $stmt->execute([$nuevoEstado, $id]);
 
         respond(true, ['estado' => $nuevoEstado], 'Estado de la oferta actualizado.');
+    }
+
+    // CERRAR OFERTA (expirar inmediatamente)
+    if ($method === 'POST' && $action === 'cerrar') {
+        $body = getBody();
+        $id = $body['id'] ?? null;
+        if (!$id) respondError('ID de oferta requerido.');
+
+        $stmt = $db->prepare("SELECT id, estado FROM ofertas_trabajo WHERE id = ? AND estado != 'eliminada'");
+        $stmt->execute([$id]);
+        $oferta = $stmt->fetch();
+        if (!$oferta) respondError('Oferta no encontrada.', 404);
+        if ($oferta['estado'] !== 'activa') respondError('Solo se pueden cerrar ofertas activas.');
+
+        $stmt = $db->prepare("UPDATE ofertas_trabajo SET fecha_expiracion = NOW() WHERE id = ?");
+        $stmt->execute([$id]);
+
+        respond(true, [], 'Oferta cerrada correctamente.');
     }
 }
 

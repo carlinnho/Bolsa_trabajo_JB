@@ -105,10 +105,18 @@ export function useInformationForm() {
         return;
       }
 
-      await userService.updateProfile({
+      const result = await userService.updateProfile({
         nombre_completo: user.nombre_completo,
         ...cambios,
       });
+
+      // Si se subió un CV, actualizamos cv_url en localStorage
+      // para que ConfirmacionCV.jsx lo detecte al postular
+      if (result?.data?.cv_url) {
+        const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+        storedUser.cv_url = result.data.cv_url;
+        localStorage.setItem("user", JSON.stringify(storedUser));
+      }
 
       // Actualizamos los valores iniciales con los nuevos guardados
       setInitialValues({

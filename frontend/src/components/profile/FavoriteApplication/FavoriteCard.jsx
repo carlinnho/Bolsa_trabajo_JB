@@ -88,6 +88,7 @@ export default function FavoriteCard({ favorito, onEliminar, yaPostulada = false
   const colorLogo = getColor(empresaNombre);
   const guardadoHace = calcularTiempo(favorito.fecha_guardado);
   const cierraEn = calcularCierraEn(favorito.fecha_expiracion);
+  const expirada = cierraEn === "Ya cerró";
   const tipoLabel = MAP_TIPO[tipoContrato] || tipoContrato;
 
   // ── Modal de Detalles ──────────────────────────────────────
@@ -320,16 +321,16 @@ export default function FavoriteCard({ favorito, onEliminar, yaPostulada = false
             </button>
             <button
               type="button"
-              onClick={yaPostulada ? undefined : abrirPostulacion}
-              disabled={yaPostulada}
+              onClick={(yaPostulada || expirada) ? undefined : abrirPostulacion}
+              disabled={yaPostulada || expirada}
               className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition ${
-                yaPostulada
+                (yaPostulada || expirada)
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-[#f46f0b] text-white hover:bg-[#d65f09]"
               }`}
             >
-              {yaPostulada ? "Ya postulaste" : "Postular"}
-              {!yaPostulada && <span aria-hidden>→</span>}
+              {expirada ? "Oferta cerrada" : yaPostulada ? "Ya postulaste" : "Postular"}
+              {!(yaPostulada || expirada) && <span aria-hidden>→</span>}
             </button>
           </div>
         </div>

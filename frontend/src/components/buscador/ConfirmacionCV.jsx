@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const BACKEND_BASE = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "");
+
 export default function ConfirmacionCV({ onPostular, onAtras, postulando }) {
   const [cvFile, setCvFile] = useState(null);
   const [cvFileName, setCvFileName] = useState("");
@@ -90,7 +92,7 @@ export default function ConfirmacionCV({ onPostular, onAtras, postulando }) {
                 <p className="text-xs text-gray-400 truncate">{cvUrl}</p>
               </div>
               <a
-                href={cvUrl}
+                href={`${BACKEND_BASE}/${cvUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-azul-marino hover:underline font-semibold flex-shrink-0"

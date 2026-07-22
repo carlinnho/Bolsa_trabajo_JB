@@ -55,6 +55,8 @@ export const saveOffer = async (offer) => {
         nivel_experiencia: offer.nivel_experiencia || null,
         categoria_id: offer.categoria_id || null,
         estado: offer.estado || "activa",
+        fecha_publicacion: offer.fecha_publicacion || null,
+        fecha_expiracion: offer.fecha_expiracion || null,
     };
 
     if (offer.id) {
@@ -71,6 +73,10 @@ export const deleteOffer = async (id) => {
 
 export const toggleOfferStatus = async (id) => {
     return await ofertasService.toggleEstado(id);
+};
+
+export const closeOffer = async (id) => {
+    return await ofertasService.cerrar(id);
 };
 
 // --- CANDIDATES (stub temporal, sin backend aún) ---

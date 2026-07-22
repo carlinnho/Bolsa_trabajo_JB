@@ -374,3 +374,8 @@ ALTER TABLE ofertas_trabajo
   MODIFY modalidad enum('presencial','remoto','Híbrida') NOT NULL DEFAULT 'presencial',
   MODIFY tipo_contrato enum('Tiempo completo','Permanente','Medio tiempo','Freelance','Prácticas','Temporal') NOT NULL DEFAULT 'Tiempo completo',
   ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 4) Agregar campo de programación de convocatoria
+ALTER TABLE ofertas_trabajo 
+ADD COLUMN fecha_publicacion DATETIME NULL DEFAULT NULL 
+AFTER fecha_creacion;
