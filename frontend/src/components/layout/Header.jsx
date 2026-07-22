@@ -1,86 +1,29 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { authService } from "../../services/authService";
+import { Link } from "react-router-dom";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import { useHeader } from "../../hooks/useHeader";
+import NavDesktop from "./header/NavDesktop";
+import UserMenuDesktop from "./header/UserMenuDesktop";
+import MobileMenu from "./header/MobileMenu";
+import logoCompleto from "../../assets/images/logo_completo.webp";
+
+const navLinkClasses =
+  "relative inline-block py-1 text-gray-700 font-medium transition-colors hover:text-naranja after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-naranja after:transition-all after:duration-300 hover:after:w-full";
+
+const logo = "https://consultoradeasesoriaempresarialjb.com/wp-content/uploads/2026/04/logoSinFondo.png";
 
 export default function Header({ hideOnScroll = false }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [headerHidden, setHeaderHidden] = useState(false);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const profileMenuRef = useRef(null);
-  const lastScrollY = useRef(0);
-
-  // Efecto para verificar si el usuario está logueado al cargar el componente
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      setUser(null);
-    }
-  }, [location.pathname]);
-
-  // Cierra el menú de perfil si el usuario hace clic fuera de él
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target)
-      ) {
-        setIsProfileMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Cerrar menú móvil al cambiar de ruta
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location]);
-
-  // Ocultar/mostrar header al scrollear (solo cuando hideOnScroll está activo)
-  useEffect(() => {
-    if (!hideOnScroll) return;
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      setHeaderHidden(currentY > 0);
-      lastScrollY.current = currentY;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hideOnScroll]);
-
-  // Resetear estado al cambiar de ruta
-  useEffect(() => {
-    if (!hideOnScroll) setHeaderHidden(false);
-    lastScrollY.current = 0;
-  }, [location, hideOnScroll]);
-
-  const handleLogout = () => {
-    authService.logout();
-    setUser(null);
-    setIsProfileMenuOpen(false);
-    navigate("/");
-  };
-
-  // Determina si una ruta está activa, para resaltado visual y aria-current
-  const isActive = (path) => location.pathname === path;
-
-  // Clases compartidas para la animación de subrayado naranja
-  const navLinkClasses =
-    "relative inline-block py-1 text-gray-700 font-medium transition-colors hover:text-naranja after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-naranja after:transition-all after:duration-300 hover:after:w-full";
-
-  // Clases compartidas para las filas tipo "app nativa" del menú móvil
-  const mobileCardLinkClasses =
-    "flex items-center gap-3 px-4 py-3.5 text-[15px] font-medium text-gray-800 active:bg-gray-50 transition-colors";
+  const {
+    user,
+    isMobileMenuOpen, setIsMobileMenuOpen,
+    isProfileMenuOpen, setIsProfileMenuOpen,
+    headerHidden,
+    profileMenuRef,
+    handleLogout,
+    isActive,
+  } = useHeader({ hideOnScroll });
 
   return (
     <>
-      {/* Enlace de salto para usuarios de teclado y lectores de pantalla */}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-naranja focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-semibold"
@@ -89,222 +32,42 @@ export default function Header({ hideOnScroll = false }) {
       </a>
 
       <header
-        className={`bg-white shadow-sm sticky top-0 z-50 will-change-transform ${hideOnScroll && headerHidden ? "-translate-y-full" : "translate-y-0"}`}
+        className={`bg-white shadow-sm sticky top-0 z-50 will-change-transform transition-transform duration-300 ${hideOnScroll && headerHidden ? "-translate-y-full" : "translate-y-0"}`}
         role="banner"
       >
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            {/* LADO IZQUIERDO: Logo y Enlaces (Desktop) */}
+
+            {/* IZQUIERDA: Logo + Nav Desktop */}
             <div className="flex items-center gap-8">
-              <Link
-                to="/"
-                className="shrink-0"
-                aria-label="Ir al inicio de Consultora JB"
-              >
+              <Link to="/" className="shrink-0" aria-label="Ir al inicio de Consultora JB">
                 <img
                   className="h-10 w-auto sm:h-12 object-contain"
-                  src="https://consultoradeasesoriaempresarialjb.com/wp-content/uploads/2026/04/logoSinFondo.png"
+                  src={logoCompleto}
                   alt="Logo de Consultora de Asesoría Empresarial JB"
-                  width="1052"
-                  height="237"
+                  width={444}
+                  height={100}
                 />
               </Link>
-
-              <nav className="hidden md:flex" aria-label="Navegación principal">
-                <ul className="flex gap-6 list-none">
-                  <li>
-                    <Link
-                      to="/"
-                      className={navLinkClasses}
-                      aria-current={isActive("/") ? "page" : undefined}
-                    >
-                      Inicio
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/buscar-empleo"
-                      className={navLinkClasses}
-                      aria-current={
-                        isActive("/buscar-empleo") ? "page" : undefined
-                      }
-                    >
-                      Buscar empleo
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/evaluaciones"
-                      className={navLinkClasses}
-                      aria-current={
-                        isActive("/evaluaciones") ? "page" : undefined
-                      }
-                    >
-                      Evaluaciones de empresa
-                    </Link>
-                  </li>
-                </ul>
-              </nav>
+              <NavDesktop isActive={isActive} />
             </div>
 
-            {/* LADO DERECHO: Acciones y Usuario (Desktop) */}
-            <div className="hidden md:flex items-center gap-6">
+            {/* DERECHA: Usuario + Publicar (Desktop) */}
+            <div className="hidden lg:flex items-center gap-6">
               {user ? (
-                // Menú de Usuario Logueado (Formato Píldora)
-                <div className="relative" ref={profileMenuRef}>
-                  <button
-                    type="button"
-                    id="profile-menu-button"
-                    className="flex items-center gap-2 pl-1 pr-3 py-1 bg-slate-50 border border-gray-200 rounded-full text-gray-700 hover:border-naranja hover:text-naranja transition-colors font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                    aria-expanded={isProfileMenuOpen}
-                    aria-haspopup="true"
-                    aria-controls="profile-menu-panel"
-                  >
-                    <span
-                      className="bg-naranja text-white rounded-full w-8 h-8 flex items-center justify-center font-bold uppercase shadow-sm"
-                      aria-hidden="true"
-                    >
-                      {user.nombre_completo.charAt(0)}
-                    </span>
-                    <span className="truncate max-w-[120px] text-sm">
-                      {user.nombre_completo.split(" ")[0]}
-                    </span>
-                    <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isProfileMenuOpen ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Profile */}
-                  {isProfileMenuOpen && (
-                    <div
-                      id="profile-menu-panel"
-                      aria-labelledby="profile-menu-button"
-                      className="hs-dropdown-menu absolute right-0 mt-3 w-56 z-10 bg-white border border-gray-200 shadow-md rounded-lg p-1 space-y-1"
-                    >
-                      <nav aria-label="Menú de cuenta">
-                        <ul className="list-none space-y-1">
-                          <li>
-                            <Link
-                              to="/mi-perfil"
-                              className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <svg
-                                className="w-5 h-5 shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                              </svg>
-                              Mi perfil
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              to="/mi-perfil/postulaciones"
-                              className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <svg
-                                className="w-5 h-5 shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                              </svg>
-                              Mis postulaciones
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              to="/mi-perfil/favoritos"
-                              className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <svg
-                                className="w-5 h-5 shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                />
-                              </svg>
-                              Mis favoritos
-                            </Link>
-                          </li>
-                        </ul>
-                      </nav>
-
-                      <div
-                        className="border-t border-gray-100 my-1"
-                        role="separator"
-                      ></div>
-
-                      <button
-                        onClick={handleLogout}
-                        className="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-red-600 hover:bg-red-50"
-                      >
-                        <svg
-                          className="w-5 h-5 shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                          focusable="false"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                        Cerrar sesión
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <UserMenuDesktop
+                  user={user}
+                  isProfileMenuOpen={isProfileMenuOpen}
+                  setIsProfileMenuOpen={setIsProfileMenuOpen}
+                  profileMenuRef={profileMenuRef}
+                  handleLogout={handleLogout}
+                />
               ) : (
-                // Enlace de Login para Visitantes (Formato Píldora)
                 <Link
                   to="/login"
-                  className="flex items-center justify-center w-[140px] py-2 bg-slate-50 border border-gray-200 rounded-full text-gray-700 hover:border-naranja hover:text-naranja hover:bg-orange-50 transition-all duration-300 ease-in-out font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
+                  className="flex items-center justify-center w-[140px] py-2 bg-slate-50 border border-gray-200 rounded-full text-gray-700 hover:border-naranja hover:text-naranja hover:bg-orange-50 transition-all duration-300 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-naranja text-sm"
                 >
-                  <span className="text-sm">Iniciar sesión</span>
+                  Iniciar sesión
                 </Link>
               )}
               <div className="h-6 w-px bg-gray-300" aria-hidden="true"></div>{" "}
@@ -317,8 +80,8 @@ export default function Header({ hideOnScroll = false }) {
               )}
             </div>
 
-            {/* BOTÓN HAMBURGUESA (Móvil) */}
-            <div className="flex items-center md:hidden">
+            {/* HAMBURGUESA (Móvil) */}
+            <div className="flex items-center lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
                 type="button"
@@ -327,21 +90,7 @@ export default function Header({ hideOnScroll = false }) {
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Abrir menú principal"
               >
-                <svg
-                  className="w-7 h-7"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <Bars3Icon className="w-7 h-7" />
               </button>
             </div>
           </div>

@@ -140,6 +140,31 @@ if ($method === 'GET' && $action === 'mis_postulaciones') {
     respond(true, $stmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
+// ─── MIS POSTULACIONES (DETALLE COMPLETO) ────────────────
+if ($method === 'GET' && $action === 'mis_postulaciones_detalle') {
+    $user = requireAuth();
+
+    $stmt = $db->prepare("
+        SELECT 
+            pc.id,
+            pc.estado,
+            pc.fecha_postulacion,
+            o.id            AS oferta_id,
+            o.titulo        AS cargo,
+            e.nombre        AS empresa,
+            e.logo_url,
+            o.ubicacion,
+            pc.cv_enviado_url
+        FROM postulaciones_candidatos pc
+        JOIN ofertas_trabajo o ON pc.oferta_id = o.id
+        JOIN empresas_clientes e ON o.empresa_id = e.id
+        WHERE pc.usuario_id = ?
+        ORDER BY pc.fecha_postulacion DESC
+    ");
+    $stmt->execute([$user['id']]);
+    respond(true, $stmt->fetchAll());
+}
+
 // ─── POSTULARSE ───────────────────────────────────────────
 if ($method === 'POST' && $action === 'postular') {
     $user = requireAuth();

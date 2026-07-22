@@ -51,4 +51,8 @@ function misPostulaciones() {
   return apiFetch("/vacantes/?action=mis_postulaciones").then(r => r.data);
 }
 
-export const vacantesService = { listar, detalle, postular, sugerencias, listarCategorias, misPostulaciones };
+function misPostulacionesDetalle() {
+  return apiFetch("/vacantes/?action=mis_postulaciones_detalle").then(r => r.data);
+}
+
+export const vacantesService = { listar, detalle, postular, sugerencias, listarCategorias, misPostulaciones, misPostulacionesDetalle };

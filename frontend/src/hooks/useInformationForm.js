@@ -64,7 +64,8 @@ export function useInformationForm() {
     }
 
     if (presentacion.trim() !== "" && presentacion.trim().length < 20) {
-      newErrors.presentacion = "La presentación debe tener al menos 20 caracteres.";
+      newErrors.presentacion =
+        "La presentación debe tener al menos 20 caracteres.";
     }
 
     setErrors(newErrors);
@@ -122,7 +123,8 @@ export function useInformationForm() {
       setInitialValues({
         telefono: telefono.trim(),
         presentacion: presentacion.trim(),
-        cvArchivo: cvArchivo instanceof File ? { name: cvArchivo.name } : cvArchivo,
+        cvArchivo:
+          cvArchivo instanceof File ? { name: cvArchivo.name } : cvArchivo,
       });
 
       setSuccessMessage("¡Perfil actualizado correctamente!");
@@ -144,9 +146,12 @@ export function useInformationForm() {
   };
 
   return {
-    telefono, setTelefono,
-    presentacion, setPresentacion,
-    cvArchivo, setCvArchivo,
+    telefono,
+    setTelefono,
+    presentacion,
+    setPresentacion,
+    cvArchivo,
+    setCvArchivo,
     errors,
     clearError,
     isDirty,
