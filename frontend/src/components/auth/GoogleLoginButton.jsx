@@ -1,5 +1,5 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import GoogleIcon from "../../assets/images/google_icono.webp";
@@ -35,6 +35,21 @@ export default function GoogleLoginButton() {
       hiddenButtonWrapperRef.current?.querySelector('div[role="button"]');
     realButton?.click();
   };
+
+  // Evita que el botón real de Google reciba foco por teclado.
+  // Sin esto, el navegador lanza un warning: "aria-hidden focused element"
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const btn = hiddenButtonWrapperRef.current?.querySelector('div[role="button"]');
+      if (btn && btn.getAttribute('tabindex') !== '-1') {
+        btn.setAttribute('tabindex', '-1');
+      }
+    });
+    if (hiddenButtonWrapperRef.current) {
+      observer.observe(hiddenButtonWrapperRef.current, { childList: true, subtree: true });
+    }
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="flex flex-col gap-2">

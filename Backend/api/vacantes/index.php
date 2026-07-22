@@ -15,7 +15,7 @@ $db = getDB();
 
 // ─── LISTAR VACANTES ACTIVAS ──────────────────────────────
 if ($method === 'GET' && $action === 'listar') {
-    $where = "o.estado = 'activa' AND o.fecha_expiracion > NOW()";
+    $where = "o.estado = 'activa' AND o.fecha_expiracion > NOW() AND (o.fecha_publicacion IS NULL OR o.fecha_publicacion <= NOW())";
     $params = [];
 
     if (!empty($_GET['cargo'])) {
@@ -174,9 +174,9 @@ if ($method === 'POST' && $action === 'postular') {
 
     if (!$vacante_id) respondError('ID de vacante requerido.');
 
-    $stmt = $db->prepare("SELECT id FROM ofertas_trabajo WHERE id = ? AND estado = 'activa'");
+    $stmt = $db->prepare("SELECT id FROM ofertas_trabajo WHERE id = ? AND estado = 'activa' AND fecha_expiracion > NOW()");
     $stmt->execute([$vacante_id]);
-    if (!$stmt->fetch()) respondError('Vacante no encontrada o no disponible.', 404);
+    if (!$stmt->fetch()) respondError('Vacante no encontrada, no disponible o ya expiró.', 404);
 
     $stmt = $db->prepare("SELECT id FROM postulaciones_candidatos WHERE usuario_id = ? AND oferta_id = ?");
     $stmt->execute([$user['id'], $vacante_id]);

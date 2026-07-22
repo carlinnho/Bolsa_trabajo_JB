@@ -81,10 +81,10 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
             type="button"
             onClick={(e) => { e.stopPropagation(); onGuardar?.(vacante.id); }}
             className="p-1.5 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-            title={esGuardada ? 'Quitar de guardados' : 'Guardar vacante'}
+            title={esGuardada ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
             <svg className="w-5 h-5" fill={esGuardada ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </button>
         </div>

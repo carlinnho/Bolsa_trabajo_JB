@@ -9,6 +9,9 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'], // ← esto fuerza una sola copia de React
   },
   server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    },
     hmr: {
       protocol: 'ws',
       host: 'localhost',

@@ -28,4 +28,10 @@ export const ofertasService = {
       method: "POST",
       body: JSON.stringify({ id }),
     }),
+
+  cerrar: (id) =>
+    apiFetch(`${BASE_ENDPOINT}&action=cerrar`, {
+      method: "POST",
+      body: JSON.stringify({ id }),
+    }),
 };
