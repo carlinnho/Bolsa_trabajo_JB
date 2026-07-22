@@ -98,7 +98,12 @@ if ($method === 'POST' && $action === 'update_profile') {
     $stmt = $db->prepare("UPDATE usuarios SET " . implode(', ', $fields) . " WHERE id = ?");
     $stmt->execute($params);
 
-    respond(true, null, 'Perfil actualizado correctamente.');
+    // Devolver el perfil actualizado para que el frontend pueda actualizar el localStorage
+    $stmtUser = $db->prepare("SELECT nombre_completo, correo, telefono, cv_url FROM usuarios WHERE id = ?");
+    $stmtUser->execute([$userId]);
+    $userActualizado = $stmtUser->fetch();
+
+    respond(true, $userActualizado, 'Perfil actualizado correctamente.');
 }
 
 // 3. SOLICITAR CÓDIGO PARA CAMBIO DE CONTRASEÑA

@@ -64,7 +64,8 @@ export function useInformationForm() {
     }
 
     if (presentacion.trim() !== "" && presentacion.trim().length < 20) {
-      newErrors.presentacion = "La presentación debe tener al menos 20 caracteres.";
+      newErrors.presentacion =
+        "La presentación debe tener al menos 20 caracteres.";
     }
 
     setErrors(newErrors);
@@ -105,16 +106,24 @@ export function useInformationForm() {
         return;
       }
 
-      await userService.updateProfile({
+      const response = await userService.updateProfile({
         nombre_completo: user.nombre_completo,
         ...cambios,
       });
+
+      // Actualizamos localStorage con los datos que devolvió el backend
+      // para que ConfirmacionCV encuentre el cv_url al postularse
+      if (response.data) {
+        const userActualizado = { ...user, ...response.data };
+        localStorage.setItem("user", JSON.stringify(userActualizado));
+      }
 
       // Actualizamos los valores iniciales con los nuevos guardados
       setInitialValues({
         telefono: telefono.trim(),
         presentacion: presentacion.trim(),
-        cvArchivo: cvArchivo instanceof File ? { name: cvArchivo.name } : cvArchivo,
+        cvArchivo:
+          cvArchivo instanceof File ? { name: cvArchivo.name } : cvArchivo,
       });
 
       setSuccessMessage("¡Perfil actualizado correctamente!");
@@ -136,9 +145,12 @@ export function useInformationForm() {
   };
 
   return {
-    telefono, setTelefono,
-    presentacion, setPresentacion,
-    cvArchivo, setCvArchivo,
+    telefono,
+    setTelefono,
+    presentacion,
+    setPresentacion,
+    cvArchivo,
+    setCvArchivo,
     errors,
     clearError,
     isDirty,

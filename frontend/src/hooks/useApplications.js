@@ -1,23 +1,44 @@
-import { useState, useMemo } from "react";
-import { mockApplications } from "../data/mockApplications";
+import { useState, useMemo, useEffect } from "react";
+import { vacantesService } from "../services/vacantesService";
 
-// Cuando llegue el backend, solo cambias esta importación
-// por una llamada a services/ y el resto del hook no se toca.
-const FILTROS = ["Todas", "Enviadas", "Vistas", "Contratado"];
+const FILTROS = ["Todas", "Enviadas", "Vistas", "Contratado", "No seleccionado"];
 
 const ESTADO_A_FILTRO = {
-  enviada: "Enviadas",
-  vista: "Vistas",
-  contratado: "Contratado",
-  no_seleccionado: "Todas",
+  recibido: "Enviadas",
+  revisado: "Enviadas",
+  entrevista: "Vistas",
+  aprobado: "Contratado",
+  rechazado: "No seleccionado",
 };
 
 export function useApplications() {
+  const [aplicaciones, setAplicaciones] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filtroActivo, setFiltroActivo] = useState("Todas");
   const [busqueda, setBusqueda] = useState("");
 
+  // Carga las postulaciones reales del usuario al montar
+  useEffect(() => {
+    const cargar = async () => {
+      setIsLoading(true);
+      try {
+        // mis_postulaciones devuelve solo los IDs, necesitamos el detalle completo
+        const token = localStorage.getItem("token");
+        if (!token) { setAplicaciones([]); return; }
+
+        const response = await vacantesService.misPostulacionesDetalle();
+        setAplicaciones(response || []);
+      } catch {
+        setAplicaciones([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    cargar();
+  }, []);
+
   const aplicacionesFiltradas = useMemo(() => {
-    return mockApplications.filter((item) => {
+    return aplicaciones.filter((item) => {
       const coincideFiltro =
         filtroActivo === "Todas" ||
         ESTADO_A_FILTRO[item.estado] === filtroActivo;
@@ -29,7 +50,7 @@ export function useApplications() {
 
       return coincideFiltro && coincideBusqueda;
     });
-  }, [filtroActivo, busqueda]);
+  }, [aplicaciones, filtroActivo, busqueda]);
 
   return {
     filtros: FILTROS,
@@ -38,6 +59,7 @@ export function useApplications() {
     busqueda,
     setBusqueda,
     aplicaciones: aplicacionesFiltradas,
-    total: mockApplications.length,
+    total: aplicaciones.length,
+    isLoading,
   };
 }
