@@ -1,17 +1,9 @@
 import { Link } from "react-router-dom";
-import {
-  HomeIcon,
-  MagnifyingGlassIcon,
-  BuildingOfficeIcon,
-  UserIcon,
-  DocumentTextIcon,
-  HeartIcon,
-  ArrowRightOnRectangleIcon,
-  ArrowLeftEndOnRectangleIcon,
-  PlusCircleIcon,
-  InformationCircleIcon,
-  XMarkIcon,
-  ChevronRightIcon,
+import logoCompleto from "../../../assets/images/logo_completo.webp";
+import { HomeIcon, MagnifyingGlassIcon, BuildingOfficeIcon, UserIcon,
+  DocumentTextIcon, HeartIcon, ArrowRightOnRectangleIcon,
+  ArrowLeftEndOnRectangleIcon, PlusCircleIcon,
+  InformationCircleIcon, XMarkIcon, ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 
 const cardLinkClasses =
@@ -32,7 +24,6 @@ function MobileLinkItem({ to, icon: Icon, label, iconBg = "bg-blue-50", iconColo
 }
 
 export default function MobileMenu({ isOpen, onClose, user, isActive, handleLogout }) {
-  const logo = "https://consultoradeasesoriaempresarialjb.com/wp-content/uploads/2026/04/logoSinFondo.png";
 
   return (
     <div
@@ -47,7 +38,7 @@ export default function MobileMenu({ isOpen, onClose, user, isActive, handleLogo
 
         {/* Header del menú móvil */}
         <div className="flex justify-between items-center h-20 px-4 sm:px-6 bg-white border-b border-gray-100 shadow-sm shrink-0">
-          <img className="h-10 w-auto object-contain" src={logo} alt="Logo de Consultora JB" />
+          <img className="h-10 w-auto object-contain" src={logoCompleto} width={1052} height={237}alt="Logo de Consultora JB" />
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-naranja p-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
@@ -128,18 +119,20 @@ export default function MobileMenu({ isOpen, onClose, user, isActive, handleLogo
                 </div>
               </section>
 
-              {/* Para empresas */}
-              <section aria-labelledby="mobile-business-heading">
-                <h2 id="mobile-business-heading" className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
-                  Para empresas
-                </h2>
-                <nav aria-label="Opciones para empresas">
-                  <ul className="list-none bg-white rounded-2xl shadow-sm divide-y divide-gray-100 overflow-hidden">
-                    <MobileLinkItem to="/empresas/publicar" icon={PlusCircleIcon} label="Publicar empleo" iconBg="bg-orange-50" iconColor="text-naranja" onClick={onClose} />
-                    <MobileLinkItem to="/empresas/solicitar-informacion" icon={InformationCircleIcon} label="Solicitar información" iconBg="bg-orange-50" iconColor="text-naranja" onClick={onClose} />
-                  </ul>
-                </nav>
-              </section>
+              {/* Para empresas — Solo admin */}
+              {user?.rol_nombre === "admin" && (
+                <section aria-labelledby="mobile-business-heading">
+                  <h2 id="mobile-business-heading" className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
+                    Para empresas
+                  </h2>
+                  <nav aria-label="Opciones para empresas">
+                    <ul className="list-none bg-white rounded-2xl shadow-sm divide-y divide-gray-100 overflow-hidden">
+                      <MobileLinkItem to="/admin/ofertas" icon={PlusCircleIcon} label="Publicar empleo" iconBg="bg-orange-50" iconColor="text-naranja" onClick={onClose} />
+                      <MobileLinkItem to="/empresas/solicitar-informacion" icon={InformationCircleIcon} label="Solicitar información" iconBg="bg-orange-50" iconColor="text-naranja" onClick={onClose} />
+                    </ul>
+                  </nav>
+                </section>
+              )}
             </>
           )}
         </div>

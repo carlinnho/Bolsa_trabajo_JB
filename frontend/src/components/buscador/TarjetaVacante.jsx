@@ -65,7 +65,7 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+        <div className="flex flex-col items-end gap-2 shrink-0">
           {modalidadEtiqueta && (
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full leading-none ${modalidadEtiqueta.clase}`}>
               {modalidadEtiqueta.label}
