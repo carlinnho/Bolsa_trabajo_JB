@@ -9,8 +9,6 @@ import logoCompleto from "../../assets/images/logo_completo.webp";
 const navLinkClasses =
   "relative inline-block py-1 text-gray-700 font-medium transition-colors hover:text-naranja after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-naranja after:transition-all after:duration-300 hover:after:w-full";
 
-const logo = "https://consultoradeasesoriaempresarialjb.com/wp-content/uploads/2026/04/logoSinFondo.png";
-
 export default function Header({ hideOnScroll = false }) {
   const {
     user,
@@ -70,10 +68,16 @@ export default function Header({ hideOnScroll = false }) {
                   Iniciar sesión
                 </Link>
               )}
-              <div className="h-6 w-px bg-gray-300" aria-hidden="true" />
-              <Link to="/empresas/publicar" className={navLinkClasses}>
-                Publicar empleos
-              </Link>
+
+              {/* Solo visible para admins */}
+              {user?.rol_nombre === "admin" && (
+                <>
+                  <div className="h-6 w-px bg-gray-300" aria-hidden="true" />
+                  <Link to="/admin/ofertas" className={navLinkClasses}>
+                    Publicar empleos
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* HAMBURGUESA (Móvil) */}

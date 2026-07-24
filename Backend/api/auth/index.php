@@ -79,7 +79,7 @@ if ($method === 'POST' && $action === 'login') {
         respondError('Correo y contraseña requeridos.');
 
     $stmt = $db->prepare("
-        SELECT u.id, u.nombre_completo, u.correo, u.telefono, u.estado, u.password_hash, r.nombre as rol_nombre 
+        SELECT u.id, u.nombre_completo, u.correo, u.telefono, u.estado, u.cv_url, u.password_hash, r.nombre as rol_nombre 
         FROM usuarios u
         INNER JOIN roles_sistema r ON u.rol_id = r.id
         WHERE u.correo = ?
@@ -182,7 +182,7 @@ if ($method === 'POST' && $action === 'google_login') {
  
     // ── 5. Buscar si el usuario ya existe ──────────────────────────────────
     $stmt = $db->prepare("
-        SELECT u.id, u.nombre_completo, u.correo, u.telefono, u.estado, r.nombre as rol_nombre 
+        SELECT u.id, u.nombre_completo, u.correo, u.telefono, u.estado, u.cv_url, r.nombre as rol_nombre 
         FROM usuarios u
         INNER JOIN roles_sistema r ON u.rol_id = r.id
         WHERE u.correo = ?

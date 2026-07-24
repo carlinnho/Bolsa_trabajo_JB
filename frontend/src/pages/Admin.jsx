@@ -5,17 +5,20 @@ import {
   ChevronRight, ChevronDown, ChevronUp, Menu, X, PlusCircle, ArrowRight,
   CheckCircle2, XCircle, Download, Mail, Phone,
   Eye, Check, FileText, HelpCircle, Edit3, Trash2, Search, ToggleLeft,
-  ToggleRight, Plus, Sparkles, User, AlertCircle, Home, MessageCircle
+  ToggleRight, Plus, Sparkles, User, AlertCircle, Home, MessageCircle, Lock, Star, EyeOff
 } from "lucide-react";
 import StatCard from "../components/admin/StatCard";
 import SidebarAdmin from "../components/admin/SidebarAdmin";
 import TopbarAdmin from "../components/admin/TopbarAdmin";
 import {
   getStatsSummary, getOffers,
-  getCompanies, saveCompany, deleteCompany, saveOffer, deleteOffer, toggleOfferStatus,
+  getCompanies, saveCompany, deleteCompany, saveOffer, deleteOffer, toggleOfferStatus, closeOffer,
   saveCategory, getQuestions, saveQuestion, deleteQuestionsByOffer,
   getPostulaciones, getPostulacionDetalle, changePostulacionEstado, savePostulacionNota
 } from "../services/adminService";
+
+import SectionEvaluaciones from "../components/admin/SectionEvaluaciones";
+import SectionEmpresas from "../components/admin/SectionEmpresas";
 
 const STAGES = ["recibido", "revisado", "entrevista", "aprobado", "rechazado"];
 
@@ -210,194 +213,6 @@ function SectionDashboard({ onNavigate }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
-// SECCIÓN: EMPRESAS
-// ═══════════════════════════════════════════════════════════
-const API_BASE_URL = "http://localhost/backend-bolsajb/";
-
-function SectionEmpresas() {
-  const [companies, setCompanies] = useState([]);
-  const [offers, setOffers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingCompany, setEditingCompany] = useState(null);
-  const [formNombre, setFormNombre] = useState("");
-  const [formRuc, setFormRuc] = useState("");
-  const [formSector, setFormSector] = useState("");
-  const [formDescripcion, setFormDescripcion] = useState("");
-  const [logoFile, setLogoFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const reload = async () => {
-    try {
-      const data = await getCompanies();
-      setCompanies(data);
-    } catch (e) {
-      setCompanies([]);
-    }
-    try {
-      const data = await getOffers();
-      setOffers(data);
-    } catch (e) {
-      setOffers([]);
-    }
-  };
-
-  useEffect(() => { reload(); }, []);
-
-  const openNew = () => {
-    setEditingCompany(null);
-    setFormNombre(""); setFormRuc(""); setFormSector(""); setFormDescripcion(""); setLogoFile(null);
-    setModalOpen(true);
-  };
-
-  const openEdit = (c) => {
-    setEditingCompany(c);
-    setFormNombre(c.nombre); setFormRuc(c.ruc || ""); setFormSector(c.sector); setFormDescripcion(c.descripcion || ""); setLogoFile(null);
-    setModalOpen(true);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formNombre || !formSector || !formRuc) return;
-    setLoading(true);
-    try {
-      await saveCompany({
-        nombre: formNombre,
-        ruc: formRuc,
-        sector: formSector,
-        descripcion: formDescripcion,
-        ...(editingCompany ? { id: editingCompany.id } : {})
-      }, logoFile);
-      await reload();
-      setModalOpen(false);
-    } catch (err) {
-      alert(err.message || "Error al guardar empresa");
-    }
-    setLoading(false);
-  };
-
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`¿Eliminar la empresa "${name}"?`)) return;
-    try {
-      await deleteCompany(id);
-      await reload();
-    } catch (err) {
-      alert(err.message || "Error al eliminar empresa");
-    }
-  };
-
-  const filteredCompanies = companies.filter(c =>
-    c.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.sector.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getOffersCount = (compId) => offers.filter(o => o.empresa_id === compId && o.estado === 'activa').length;
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-[#123498] uppercase tracking-wide">Gestión de Empresas</h1>
-          <p className="text-sm text-slate-400">Administra las empresas clientes</p>
-        </div>
-        <button onClick={openNew} className="flex items-center justify-center gap-2 bg-[#F46F0B] hover:bg-[#d85f05] text-white px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider shadow-sm transition-all shrink-0">
-          <Plus size={14} strokeWidth={2.8} />Registrar Empresa
-        </button>
-      </div>
-
-      {/* Buscador */}
-      <div className="relative max-w-sm">
-        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input type="text" placeholder="Buscar empresa..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498] transition-all placeholder:text-slate-400" />
-      </div>
-
-      {/* Grid de empresas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredCompanies.map(c => (
-          <div key={c.id} className="bg-white rounded-2xl border border-slate-200/60 p-5 shadow-3xs hover:shadow-sm transition-all">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                {c.logo_url ? (
-                  <img src={API_BASE_URL + c.logo_url} alt={c.nombre} className="w-10 h-10 rounded-xl object-cover shrink-0" />
-                ) : (
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-sm shrink-0 bg-[#123498]">
-                    {c.nombre.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-sm font-black text-[#1A1A1A]">{c.nombre}</h3>
-                  <p className="text-[10px] text-slate-400 font-semibold">{c.sector}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <button onClick={() => openEdit(c)} className="p-1.5 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-[#123498] transition-colors"><Edit3 size={13} /></button>
-                <button onClick={() => handleDelete(c.id, c.nombre)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
-              </div>
-            </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed mb-3 line-clamp-2">{c.descripcion || "Sin descripción"}</p>
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#123498]">
-              <Briefcase size={11} />
-              <span>{getOffersCount(c.id)} ofertas activas</span>
-            </div>
-          </div>
-        ))}
-        {filteredCompanies.length === 0 && (
-          <div className="col-span-full text-center py-12 text-slate-400 text-sm">No se encontraron empresas.</div>
-        )}
-      </div>
-
-      {/* Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 mx-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-black text-[#123498] uppercase tracking-wider">{editingCompany ? "Editar Empresa" : "Nueva Empresa"}</h2>
-              <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-slate-100 text-slate-400"><X size={16} /></button>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Nombre</label>
-                <input type="text" value={formNombre} onChange={e => setFormNombre(e.target.value)} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]" placeholder="Nombre de la empresa" required />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">RUC</label>
-                <input type="text" value={formRuc} onChange={e => setFormRuc(e.target.value)} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]" placeholder="Ej: 20546321847" required />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Sector</label>
-                <input type="text" value={formSector} onChange={e => setFormSector(e.target.value)} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]" placeholder="Ej: Tecnología, Seguridad..." required />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Descripción</label>
-                <textarea value={formDescripcion} onChange={e => setFormDescripcion(e.target.value)} rows={3} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498] resize-none" placeholder="Breve descripción..." />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Logo de la Empresa</label>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
-                  onChange={(e) => setLogoFile(e.target.files[0])}
-                  className="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-[#123498]/10 file:text-[#123498] hover:file:bg-[#123498]/20 file:cursor-pointer"
-                />
-                <div className="mt-2">
-                  {logoFile ? (
-                    <img src={URL.createObjectURL(logoFile)} alt="Vista previa" className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
-                  ) : editingCompany?.logo_url ? (
-                    <img src={API_BASE_URL + editingCompany.logo_url} alt="Logo actual" className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
-                  ) : null}
-                </div>
-              </div>
-              <button type="submit" disabled={loading} className="w-full bg-[#123498] hover:bg-[#0f2b7a] disabled:opacity-50 text-white py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-colors">
-                {loading ? "Guardando..." : editingCompany ? "Guardar Cambios" : "Registrar Empresa"}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════
 // SECCIÓN: OFERTAS
@@ -414,7 +229,8 @@ function SectionOfertas() {
   const [form, setForm] = useState({
     titulo: "", empresa_id: "", ubicacion: "", salario_min: "", salario_max: "",
     tipo_contrato: "indefinido", modalidad: "presencial", nivel_experiencia: "",
-    categoria_id: "", descripcion: "", requisitos: ""
+    categoria_id: "", descripcion: "", requisitos: "",
+    fecha_publicacion: "", fecha_expiracion: ""
   });
   const [preguntas, setPreguntas] = useState([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
@@ -451,7 +267,8 @@ function SectionOfertas() {
     setForm({
       titulo: "", empresa_id: companies[0]?.id || "", ubicacion: "", salario_min: "", salario_max: "",
       tipo_contrato: "indefinido", modalidad: "presencial", nivel_experiencia: "",
-      categoria_id: "", descripcion: "", requisitos: ""
+      categoria_id: "", descripcion: "", requisitos: "",
+      fecha_publicacion: "", fecha_expiracion: ""
     });
     setPreguntas([]);
     setShowNewCategory(false);
@@ -472,7 +289,9 @@ function SectionOfertas() {
       nivel_experiencia: o.nivel_experiencia || "",
       categoria_id: o.categoria_id || "",
       descripcion: o.descripcion || "",
-      requisitos: o.requisitos || ""
+      requisitos: o.requisitos || "",
+      fecha_publicacion: o.fecha_publicacion ? o.fecha_publicacion.slice(0, 16) : "",
+      fecha_expiracion: o.fecha_expiracion ? o.fecha_expiracion.slice(0, 16) : ""
     });
     try {
       const qs = await getQuestions(o.id);
@@ -541,6 +360,18 @@ function SectionOfertas() {
       alert(err.message || "Error al cambiar estado");
     }
   };
+
+  const handleCerrar = async (id, name) => {
+    if (!window.confirm(`¿Cerrar la oferta "${name}"? Ya no será visible en las búsquedas.`)) return;
+    try {
+      await closeOffer(id);
+      await reload();
+    } catch (err) {
+      alert(err.message || "Error al cerrar oferta");
+    }
+  };
+
+  const isExpired = (o) => o.fecha_expiracion && new Date(o.fecha_expiracion) <= new Date();
 
   const filteredOffers = offers.filter(o =>
     (o.titulo || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -615,13 +446,22 @@ function SectionOfertas() {
                         <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">{MAP_CONTRATO[o.tipo_contrato] || o.tipo_contrato}</span>
                       </td>
                       <td className="hidden lg:table-cell px-5 py-3.5 text-center">
-                        <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
-                          {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
-                          <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
-                        </button>
+                        {o.estado === 'activa' && isExpired(o) ? (
+                          <span className="inline-flex items-center gap-1.5" title="Oferta cerrada (expirada)">
+                            <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Cerrada</span>
+                          </span>
+                        ) : (
+                          <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                            {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                            <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                          </button>
+                        )}
                       </td>
                       <td className="px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1">
+                          {!isExpired(o) && o.estado === 'activa' && (
+                            <button onClick={() => handleCerrar(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-amber-50 text-slate-400 hover:text-amber-600 transition-colors" title="Cerrar oferta"><Lock size={13} /></button>
+                          )}
                           <button onClick={() => openEdit(o)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#123498] transition-colors"><Edit3 size={13} /></button>
                           <button onClick={() => handleDelete(o.id, o.titulo)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
                         </div>
@@ -646,10 +486,14 @@ function SectionOfertas() {
                             <div>
                               <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Estado</span>
                               <p className="mt-0.5">
-                                <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
-                                  {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
-                                  <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
-                                </button>
+                                {o.estado === 'activa' && isExpired(o) ? (
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-amber-600">Cerrada</span>
+                                ) : (
+                                  <button onClick={(e) => { e.stopPropagation(); handleToggle(o.id); }} className="inline-flex items-center gap-1.5" title="Toggle estado">
+                                    {o.estado === 'activa' ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-slate-400" />}
+                                    <span className={`text-[9px] font-black uppercase tracking-wider ${o.estado === 'activa' ? 'text-green-600' : 'text-slate-400'}`}>{o.estado === 'activa' ? 'Activa' : 'Pausada'}</span>
+                                  </button>
+                                )}
                               </p>
                             </div>
                           </div>
@@ -719,6 +563,28 @@ function SectionOfertas() {
                 <div>
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Salario máximo (S/)</label>
                   <input type="number" value={form.salario_max} onChange={e => setForm({ ...form, salario_max: e.target.value })} className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]" placeholder="Ej: 4500" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Fecha de publicación</label>
+                  <input
+                    type="datetime-local"
+                    value={form.fecha_publicacion}
+                    onChange={e => setForm({ ...form, fecha_publicacion: e.target.value })}
+                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]"
+                  />
+                  <p className="text-[9px] text-slate-400 mt-1">Vacío = publicación inmediata</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1 block">Fecha de cierre</label>
+                  <input
+                    type="datetime-local"
+                    value={form.fecha_expiracion}
+                    onChange={e => setForm({ ...form, fecha_expiracion: e.target.value })}
+                    className="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#123498]/10 focus:border-[#123498]"
+                  />
+                  <p className="text-[9px] text-slate-400 mt-1">Vacío = 90 días desde hoy</p>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -1057,7 +923,7 @@ function SectionPostulantes() {
               {selectedCandidate.cv_enviado_url && (
                 <div className="bg-slate-50 rounded-xl p-4">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">CV Enviado</h4>
-                  <a href={`http://localhost/backend-bolsajb/${selectedCandidate.cv_enviado_url}`} target="_blank" rel="noreferrer" className="text-xs text-[#123498] font-bold hover:underline">Ver CV</a>
+                  <a href={`${API_BASE_URL}${selectedCandidate.cv_enviado_url}`} target="_blank" rel="noreferrer" className="text-xs text-[#123498] font-bold hover:underline">Ver CV</a>
                 </div>
               )}
 
@@ -1122,6 +988,7 @@ export default function Admin() {
     if (path === "empresas") return "empresas";
     if (path === "ofertas") return "ofertas";
     if (path === "postulantes") return "postulantes";
+    if (path === "evaluaciones") return "evaluaciones";
     return "dashboard";
   };
 
@@ -1129,6 +996,7 @@ export default function Admin() {
 
   const handleNavigate = (sec) => {
     if (sec === "dashboard") navigate("/admin");
+    else if (sec === "evaluaciones") navigate("/admin/evaluaciones");
     else navigate(`/admin/${sec}`);
   };
 
@@ -1160,6 +1028,7 @@ export default function Admin() {
           {section === "empresas" && <SectionEmpresas />}
           {section === "ofertas" && <SectionOfertas />}
           {section === "postulantes" && <SectionPostulantes />}
+          {section === "evaluaciones" && <SectionEvaluaciones />}
         </main>
       </div>
     </div>

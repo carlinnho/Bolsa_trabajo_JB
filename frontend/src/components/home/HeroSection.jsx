@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 const TRENDS = ["Todos", "Ventas", "Administración", "Tecnología", "Logística"];
 
 export default function HeroSection({
@@ -86,19 +87,7 @@ export default function HeroSection({
             className="bg-[#F46F0B] hover:bg-orange-600 active:scale-[0.98] text-white font-black text-xs uppercase tracking-wider px-8 py-4 rounded-xl md:rounded-full transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
           >
             <span>BUSCAR EMPLEO</span>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRightIcon className="w-4 h-4" strokeWidth="3"/>
           </button>
         </form>
 

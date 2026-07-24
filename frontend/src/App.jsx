@@ -30,6 +30,8 @@ const Applications = lazy(
 const FavoriteApplications = lazy(
   () => import("./components/profile/FavoriteApplication/FavoriteApplications"),
 );
+const Evaluaciones = lazy(() => import("./pages/Evaluaciones"));
+const EmpresaDetalle = lazy(() => import("./pages/EmpresaDetalle"));
 
 // ── Fallback de carga ────────────────────────────────────────────────
 const Loading = () => (
@@ -76,6 +78,8 @@ function App() {
                 <Route path="postulaciones" element={<Applications />} />
                 <Route path="favoritos" element={<FavoriteApplications />} />
               </Route>
+              <Route path="/evaluaciones" element={<Evaluaciones />} />
+              <Route path="/evaluaciones/:id" element={<EmpresaDetalle />} />
             </Route>
 
             <Route

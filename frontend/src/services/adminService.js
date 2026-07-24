@@ -11,15 +11,21 @@ export const getCompanies = async () => {
 
 export const saveCompany = async (company, logoFile = null) => {
     const formData = new FormData();
-    formData.append("nombre", company.nombre);
-    formData.append("ruc", company.ruc || "");
-    formData.append("sector", company.sector);
-    formData.append("descripcion", company.descripcion || "");
+    formData.append("nombre",      company.nombre);
+    formData.append("ruc",         company.ruc         || "");
+    formData.append("sector",      company.sector);
+    formData.append("descripcion", company.descripcion  || "");
+
+    // ── Campos nuevos ──────────────────────────────────────
+    formData.append("ubicacion",      company.ubicacion      || "");
+    formData.append("anio_fundacion", company.anio_fundacion || "");
+    formData.append("num_empleados",  company.num_empleados  || "");
+    formData.append("sitio_web",      company.sitio_web      || "");
+    formData.append("beneficios",     company.beneficios     || "[]");
 
     if (company.id) {
         formData.append("id", company.id);
     }
-
     if (logoFile) {
         formData.append("logo", logoFile);
     }
@@ -55,6 +61,8 @@ export const saveOffer = async (offer) => {
         nivel_experiencia: offer.nivel_experiencia || null,
         categoria_id: offer.categoria_id || null,
         estado: offer.estado || "activa",
+        fecha_publicacion: offer.fecha_publicacion || null,
+        fecha_expiracion: offer.fecha_expiracion || null,
     };
 
     if (offer.id) {
@@ -71,6 +79,10 @@ export const deleteOffer = async (id) => {
 
 export const toggleOfferStatus = async (id) => {
     return await ofertasService.toggleEstado(id);
+};
+
+export const closeOffer = async (id) => {
+    return await ofertasService.cerrar(id);
 };
 
 // --- CANDIDATES (stub temporal, sin backend aún) ---

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { vacantesService } from "../services/vacantesService";
 import { authService } from "../services/authService";
+import { favoritosService } from "../services/favoritosService";
 import FiltrosVacantes from "../components/buscador/FiltrosVacantes";
 import ListaVacantes from "../components/buscador/ListaVacantes";
 import PanelDetalle from "../components/buscador/PanelDetalle";
@@ -76,6 +77,9 @@ export default function Buscador() {
     if (!token) return;
     vacantesService.misPostulaciones()
       .then(ids => setVacantesPostuladas(ids.map(String)))
+      .catch(() => {});
+    favoritosService.listar()
+      .then(favs => setGuardados(new Set(favs.map(f => f.oferta_id))))
       .catch(() => {});
   }, []);
 
@@ -163,14 +167,24 @@ export default function Buscador() {
     setRespuestasFiltro({});
   }, []);
 
-  const handleGuardar = useCallback((id) => {
-    setGuardados((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
+  const handleGuardar = useCallback(async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    try {
+      const resultado = await favoritosService.toggle(id);
+      setGuardados((prev) => {
+        const next = new Set(prev);
+        if (resultado.es_favorito) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+    } catch {
+      // silenciar error
+    }
+  }, [navigate]);
 
   const handleIniciarPostulacion = useCallback(() => {
     const token = localStorage.getItem("token");

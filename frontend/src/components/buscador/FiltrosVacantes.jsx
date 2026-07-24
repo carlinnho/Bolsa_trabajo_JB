@@ -21,7 +21,7 @@ function ChipFilter({ label, onRemove }) {
       <button
         type="button"
         onClick={onRemove}
-        className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-naranja/20 transition-colors cursor-pointer flex-shrink-0"
+        className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-naranja/20 transition-colors cursor-pointer shrink-0"
       >
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -404,7 +404,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
           )}
         </div>
 
-        <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
+        <div className="w-px h-8 bg-gray-200 shrink-0" />
 
         <div className="relative flex-1 min-w-0">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +483,7 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
         <button
           type="button"
           onClick={handleBuscar}
-          className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-r-lg transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer"
+          className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-r-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           Buscar empleos
         </button>
@@ -631,10 +631,10 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
           <button
             type="button"
             onClick={() => setMenuActivo('fecha')}
-            className="flex-shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
+            className="shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
           >
             <span className="font-medium truncate">{labelFecha}</span>
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -646,10 +646,10 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
           <button
             type="button"
             onClick={() => setMenuActivo('tipo')}
-            className="flex-shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
+            className="shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
           >
             <span className="font-medium truncate">{labelTipo}</span>
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -661,10 +661,10 @@ export default function FiltrosVacantes({ filtros, onFilterChange }) {
           <button
             type="button"
             onClick={() => setMenuActivo('modalidad')}
-            className="flex-shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
+            className="shrink-0 bg-white flex items-center justify-between gap-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors cursor-pointer"
           >
             <span className="font-medium truncate">{labelModalidad}</span>
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
