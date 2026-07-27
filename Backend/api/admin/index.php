@@ -131,12 +131,14 @@ if ($resource === 'empresas') {
 
         $logo_url = null;
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] ===  UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
             if (!in_array($ext, $allowed)) respondError('Formato de imagen no válido.');
             if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La imagen no debe superar 2MB.');
             $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
@@ -184,15 +186,17 @@ if ($resource === 'empresas') {
 
         $logo_url = $empresa['logo_url'];
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'],     PATHINFO_EXTENSION));
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
             if (!in_array($ext, $allowed)) respondError('Formato de imagen no   válido.');
             if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La     imagen no debe superar 2MB.');
             if ($empresa['logo_url'] && file_exists(__DIR__ . '/../../' .   $empresa['logo_url'])) {
                 unlink(__DIR__ . '/../../' . $empresa['logo_url']);
             }
-            $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.  ' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
@@ -284,9 +288,10 @@ if ($resource === 'ofertas') {
         $ubicacion = isset($body['ubicacion']) ? sanitizarTexto($body['ubicacion']) : null;
         $categoria_id = $body['categoria_id'] ?? null;
         
-        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'híbrido']) ? $body['modalidad'] : 'presencial';
-        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['indefinido', 'temporal', 'freelance', 'prácticas', 'por_horas']) ? $body['tipo_contrato'] : 'indefinido';
+        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'Híbrida']) ? $body['modalidad'] : 'presencial';
+        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['Tiempo completo', 'Permanente', 'Medio tiempo', 'Freelance', 'Prácticas', 'Temporal']) ? $body['tipo_contrato'] : 'Tiempo completo';
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
+        $horario = isset($body['horario']) ? sanitizarTexto($body['horario']) : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : 'activa';
 
         $fecha_publicacion = !empty($body['fecha_publicacion']) ? $body['fecha_publicacion'] : null;
@@ -296,15 +301,14 @@ if ($resource === 'ofertas') {
             $stmt = $db->prepare("
                 INSERT INTO ofertas_trabajo (
                     empresa_id, titulo, slug, descripcion, requisitos, 
-                    salario_min, salario_max, ubicacion, modalidad, 
-                    tipo_contrato, nivel_experiencia, categoria_id, estado,
+                    salario_min, salario_max, ubicacion, modalidad, horario, tipo_contrato, nivel_experiencia, categoria_id, estado,
                     fecha_publicacion, fecha_expiracion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, IFNULL(?, DATE_ADD(NOW(), INTERVAL 90 DAY)))
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, IFNULL(?, DATE_ADD(NOW(), INTERVAL 90 DAY)))
             ");
             
             $stmt->execute([
                 $empresa_id, $titulo, $slug, $descripcion, $requisitos,
-                $salario_min, $salario_max, $ubicacion, $modalidad,
+                $salario_min, $salario_max, $ubicacion, $modalidad, $horario,
                 $tipo_contrato, $nivel_experiencia, $categoria_id, $estado,
                 $fecha_publicacion, $fecha_expiracion
             ]);
@@ -343,8 +347,9 @@ if ($resource === 'ofertas') {
         $ubicacion = isset($body['ubicacion']) ? sanitizarTexto($body['ubicacion']) : null;
         $categoria_id = $body['categoria_id'] ?? null;
 
-        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'híbrido']) ? $body['modalidad'] : null;
-        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['indefinido', 'temporal', 'freelance', 'prácticas', 'por_horas']) ? $body['tipo_contrato'] : null;
+        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'Híbrida']) ? $body['modalidad'] : null;
+        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['Tiempo completo', 'Permanente', 'Medio tiempo', 'Freelance', 'Prácticas', 'Temporal']) ? $body['tipo_contrato'] : null;
+        $horario = isset($body['horario']) ? sanitizarTexto($body['horario']) : null;
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : null;
 
@@ -371,6 +376,7 @@ if ($resource === 'ofertas') {
             if ($ubicacion !== null) { $campos[] = 'ubicacion = ?'; $valores[] = $ubicacion; }
             if ($categoria_id !== null) { $campos[] = 'categoria_id = ?'; $valores[] = $categoria_id; }
             if ($modalidad !== null) { $campos[] = 'modalidad = ?'; $valores[] = $modalidad; }
+            if ($horario !== null) { $campos[] = 'horario = ?'; $valores[] = $horario; }
             if ($tipo_contrato !== null) { $campos[] = 'tipo_contrato = ?'; $valores[] = $tipo_contrato; }
             if ($nivel_experiencia !== null) { $campos[] = 'nivel_experiencia = ?'; $valores[] = $nivel_experiencia; }
             if ($estado !== null) { $campos[] = 'estado = ?'; $valores[] = $estado; }

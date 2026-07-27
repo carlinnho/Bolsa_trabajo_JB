@@ -1,16 +1,10 @@
-// ─────────────────────────────────────────────────────────────
-// DetalleVacante — Contenido completo de la oferta (estado 1)
-//
-// Props:
-//   vacante: object → datos completos
-// ─────────────────────────────────────────────────────────────
-
 export default function DetalleVacante({ vacante }) {
-  const fecha = new Date(vacante.fecha_publicacion + 'T00:00:00').toLocaleDateString('es-PE', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  
+  const fecha = vacante.fecha_publicacion
+  ? new Date(vacante.fecha_publicacion).toLocaleDateString('es-PE', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+  : "No especificada";
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -18,9 +12,9 @@ export default function DetalleVacante({ vacante }) {
       <div className="flex items-start gap-4">
         {vacante.logo_url && (
           <img
-            src={vacante.logo_url}
+            src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/${vacante.logo_url}`}
             alt={vacante.empresa_nombre}
-            className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+            className="w-14 h-14 rounded-lg object-cover border border-gray-200 shrink-0"
           />
         )}
         <div className="min-w-0">
@@ -50,7 +44,9 @@ export default function DetalleVacante({ vacante }) {
         </div>
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase">Horario</p>
-          <p className="text-sm text-gray-700 mt-0.5">{vacante.horario}</p>
+          <p className="text-sm text-gray-700 mt-0.5">
+            {vacante.horario || "No especificado"}
+          </p>
         </div>
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase">Modalidad</p>

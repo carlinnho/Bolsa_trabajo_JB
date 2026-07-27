@@ -47,7 +47,7 @@ function MainLayout() {
   const location = useLocation();
   return (
     <>
-      {location.pathname !== "/buscar-empleo" && <Header />}
+      <Header />
       <main id="main-content" className="bg-slate-50">
         <Outlet />
       </main>
