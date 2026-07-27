@@ -8,11 +8,11 @@ export default function QuienesSomosSection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Encabezado */}
-        <div className="mb-10">
+        <div className="mb-10 flex flex-col items-center text-center">
           <h2 className="text-2xl sm:text-3xl font-black text-[#123498] tracking-tight font-heading uppercase">
             ¿Quiénes Somos?
           </h2>
-          <div className="w-8 h-1 bg-[#F46F0B] mt-2 mb-1 rounded-full" />
+          <div className="w-15 h-1 bg-[#F46F0B] mt-2 mb-1 rounded-full" />
           <p
             className="text-slate-400 text-sm font-bold mt-1 max-w-2xl leading-relaxed"
             style={{ fontFamily: "'Lato', sans-serif" }}
