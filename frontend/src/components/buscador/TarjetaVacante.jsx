@@ -1,13 +1,4 @@
-// ─────────────────────────────────────────────────────────────
-// TarjetaVacante — Card compacta de vacante
-//
-// Props:
-//   vacante     : object
-//   seleccionada: boolean
-//   onClick     : fn
-//   esGuardada  : boolean
-//   onGuardar   : fn
-// ─────────────────────────────────────────────────────────────
+import { MapPinIcon, HeartIcon } from "@heroicons/react/24/outline";
 
 const MAP_TIPO_ETIQUETA = {
   'Tiempo completo': { label: 'Jornada Completa', clase: 'bg-blue-50 text-blue-700' },
@@ -24,10 +15,11 @@ const MAP_MODALIDAD_ETIQUETA = {
 };
 
 export default function TarjetaVacante({ vacante, seleccionada = false, onClick, esGuardada = false, onGuardar }) {
-  const fecha = new Date(vacante.fecha_publicacion + 'T00:00:00').toLocaleDateString('es-PE', {
-    day: 'numeric',
-    month: 'short',
-  });
+  const fechaPublicacion = vacante.fecha_publicacion
+    ? new Date(vacante.fecha_publicacion.replace(" ", "T")).toLocaleDateString('es-PE', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      })
+    : "No especificada";
 
   const etiqueta = MAP_TIPO_ETIQUETA[vacante.tipo_contrato];
   const modalidadEtiqueta = MAP_MODALIDAD_ETIQUETA[vacante.modalidad];
@@ -54,14 +46,11 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
 
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <span className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
+              <MapPinIcon className="w-4 h-4 shrink-0" strokeWidth={2}/>
               {vacante.ubicacion}
             </span>
             <span className="text-gray-300">|</span>
-            <span>{fecha}</span>
+            <span>{fechaPublicacion}</span>
           </div>
         </div>
 
@@ -83,9 +72,7 @@ export default function TarjetaVacante({ vacante, seleccionada = false, onClick,
             className="p-1.5 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
             title={esGuardada ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
-            <svg className="w-5 h-5" fill={esGuardada ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
+            <HeartIcon className="w-5 h-5" fill={esGuardada ? 'red' : 'none'} strokeWidth={2}/>
           </button>
         </div>
       </div>

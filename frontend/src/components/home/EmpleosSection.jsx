@@ -7,7 +7,7 @@ const MAX_VISIBLE = 3;
 
 const formatearFecha = (fechaStr) => {
   if (!fechaStr) return "Sin fecha límite";
-  return new Date(fechaStr).toLocaleDateString("es-PE", {
+  return new Date(fechaStr.replace(" ", "T")).toLocaleDateString("es-PE", {
     day: "numeric", month: "long", year: "numeric",
   });
 };

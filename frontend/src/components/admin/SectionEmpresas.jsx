@@ -80,11 +80,6 @@ export default function SectionEmpresas() {
   };
 
   const openEdit = (c) => {
-    // líneas temporales
-    console.log("logo_url:", c.logo_url);
-    console.log("API_BASE_URL:", API_BASE_URL);
-    console.log("URL completa:", API_BASE_URL + c.logo_url);
-
     setEditingCompany(c);
     setFormNombre(c.nombre || "");
     setFormRuc(c.ruc || "");
