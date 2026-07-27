@@ -18,7 +18,7 @@ export default function DetalleVacante({ vacante }) {
       <div className="flex items-start gap-4">
         {vacante.logo_url && (
           <img
-            src={vacante.logo_url}
+            src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/${vacante.logo_url}`}
             alt={vacante.empresa_nombre}
             className="w-14 h-14 rounded-lg object-cover border border-gray-200 flex-shrink-0"
           />
