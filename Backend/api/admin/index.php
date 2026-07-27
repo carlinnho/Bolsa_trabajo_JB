@@ -131,12 +131,14 @@ if ($resource === 'empresas') {
 
         $logo_url = null;
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] ===  UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
             if (!in_array($ext, $allowed)) respondError('Formato de imagen no válido.');
             if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La imagen no debe superar 2MB.');
             $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
@@ -184,15 +186,17 @@ if ($resource === 'empresas') {
 
         $logo_url = $empresa['logo_url'];
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'],     PATHINFO_EXTENSION));
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
             if (!in_array($ext, $allowed)) respondError('Formato de imagen no   válido.');
             if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La     imagen no debe superar 2MB.');
             if ($empresa['logo_url'] && file_exists(__DIR__ . '/../../' .   $empresa['logo_url'])) {
                 unlink(__DIR__ . '/../../' . $empresa['logo_url']);
             }
-            $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.  ' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
