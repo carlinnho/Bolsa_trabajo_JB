@@ -7,11 +7,11 @@ const ACCESOS = [
   { label: "Inicio", href: "#hero" },
   { label: "Buscar Empleo", href: "/buscar-empleo" },
   { label: "Evaluaciones de empresa", href: "/evaluaciones" },
-  { label: "Constitución de Empresas", href: "#constitucion" },
 ];
 
 const INFORMACION = [
   { label: "¿Cómo funciona?", href: "#como-funciona" },
+  { label: "¿Quiénes somos?", href: "#quienes-somos" },
   { label: "Preguntas Frecuentes", href: "#preguntas-frecuentes" },
   { label: "Publica tus vacantes", href: "https://api.whatsapp.com/send?phone=51912736437&text=Hola%2C%20me%20gustar%C3%ADa%20publicar%20vacantes%20con%20Consultora%20JB." },
   { label: "Ir a Consultora JB", href: "https://consultoradeasesoriaempresarialjb.com/" }

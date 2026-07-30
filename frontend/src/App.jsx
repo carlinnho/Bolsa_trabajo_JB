@@ -11,6 +11,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // ── Imports directos (no lazy) — solo los que se necesitan siempre ──
 import Header from "./components/layout/Header";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ScrollToTop from "./components/layout/ScrollToTop";
 
 // ── Lazy: se cargan solo cuando el usuario navega a esa ruta ────────
 const Home = lazy(() => import("./pages/Home"));
@@ -66,6 +67,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>
+        <ScrollToTop />
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route
