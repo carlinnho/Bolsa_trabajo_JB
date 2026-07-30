@@ -34,8 +34,9 @@ export default function EmpleosSection() {
   }, []);
 
   return (
-    <section className="bg-slate-50 flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
-      {/* Header */}
+    <section className="bg-slate-50 border-b border-slate-100 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <div>
           <h2 className="text-2xl sm:text-3xl font-black text-[#123498] tracking-tight font-heading uppercase">
@@ -139,6 +140,7 @@ export default function EmpleosSection() {
           ))}
         </div>
       )}
+      </div>
     </section>
   );
 }
