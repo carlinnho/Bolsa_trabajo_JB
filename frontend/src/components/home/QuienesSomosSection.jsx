@@ -31,7 +31,7 @@ export default function QuienesSomosSection() {
           {/* Misión */}
           <div className="bg-[#123498] rounded-2xl p-7 text-white hover:shadow-lg transition-all duration-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-amarillo-hansa rounded-xl flex items-center justify-center shrink-0 border border-white/20">
+              <div className="w-11 h-11 bg-naranja rounded-xl flex items-center justify-center shrink-0 border border-white/20">
                 <BoltIcon className="w-5 h-5 text-white" strokeWidth="2.5"/>
               </div>
               <h3 className="font-black text-lg uppercase tracking-wider font-heading">
@@ -48,7 +48,7 @@ export default function QuienesSomosSection() {
           {/* Visión */}
           <div className="bg-[#F46F0B] rounded-2xl p-7 text-white hover:shadow-lg transition-all duration-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-gris-oscuro rounded-xl flex items-center justify-center shrink-0 border border-white/20">
+              <div className="w-11 h-11 bg-azul rounded-xl flex items-center justify-center shrink-0 border border-white/20">
                 <EyeIcon className="w-5 h-5 text-white" strokeWidth="2.5"/>
               </div>
               <h3 className="font-black text-lg uppercase tracking-wider font-heading">

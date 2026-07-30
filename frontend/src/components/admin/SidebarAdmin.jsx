@@ -6,7 +6,7 @@ import {
     Users,
     Star,
     LogOut,
-    ChevronRight,
+    ChevronRight, BookOpen,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
     { to: "/admin/ofertas", label: "Ofertas", icon: Briefcase },
     { to: "/admin/postulantes", label: "Postulantes", icon: Users },
     { to: "/admin/evaluaciones",label: "Evaluaciones", icon: Star },
+    { to: "/admin/reclamaciones", label: "Reclamaciones", icon: BookOpen },
 ];
 
 export default function SidebarAdmin({ onCloseMobile }) {

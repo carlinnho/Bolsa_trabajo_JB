@@ -53,7 +53,7 @@ const Information = () => {
   return (
     <div className="w-full pt-2">
       <PageHeader
-        title="Mis Datos"
+        title="Mi Perfil"
         description="Gestiona tu información personal y profesional para aplicar a mejores oportunidades."
         isDirty={isDirty}
       />

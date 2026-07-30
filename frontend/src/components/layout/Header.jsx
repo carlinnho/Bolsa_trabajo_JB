@@ -4,7 +4,7 @@ import { useHeader } from "../../hooks/useHeader";
 import NavDesktop from "./header/NavDesktop";
 import UserMenuDesktop from "./header/UserMenuDesktop";
 import MobileMenu from "./header/MobileMenu";
-import logoCompleto from "../../assets/images/logo_completo.webp";
+import logoColor from "../../assets/images/logo_color.webp";
 
 const navLinkClasses =
   "relative inline-block py-1 text-gray-700 font-medium transition-colors hover:text-naranja after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-naranja after:transition-all after:duration-300 hover:after:w-full";
@@ -37,15 +37,16 @@ export default function Header({ hideOnScroll = false }) {
           <div className="flex justify-between h-20 items-center">
 
             {/* IZQUIERDA: Logo + Nav Desktop */}
-            <div className="flex items-center gap-8">
-              <Link to="/" className="shrink-0" aria-label="Ir al inicio de Consultora JB">
+            <div className="flex items-center gap-6">
+              <Link to="/" className="flex items-center gap-2" aria-label="Ir al inicio de la Bolsa de Trabajo JB">
                 <img
-                  className="h-10 w-auto sm:h-12 object-contain"
-                  src={logoCompleto}
-                  alt="Logo de Consultora de Asesoría Empresarial JB"
-                  width={444}
-                  height={100}
+                  className="h-8 w-8 sm:h-12 sm:w-12 object-contain"
+                  src={logoColor}
+                  alt="Logo de la Bolsa de Trabajo JB"
+                  width={225}
+                  height={225}
                 />
+                <span className="font-semibold text-azul"> Bolsa de trabajo JB </span>
               </Link>
               <NavDesktop isActive={isActive} />
             </div>
