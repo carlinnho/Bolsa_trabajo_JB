@@ -33,6 +33,13 @@ const FavoriteApplications = lazy(
 const Evaluaciones = lazy(() => import("./pages/Evaluaciones"));
 const EmpresaDetalle = lazy(() => import("./pages/EmpresaDetalle"));
 
+//legal
+const TerminosCondiciones = lazy(() => import("./pages/legales/TerminosCondiciones"));
+const PoliticaPrivacidad = lazy(() => import("./pages/legales/PoliticaPrivacidad"));
+const AvisoLegal = lazy(() => import("./pages/legales/AvisoLegal"));
+const LibroReclamaciones = lazy(() => import("./pages/legales/LibroReclamaciones"));
+
+
 // ── Fallback de carga ────────────────────────────────────────────────
 const Loading = () => (
   <div className="flex min-h-screen items-center justify-center text-[#6b7a9f] text-sm">
@@ -102,6 +109,36 @@ function App() {
 
             <Route path="/cuenta-validada" element={<CuentaValidada />} />
             <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+
+            <Route path="/terminos-condiciones" 
+              element={
+                <main className="min-h-screen">
+                  <TerminosCondiciones />
+                </main>
+              }
+            />
+            <Route path="/politica-privacidad"
+              element={
+                <main className="min-h-screen">
+                  <PoliticaPrivacidad />
+                </main>
+              }
+            />
+            <Route path="/aviso-legal"
+              element={
+                <main className="min-h-screen">
+                  <AvisoLegal />
+                </main>
+              }
+            />
+            <Route path="/libro-reclamaciones"
+              element={
+                <main className="min-h-screen">
+                  <LibroReclamaciones />
+                </main>
+              }
+            />
+
           </Routes>
         </Suspense>
       </Router>

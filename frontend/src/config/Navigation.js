@@ -4,7 +4,7 @@ export const NAV_ITEMS = [
   {
     id: "information",
     path: "/mi-perfil",
-    label: "Mis Datos",
+    label: "Mi Perfil",
     icon: UserIcon,
     end: true,
   },

@@ -5,6 +5,8 @@ import EmpresasSection from "../components/home/EmpresasSection";
 import ComoFunciona from "../components/home/ComoFunciona";
 import EmpleosSection from "../components/home/EmpleosSection";
 import QuienesSomosSection from "../components/home/QuienesSomosSection";
+import BannerContacto from "../components/home/BannerContacto";
+import PreguntasFrecuentes from "../components/home/PreguntasFrecuentes";
 
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -28,6 +30,8 @@ export default function Home() {
       <ComoFunciona />
       <EmpleosSection />
       <QuienesSomosSection />
+      <PreguntasFrecuentes />
+      <BannerContacto />
       <Footer />
     </div>
   );
