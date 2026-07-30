@@ -52,12 +52,12 @@ export default function PanelDetalle({
   return (
     <div className="flex flex-col flex-1 min-h-0 pt-2">
       {/* Header fijo */}
-      <div className="flex-shrink-0 px-6 py-3 border-b border-gray-100 bg-white flex items-center gap-2">
+      <div className="shrink-0 px-6 py-3 border-b border-gray-100 bg-white flex items-center gap-2">
         {(onVolver && !postulacionStep) && (
           <button
             type="button"
             onClick={onVolver}
-            className="lg:hidden p-1.5 rounded-md hover:bg-gray-100 transition-colors cursor-pointer flex-shrink-0"
+            className="lg:hidden p-1.5 rounded-md hover:bg-gray-100 transition-colors cursor-pointer shrink-0"
             title="Volver a la lista"
           >
             <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,11 +70,11 @@ export default function PanelDetalle({
         </h2>
         {estado === 'detail' && !postulacionStep && (
           expirada ? (
-            <span className="flex items-center gap-1.5 bg-red-50 text-red-400 font-semibold text-sm px-4 py-2 rounded-lg flex-shrink-0 cursor-default">
+            <span className="flex items-center gap-1.5 bg-red-50 text-red-400 font-semibold text-sm px-4 py-2 rounded-lg shrink-0 cursor-default">
               Oferta cerrada
             </span>
           ) : yaPostulada ? (
-            <span className="flex items-center gap-1.5 bg-gray-100 text-gray-400 font-semibold text-sm px-4 py-2 rounded-lg flex-shrink-0 cursor-default">
+            <span className="flex items-center gap-1.5 bg-gray-100 text-gray-400 font-semibold text-sm px-4 py-2 rounded-lg shrink-0 cursor-default">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -84,7 +84,7 @@ export default function PanelDetalle({
             <button
               type="button"
               onClick={onPostular}
-              className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-6 py-2 rounded-lg transition-colors shadow-sm flex-shrink-0 cursor-pointer"
+              className="bg-naranja hover:bg-orange-600 text-white font-semibold text-sm px-6 py-2 rounded-lg transition-colors shadow-sm shrink-0 cursor-pointer"
             >
               Postularme
             </button>
@@ -127,9 +127,9 @@ export default function PanelDetalle({
                 Hemos recibido tu postulación para <strong className="text-azul">{vacante?.titulo}</strong>
               </p>
             </div>
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50/40 border border-blue-100 rounded-xl p-5 max-w-sm space-y-3 text-left w-full">
+            <div className="bg-linear-to-br from-blue-50 to-indigo-50/40 border border-blue-100 rounded-xl p-5 max-w-sm space-y-3 text-left w-full">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
                   <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
@@ -139,7 +139,7 @@ export default function PanelDetalle({
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
                   <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>

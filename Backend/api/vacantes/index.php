@@ -15,56 +15,67 @@ $db = getDB();
 
 // ─── LISTAR VACANTES ACTIVAS ──────────────────────────────
 if ($method === 'GET' && $action === 'listar') {
-    $where = "o.estado = 'activa' AND o.fecha_expiracion > NOW() AND (o.fecha_publicacion IS NULL OR o.fecha_publicacion <= NOW())";
+
+    $cargo       = $_GET['cargo']        ?? '';
+    $ubicacion   = $_GET['ubicacion']    ?? '';
+    $modalidad   = $_GET['modalidad']    ?? '';
+    $tipo_contrato = $_GET['tipo_contrato'] ?? '';
+    $fecha_rango = $_GET['fecha_rango']  ?? '';
+
+    $where = [
+        "o.estado = 'activa'",
+        "o.fecha_expiracion > NOW()",
+        "(o.fecha_publicacion IS NULL OR o.fecha_publicacion <= NOW())"
+    ];
     $params = [];
 
-    if (!empty($_GET['cargo'])) {
-        $cargo = $_GET['cargo'];
-        $stem = raizEspanol($cargo);
-        $terms = $stem !== $cargo ? [$cargo, $stem] : [$cargo];
-        $clausulas = [];
-        foreach ($terms as $term) {
-            $clausulas[] = "(o.titulo LIKE ? OR c.nombre LIKE ? OR e.nombre LIKE ?)";
-            $params[] = '%' . $term . '%';
-            $params[] = '%' . $term . '%';
-            $params[] = '%' . $term . '%';
-        }
-        $where .= ' AND (' . implode(' OR ', $clausulas) . ')';
+    if ($cargo) {
+        $where[]  = "(o.titulo LIKE ? OR o.descripcion LIKE ? OR e.nombre LIKE ?)";
+        $params[] = "%$cargo%";
+        $params[] = "%$cargo%";
+        $params[] = "%$cargo%";
     }
-    if (!empty($_GET['ubicacion'])) {
-        $where .= " AND o.ubicacion LIKE ?";
-        $params[] = '%' . $_GET['ubicacion'] . '%';
+    if ($ubicacion) {
+        $where[]  = "o.ubicacion LIKE ?";
+        $params[] = "%$ubicacion%";
     }
-    if (!empty($_GET['modalidad'])) {
-        $where .= " AND o.modalidad = ?";
-        $params[] = $_GET['modalidad'];
+    if ($modalidad) {
+        $where[]  = "o.modalidad = ?";
+        $params[] = $modalidad;
     }
-    if (!empty($_GET['tipo_contrato'])) {
-        $where .= " AND o.tipo_contrato = ?";
-        $params[] = $_GET['tipo_contrato'];
+    if ($tipo_contrato) {
+        $where[]  = "o.tipo_contrato = ?";
+        $params[] = $tipo_contrato;
     }
-    if (!empty($_GET['fecha_rango'])) {
-        $dias = match ($_GET['fecha_rango']) {
-            '24h' => 1,
-            '3d' => 3,
-            '7d' => 7,
-            default => 0
-        };
-        if ($dias > 0) {
-            $where .= " AND o.fecha_creacion >= DATE_SUB(NOW(), INTERVAL $dias DAY)";
-        }
+    if ($fecha_rango) {
+        $where[]  = "o.fecha_publicacion >= DATE_SUB(NOW(), INTERVAL ? DAY)";
+        $params[] = (int)$fecha_rango;
     }
 
+    $whereSQL = implode(' AND ', $where);
+
     $stmt = $db->prepare("
-        SELECT o.id, o.titulo, o.ubicacion, o.salario_min, o.salario_max,
-               o.modalidad, o.tipo_contrato, o.fecha_creacion,
-               e.nombre as empresa_nombre, e.logo_url,
-               c.nombre as categoria_nombre
+        SELECT
+            o.id,
+            o.titulo,
+            o.ubicacion,
+            o.salario_min,
+            o.salario_max,
+            o.modalidad,
+            o.horario,
+            o.tipo_contrato,
+            o.nivel_experiencia,
+            o.fecha_publicacion,
+            o.fecha_expiracion,
+            o.fecha_creacion,
+            e.nombre   AS empresa_nombre,
+            e.logo_url AS logo_url,
+            c.nombre   AS categoria_nombre
         FROM ofertas_trabajo o
-        LEFT JOIN empresas_clientes e ON o.empresa_id = e.id
-        LEFT JOIN categorias c ON o.categoria_id = c.id
-        WHERE $where
-        ORDER BY o.fecha_creacion DESC
+        JOIN empresas_clientes e ON o.empresa_id = e.id
+        LEFT JOIN categorias c   ON o.categoria_id = c.id
+        WHERE $whereSQL
+        ORDER BY o.fecha_publicacion DESC
     ");
     $stmt->execute($params);
     respond(true, $stmt->fetchAll());

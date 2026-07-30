@@ -1,14 +1,9 @@
+import LogoJB from "../../assets/bussiness/logo_completo.webp";
+import LogoIseg from "../../assets/bussiness/logo_iseg.webp";
+
 const EMPRESAS_DESTACADAS = [
-  {
-    name: "Consultora JB",
-    logoUrl:
-      "https://consultoradeasesoriaempresarialjb.com/wp-content/uploads/2026/04/logoSinFondo.png",
-  },
-  {
-    name: "I.seg",
-    logoUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpm9Iv7WI9svBSuQkpRZ-N52QVOjGgzyul0lEhxt87kgBhrIdpxO5-be3r&s=10", // Placeholder temporal
-  },
+  { name: "Consultora JB", logoUrl: LogoJB },
+  { name: "I.seg", logoUrl: LogoIseg },
 ];
 
 export default function EmpresasSection() {
@@ -19,7 +14,7 @@ export default function EmpresasSection() {
           <h2 className="text-2xl sm:text-3xl font-black text-[#123498] tracking-tight font-heading uppercase">
             Empresas Destacadas
           </h2>
-          <div className="w-8 h-1 bg-[#F46F0B] mt-2 mb-1 rounded-full" />
+          <div className="w-8 h-1 bg-naranja mt-2 mb-1 rounded-full" />
           <p className="text-slate-400 text-xs font-bold mt-1">
             Conoce las organizaciones que publican sus vacantes en nuestra red
           </p>
@@ -37,7 +32,7 @@ export default function EmpresasSection() {
                   <img
                     src={emp.logoUrl}
                     alt={`Logo de ${emp.name}`}
-                    className="max-h-16 max-w-[140px] object-contain"
+                    className="max-h-16 max-w-35 object-contain"
                   />
                 </div>
               </div>

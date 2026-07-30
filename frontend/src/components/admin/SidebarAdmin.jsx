@@ -4,6 +4,7 @@ import {
     Building2,
     Briefcase,
     Users,
+    Star,
     LogOut,
     ChevronRight,
 } from "lucide-react";
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
     { to: "/admin/empresas", label: "Empresas", icon: Building2 },
     { to: "/admin/ofertas", label: "Ofertas", icon: Briefcase },
     { to: "/admin/postulantes", label: "Postulantes", icon: Users },
+    { to: "/admin/evaluaciones",label: "Evaluaciones", icon: Star },
 ];
 
 export default function SidebarAdmin({ onCloseMobile }) {
@@ -65,7 +67,11 @@ export default function SidebarAdmin({ onCloseMobile }) {
             {/* Cerrar sesión */}
             <div className="px-4 pb-4">
                 <button
-                    onClick={() => navigate("/")}
+                    onClick={() => {
+                            localStorage.removeItem("token");
+                            localStorage.removeItem("user");
+                            navigate("/");
+                        }}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100/40 font-black text-xs uppercase tracking-wider transition-colors"
                 >
                     <LogOut size={14} strokeWidth={2.5} />
