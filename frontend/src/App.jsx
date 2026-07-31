@@ -30,6 +30,8 @@ const Applications = lazy(
 const FavoriteApplications = lazy(
   () => import("./components/profile/FavoriteApplication/FavoriteApplications"),
 );
+const Evaluaciones = lazy(() => import("./pages/Evaluaciones"));
+const EmpresaDetalle = lazy(() => import("./pages/EmpresaDetalle"));
 
 // ── Fallback de carga ────────────────────────────────────────────────
 const Loading = () => (
@@ -45,7 +47,7 @@ function MainLayout() {
   const location = useLocation();
   return (
     <>
-      {location.pathname !== "/buscar-empleo" && <Header />}
+      <Header />
       <main id="main-content" className="bg-slate-50">
         <Outlet />
       </main>
@@ -76,6 +78,8 @@ function App() {
                 <Route path="postulaciones" element={<Applications />} />
                 <Route path="favoritos" element={<FavoriteApplications />} />
               </Route>
+              <Route path="/evaluaciones" element={<Evaluaciones />} />
+              <Route path="/evaluaciones/:id" element={<EmpresaDetalle />} />
             </Route>
 
             <Route

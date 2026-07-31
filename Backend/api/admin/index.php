@@ -100,47 +100,64 @@ if ($resource === 'empresas') {
 
     // LISTAR EMPRESAS
     if ($method === 'GET' && $action === 'listar') {
-        $stmt = $db->query("SELECT id, nombre, ruc, sector, logo_url, descripcion, estado, fecha_registro FROM empresas_clientes ORDER BY fecha_registro DESC");
+        $stmt = $db->query("
+            SELECT id, nombre, ruc, sector, logo_url, descripcion,
+                ubicacion, anio_fundacion, num_empleados, sitio_web, beneficios,
+                estado, fecha_registro
+            FROM empresas_clientes
+            ORDER BY fecha_registro DESC
+        ");
         respond(true, $stmt->fetchAll());
     }
 
     // CREAR EMPRESA
     if ($method === 'POST' && $action === 'crear') {
-        $nombre = sanitizarTexto($_POST['nombre'] ?? '');
-        $ruc = sanitizarTexto($_POST['ruc'] ?? '');
-        $sector = sanitizarTexto($_POST['sector'] ?? '');
+        $nombre      = sanitizarTexto($_POST['nombre']      ?? '');
+        $ruc         = sanitizarTexto($_POST['ruc']         ?? '');
+        $sector      = sanitizarTexto($_POST['sector']      ?? '');
         $descripcion = sanitizarTexto($_POST['descripcion'] ?? '');
+        $ubicacion   = sanitizarTexto($_POST['ubicacion']   ?? '');
+        $anio        = !empty($_POST['anio_fundacion']) ? (int)$_POST   ['anio_fundacion'] : null;
+        $empleados   = sanitizarTexto($_POST['num_empleados'] ?? '');
+        $web         = sanitizarTexto($_POST['sitio_web']   ?? '');
+        $beneficios  = $_POST['beneficios'] ?? '[]';
 
         if (!$nombre || !$ruc || !$sector) {
             respondError('Los campos nombre, ruc y sector son obligatorios.');
         }
 
+        // Validar que beneficios sea JSON válido
+        if (!json_decode($beneficios)) $beneficios = '[]';
+
         $logo_url = null;
-        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] ===  UPLOAD_ERR_OK) {
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
-            if (!in_array($ext, $allowed)) {
-                respondError('Formato de imagen no válido. Use JPG, PNG, WebP o SVG.');
-            }
-            if ($_FILES['logo']['size'] > 2 * 1024 * 1024) {
-                respondError('La imagen no debe superar 2MB.');
-            }
+            if (!in_array($ext, $allowed)) respondError('Formato de imagen no válido.');
+            if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La imagen no debe superar 2MB.');
             $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
 
         try {
             $stmt = $db->prepare("
-                INSERT INTO empresas_clientes (nombre, ruc, sector, logo_url, descripcion, estado) 
-                VALUES (?, ?, ?, ?, ?, 'activo')
+                INSERT INTO empresas_clientes
+                    (nombre, ruc, sector, logo_url, descripcion, ubicacion,
+                    anio_fundacion, num_empleados, sitio_web, beneficios, estado)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'activo')
             ");
-            $stmt->execute([$nombre, $ruc, $sector, $logo_url, $descripcion]);
-            respond(true, ['id' => $db->lastInsertId()], 'Empresa cliente registrada correctamente.');
+            $stmt->execute([
+                $nombre, $ruc, $sector, $logo_url, $descripcion, $ubicacion,
+                $anio, $empleados ?: null, $web ?: null, $beneficios
+            ]);
+            respond(true, ['id' => $db->lastInsertId()], 'Empresa registrada correctamente.');
         } catch (PDOException $e) {
             if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-                respondError('Ya existe una empresa registrada con ese RUC o Nombre.');
+                respondError('Ya existe una empresa con ese RUC o Nombre.');
             }
             respondError('Error de base de datos al registrar empresa.');
         }
@@ -148,41 +165,54 @@ if ($resource === 'empresas') {
 
     // EDITAR EMPRESA
     if ($method === 'POST' && $action === 'editar') {
-        $id = $_POST['id'] ?? null;
-        $nombre = sanitizarTexto($_POST['nombre'] ?? '');
-        $ruc = sanitizarTexto($_POST['ruc'] ?? '');
-        $sector = sanitizarTexto($_POST['sector'] ?? '');
+        $id          = $_POST['id'] ?? null;
+        $nombre      = sanitizarTexto($_POST['nombre']      ?? '');
+        $ruc         = sanitizarTexto($_POST['ruc']         ?? '');
+        $sector      = sanitizarTexto($_POST['sector']      ?? '');
         $descripcion = sanitizarTexto($_POST['descripcion'] ?? '');
+        $ubicacion   = sanitizarTexto($_POST['ubicacion']   ?? '');
+        $anio        = !empty($_POST['anio_fundacion']) ? (int)$_POST   ['anio_fundacion'] : null;
+        $empleados   = sanitizarTexto($_POST['num_empleados'] ?? '');
+        $web         = sanitizarTexto($_POST['sitio_web']   ?? '');
+        $beneficios  = $_POST['beneficios'] ?? '[]';
 
         if (!$id) respondError('ID de empresa requerido.');
+        if (!json_decode($beneficios)) $beneficios = '[]';
 
-        $stmt = $db->prepare("SELECT id, logo_url FROM empresas_clientes WHERE id = ?");
+        $stmt = $db->prepare("SELECT id, logo_url FROM empresas_clientes    WHERE id = ?");
         $stmt->execute([$id]);
         $empresa = $stmt->fetch();
         if (!$empresa) respondError('Empresa no encontrada.', 404);
 
         $logo_url = $empresa['logo_url'];
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+            $ext = trim(strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION)));
             $allowed = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
-            if (!in_array($ext, $allowed)) {
-                respondError('Formato de imagen no válido. Use JPG, PNG, WebP o SVG.');
-            }
-            if ($_FILES['logo']['size'] > 2 * 1024 * 1024) {
-                respondError('La imagen no debe superar 2MB.');
-            }
-            if ($empresa['logo_url'] && file_exists(__DIR__ . '/../../' . $empresa['logo_url'])) {
+            if (!in_array($ext, $allowed)) respondError('Formato de imagen no   válido.');
+            if ($_FILES['logo']['size'] > 2 * 1024 * 1024) respondError('La     imagen no debe superar 2MB.');
+            if ($empresa['logo_url'] && file_exists(__DIR__ . '/../../' .   $empresa['logo_url'])) {
                 unlink(__DIR__ . '/../../' . $empresa['logo_url']);
             }
             $filename = 'logo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-            $destino = __DIR__ . '/../../uploads/logos/' . $filename;
+            $uploadDir = __DIR__ . '/../../uploads/logos/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $destino = $uploadDir . $filename;
             move_uploaded_file($_FILES['logo']['tmp_name'], $destino);
             $logo_url = 'uploads/logos/' . $filename;
         }
 
         try {
-            $stmt = $db->prepare("UPDATE empresas_clientes SET nombre=?, ruc=?, sector=?, logo_url=?, descripcion=? WHERE id=?");
-            $stmt->execute([$nombre, $ruc, $sector, $logo_url, $descripcion, $id]);
+            $stmt = $db->prepare("
+                UPDATE empresas_clientes
+                SET nombre = ?, ruc = ?, sector = ?, logo_url = ?,  descripcion = ?,
+                    ubicacion = ?, anio_fundacion = ?, num_empleados = ?,
+                    sitio_web = ?, beneficios = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $nombre, $ruc, $sector, $logo_url, $descripcion, $ubicacion,
+                $anio, $empleados ?: null, $web ?: null, $beneficios, $id
+            ]);
             respond(true, [], 'Empresa actualizada correctamente.');
         } catch (PDOException $e) {
             if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
@@ -258,9 +288,10 @@ if ($resource === 'ofertas') {
         $ubicacion = isset($body['ubicacion']) ? sanitizarTexto($body['ubicacion']) : null;
         $categoria_id = $body['categoria_id'] ?? null;
         
-        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'híbrido']) ? $body['modalidad'] : 'presencial';
-        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['indefinido', 'temporal', 'freelance', 'prácticas', 'por_horas']) ? $body['tipo_contrato'] : 'indefinido';
+        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'Híbrida']) ? $body['modalidad'] : 'presencial';
+        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['Tiempo completo', 'Permanente', 'Medio tiempo', 'Freelance', 'Prácticas', 'Temporal']) ? $body['tipo_contrato'] : 'Tiempo completo';
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
+        $horario = isset($body['horario']) ? sanitizarTexto($body['horario']) : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : 'activa';
 
         $fecha_publicacion = !empty($body['fecha_publicacion']) ? $body['fecha_publicacion'] : null;
@@ -270,15 +301,14 @@ if ($resource === 'ofertas') {
             $stmt = $db->prepare("
                 INSERT INTO ofertas_trabajo (
                     empresa_id, titulo, slug, descripcion, requisitos, 
-                    salario_min, salario_max, ubicacion, modalidad, 
-                    tipo_contrato, nivel_experiencia, categoria_id, estado,
+                    salario_min, salario_max, ubicacion, modalidad, horario, tipo_contrato, nivel_experiencia, categoria_id, estado,
                     fecha_publicacion, fecha_expiracion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, IFNULL(?, DATE_ADD(NOW(), INTERVAL 90 DAY)))
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, IFNULL(?, DATE_ADD(NOW(), INTERVAL 90 DAY)))
             ");
             
             $stmt->execute([
                 $empresa_id, $titulo, $slug, $descripcion, $requisitos,
-                $salario_min, $salario_max, $ubicacion, $modalidad,
+                $salario_min, $salario_max, $ubicacion, $modalidad, $horario,
                 $tipo_contrato, $nivel_experiencia, $categoria_id, $estado,
                 $fecha_publicacion, $fecha_expiracion
             ]);
@@ -317,8 +347,9 @@ if ($resource === 'ofertas') {
         $ubicacion = isset($body['ubicacion']) ? sanitizarTexto($body['ubicacion']) : null;
         $categoria_id = $body['categoria_id'] ?? null;
 
-        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'híbrido']) ? $body['modalidad'] : null;
-        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['indefinido', 'temporal', 'freelance', 'prácticas', 'por_horas']) ? $body['tipo_contrato'] : null;
+        $modalidad = isset($body['modalidad']) && in_array($body['modalidad'], ['presencial', 'remoto', 'Híbrida']) ? $body['modalidad'] : null;
+        $tipo_contrato = isset($body['tipo_contrato']) && in_array($body['tipo_contrato'], ['Tiempo completo', 'Permanente', 'Medio tiempo', 'Freelance', 'Prácticas', 'Temporal']) ? $body['tipo_contrato'] : null;
+        $horario = isset($body['horario']) ? sanitizarTexto($body['horario']) : null;
         $nivel_experiencia = isset($body['nivel_experiencia']) && in_array($body['nivel_experiencia'], ['junior', 'semisenior', 'senior', 'gerente']) ? $body['nivel_experiencia'] : null;
         $estado = isset($body['estado']) && in_array($body['estado'], ['activa', 'pausada', 'eliminada']) ? $body['estado'] : null;
 
@@ -345,6 +376,7 @@ if ($resource === 'ofertas') {
             if ($ubicacion !== null) { $campos[] = 'ubicacion = ?'; $valores[] = $ubicacion; }
             if ($categoria_id !== null) { $campos[] = 'categoria_id = ?'; $valores[] = $categoria_id; }
             if ($modalidad !== null) { $campos[] = 'modalidad = ?'; $valores[] = $modalidad; }
+            if ($horario !== null) { $campos[] = 'horario = ?'; $valores[] = $horario; }
             if ($tipo_contrato !== null) { $campos[] = 'tipo_contrato = ?'; $valores[] = $tipo_contrato; }
             if ($nivel_experiencia !== null) { $campos[] = 'nivel_experiencia = ?'; $valores[] = $nivel_experiencia; }
             if ($estado !== null) { $campos[] = 'estado = ?'; $valores[] = $estado; }
