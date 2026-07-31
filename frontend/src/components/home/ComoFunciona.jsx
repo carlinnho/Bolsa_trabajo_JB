@@ -15,17 +15,17 @@ export default function ComoFunciona() {
                     <div className="flex flex-col items-center text-center max-w-xs">
                         <p className="bg-naranja text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">1</p>
                         <h3 className="text-lg font-bold text-slate-800 mb-2">Crea tu perfil</h3>
-                        <p className="text-slate-400">Regístrate en nuestra plataforma y completa tu perfil con información relevante.</p>
+                        <p className="text-slate-400 max-w-55">Regístrate en nuestra plataforma y completa tu perfil con información relevante.</p>
                     </div>
                     <div className="flex flex-col items-center text-center max-w-xs">
                         <p className="bg-naranja text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">2</p>
                         <h3 className="text-lg font-bold text-slate-800 mb-2">Busca oportunidades</h3>
-                        <p className="text-slate-400">Explora nuestras vacantes y encuentra la oportunidad perfecta para ti.</p>
+                        <p className="text-slate-400 max-w-55">Explora nuestras vacantes y encuentra la oportunidad perfecta para ti.</p>
                     </div>
                     <div className="flex flex-col items-center text-center max-w-xs">
                         <p className="bg-naranja text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">3</p>
                         <h3 className="text-lg font-bold text-slate-800 mb-2">Postula a empleos</h3>
-                        <p className="text-slate-400">Envía tu postulación a las vacantes que te interesan y espera la respuesta.</p>
+                        <p className="text-slate-400 max-w-55">Envía tu postulación a las vacantes que te interesan y espera la respuesta.</p>
                     </div>
                 </div>
             </div>

@@ -130,14 +130,14 @@ export default function PreguntasFrecuentes() {
 
   return (
     <section id="preguntas-frecuentes" className="bg-slate-50 py-16 sm:py-20">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="flex flex-col items-start mb-12">
           <h2 className="text-2xl sm:text-3xl font-black text-[#123498] tracking-tight font-heading uppercase">
             Preguntas Frecuentes
           </h2>
-          <div className="w-8 h-1 bg-[#F46F0B] mx-auto mt-3 mb-4 rounded-full" />
-          <p className="text-sm text-[#6b7a9f] font-medium max-w-md mx-auto leading-relaxed">
+          <div className="w-8 h-1 bg-[#F46F0B] mt-3 mb-4 rounded-full" />
+          <p className="text-sm text-start text-[#6b7a9f] font-medium max-w-md leading-relaxed">
             Resuelve tus dudas sobre nuestro proceso de selección y plataforma
           </p>
         </div>

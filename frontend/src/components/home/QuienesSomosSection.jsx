@@ -6,7 +6,7 @@ export default function QuienesSomosSection() {
       id="quienes-somos"
       className="bg-white border-t border-slate-100 py-14"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Encabezado */}
         <div className="mb-10 flex flex-col items-center text-center">
           <h2 className="text-2xl sm:text-3xl font-black text-[#123498] tracking-tight font-heading uppercase">
