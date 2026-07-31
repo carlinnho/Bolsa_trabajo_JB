@@ -21,6 +21,8 @@ import SectionEvaluaciones from "../components/admin/SectionEvaluaciones";
 import SectionEmpresas from "../components/admin/SectionEmpresas";
 import SectionOfertas from "../components/admin/SectionOfertas";
 
+import SectionReclamaciones from "../components/admin/SectionReclamaciones";
+
 const STAGES = ["recibido", "revisado", "entrevista", "aprobado", "rechazado"];
 
 const STAGE_LABELS = {
@@ -518,6 +520,7 @@ export default function Admin() {
     if (path === "ofertas") return "ofertas";
     if (path === "postulantes") return "postulantes";
     if (path === "evaluaciones") return "evaluaciones";
+    if (path === "reclamaciones") return "reclamaciones";
     return "dashboard";
   };
 
@@ -526,6 +529,7 @@ export default function Admin() {
   const handleNavigate = (sec) => {
     if (sec === "dashboard") navigate("/admin");
     else if (sec === "evaluaciones") navigate("/admin/evaluaciones");
+    else if (sec === "reclamaciones") navigate("/admin/reclamaciones");
     else navigate(`/admin/${sec}`);
   };
 
@@ -533,7 +537,7 @@ export default function Admin() {
     <div className="flex h-screen bg-slate-50 overflow-x-hidden">
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-[248px]
+        fixed inset-y-0 left-0 z-40 w-62
         transform transition-transform duration-200 ease-in-out
         lg:relative lg:translate-x-0 lg:shrink-0
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
@@ -558,6 +562,7 @@ export default function Admin() {
           {section === "ofertas" && <SectionOfertas />}
           {section === "postulantes" && <SectionPostulantes />}
           {section === "evaluaciones" && <SectionEvaluaciones />}
+          {section === "reclamaciones" && <SectionReclamaciones />}
         </main>
       </div>
     </div>

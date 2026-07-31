@@ -11,6 +11,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // ── Imports directos (no lazy) — solo los que se necesitan siempre ──
 import Header from "./components/layout/Header";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ScrollToTop from "./components/layout/ScrollToTop";
 
 // ── Lazy: se cargan solo cuando el usuario navega a esa ruta ────────
 const Home = lazy(() => import("./pages/Home"));
@@ -32,6 +33,14 @@ const FavoriteApplications = lazy(
 );
 const Evaluaciones = lazy(() => import("./pages/Evaluaciones"));
 const EmpresaDetalle = lazy(() => import("./pages/EmpresaDetalle"));
+const OlvideContrasena = lazy(() => import("./pages/OlvideContrasena"));
+
+//legal
+const TerminosCondiciones = lazy(() => import("./pages/legales/TerminosCondiciones"));
+const PoliticaPrivacidad = lazy(() => import("./pages/legales/PoliticaPrivacidad"));
+const AvisoLegal = lazy(() => import("./pages/legales/AvisoLegal"));
+const LibroReclamaciones = lazy(() => import("./pages/legales/LibroReclamaciones"));
+
 
 // ── Fallback de carga ────────────────────────────────────────────────
 const Loading = () => (
@@ -59,6 +68,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>
+        <ScrollToTop />
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route
@@ -102,6 +112,44 @@ function App() {
 
             <Route path="/cuenta-validada" element={<CuentaValidada />} />
             <Route path="/revisa-tu-correo" element={<RevisaCorreo />} />
+
+            <Route path="/olvide-contrasena"      
+              element={
+                <main className="min-h-screen bg-[#f4f6fb]">
+                  <OlvideContrasena />
+                </main>
+              }   
+            />
+
+            <Route path="/terminos-condiciones" 
+              element={
+                <main className="min-h-screen">
+                  <TerminosCondiciones />
+                </main>
+              }
+            />
+            <Route path="/politica-privacidad"
+              element={
+                <main className="min-h-screen">
+                  <PoliticaPrivacidad />
+                </main>
+              }
+            />
+            <Route path="/aviso-legal"
+              element={
+                <main className="min-h-screen">
+                  <AvisoLegal />
+                </main>
+              }
+            />
+            <Route path="/libro-reclamaciones"
+              element={
+                <main className="min-h-screen">
+                  <LibroReclamaciones />
+                </main>
+              }
+            />
+
           </Routes>
         </Suspense>
       </Router>

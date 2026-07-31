@@ -1,20 +1,20 @@
 import FooterBrand from "./footer/FooterBrand";
 import FooterLinks from "./footer/FooterLinks";
 import FooterContact from "./footer/FooterContact";
+import { Link } from "react-router-dom";
 
-const SERVICIOS = [
-  { label: "Asesoría Legal Empresarial", href: "#asesoria" },
-  { label: "Consultoría Tributaria", href: "#consultoria" },
-  { label: "Planificación Estratégica", href: "#planificacion" },
-  { label: "Constitución de Empresas", href: "#constitucion" },
+const ACCESOS = [
+  { label: "Inicio", href: "#hero" },
+  { label: "Buscar Empleo", href: "/buscar-empleo" },
+  { label: "Evaluaciones de empresa", href: "/evaluaciones" },
 ];
 
-const EMPRESA = [
-  { label: "Sobre Nosotros", href: "#nosotros" },
-  { label: "Experiencias", href: "#experiencias" },
-  { label: "Blog", href: "#blog" },
-  { label: "Trabaja con Nosotros", href: "#trabaja" },
-  { label: "Contacto", href: "#contacto" },
+const INFORMACION = [
+  { label: "¿Cómo funciona?", href: "#como-funciona" },
+  { label: "¿Quiénes somos?", href: "#quienes-somos" },
+  { label: "Preguntas Frecuentes", href: "#preguntas-frecuentes" },
+  { label: "Publica tus vacantes", href: "https://api.whatsapp.com/send?phone=51912736437&text=Hola%2C%20me%20gustar%C3%ADa%20publicar%20vacantes%20con%20Consultora%20JB." },
+  { label: "Ir a Consultora JB", href: "https://consultoradeasesoriaempresarialjb.com/" }
 ];
 
 export default function Footer() {
@@ -29,18 +29,20 @@ export default function Footer() {
         */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8 mb-16">
           <FooterBrand />
-          <FooterLinks title="Servicios" links={SERVICIOS} />
-          <FooterLinks title="Empresa" links={EMPRESA} />
+          <FooterLinks title="Accesos Rápidos" links={ACCESOS} />
+          <FooterLinks title="Información" links={INFORMACION} />
           <FooterContact />
         </div>
 
         <div className="border-t border-neutral-800 pt-8 mt-8 flex flex-col items-center justify-between gap-4 lg:flex-row text-center lg:text-left">
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-[#FDB907]">
-            <a href="#privacidad" className="hover:underline">Política y privacidad</a>
+            <Link to="/terminos-condiciones" className="hover:underline">Términos y condiciones</Link>
             <span className="text-neutral-700">|</span>
-            <a href="#legal" className="hover:underline">Aviso Legal</a>
+            <Link to="/politica-privacidad" className="hover:underline">Política y privacidad</Link>
             <span className="text-neutral-700">|</span>
-            <a href="#reclamaciones" className="hover:underline">Libro de Reclamaciones</a>
+            <Link to="/aviso-legal" className="hover:underline">Aviso Legal</Link>
+            <span className="text-neutral-700">|</span>
+            <Link to="/libro-reclamaciones" className="hover:underline">Libro de Reclamaciones</Link>
           </div>
           <p className="text-[11px] text-slate-400 font-medium">
             &copy; 2026 Consultora de Asesoría Empresarial JB. Todos los derechos reservados.

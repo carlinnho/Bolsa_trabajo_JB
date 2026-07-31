@@ -26,7 +26,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative bg-[#123498] text-white py-16 sm:py-24 border-b border-slate-200/10">
+    <section id="hero" className="relative bg-[#123498] text-white py-16 sm:py-24 border-b border-slate-200/10">
       <div
         className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-20 pointer-events-none"
         style={{
